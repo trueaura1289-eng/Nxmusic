@@ -3,8 +3,8 @@ py-yt-search==0.6.2
 yt-dlp
 
 # ── Voice Chat Streaming ─────────────────
-py-tgcalls==2.2.11
-ntgcalls==2.2.1b3
+py-tgcalls==3.0.0b15
+ntgcalls==3.0.0b15
 
 # ── Telegram Client ──────────────────────
 pyrofork==2.3.69
