@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: ShizuMusicBot
+    name: nxmusicBot
     env: python
     plan: free
 
