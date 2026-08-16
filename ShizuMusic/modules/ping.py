@@ -19,7 +19,7 @@ def supp_markup():
 
 # ❖ /ping command handler ❖
 
-@tg_bot.on_message(py_filters.command("ping") & py_filters.user(cfg.OWNER_ID) if hasattr(cfg, 'OWNER_ID') else py_filters.command("ping"))
+@tg_bot.on_message(py_filters.command("ping"))
 async def ping_cmd(client, message: Py_Msg) -> None:
     t_start = tm.perf_counter()
     status_msg = await message.reply_text(
@@ -29,10 +29,12 @@ async def ping_cmd(client, message: Py_Msg) -> None:
     
     latency_ms = round((tm.perf_counter() - t_start) * 1000)
     uptime_str = str(time_delta(seconds=int(tm.time() - start_epoch)))
-    cpu_usage  = ps_util.cpu_percent(interval=1)
+    
+    # Non-blocking CPU usage check
+    cpu_usage = ps_util.cpu_percent(interval=None)
 
-    proc_ref   = ps_util.Process()
-    ram_usage  = proc_ref.memory_info().rss / 1024 / 1024
+    proc_ref  = ps_util.Process()
+    ram_usage = proc_ref.memory_info().rss / 1024 / 1024
 
     try:
         ast_start = tm.perf_counter()
@@ -41,7 +43,10 @@ async def ping_cmd(client, message: Py_Msg) -> None:
     except Exception:
         pytg_ms = "N/A"
 
-    await status_msg.delete()
+    try:
+        await status_msg.delete()
+    except Exception:
+        pass
 
     resp_caption = (
         f"<b>❖ ᴘᴏɴɢ : <code>{latency_ms}ms</code> ❖</b>\n\n"
@@ -50,7 +55,7 @@ async def ping_cmd(client, message: Py_Msg) -> None:
         f"<b>❖ ʀᴀᴍ    :</b> <code>{ram_usage:.2f} mb</code>\n"
         f"<b>❖ cᴘᴜ    :</b> <code>{cpu_usage}%</code>\n"
         f"<b>❖ ᴘʏᴛɢᴄ  :</b> <code>{pytg_ms}ms</code>\n\n"
-        f"<b>● ᴍᴀɴᴀɢᴇᴅ ʙʏ » <a href=\"{cfg.SUPPORT_GROUP}\">Eʟʏx Mᴜsɪᴄ</a> ❖</b>"
+        f"<b>● ᴍᴀɴᴀɢᴇᴅ ʙʏ » <a href=\"{cfg.UPDATES_CHANNEL}\">Eʟʏx Mᴜsɪᴄ</a> ❖</b>"
     )
 
     await message.reply_photo(
