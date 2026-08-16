@@ -1,8 +1,6 @@
 {
-  "name": "Shizu Music Bot",
-  "description": "Shizu Music — Free Telegram VC Music Bot that runs easily on Render, Railway, Koyeb & Heroku.",
-  "repository": "https://github.com/Badmunda05/ShizuMusic",
-  "logo": "https://files.catbox.moe/9kwxtu.png",
+  "name": "Elyx Music Bot",
+  "logo": "https://freeimage.host/i/KLcFyrP",
 
   "keywords": [
     "telegram",
@@ -11,7 +9,7 @@
     "vc",
     "python",
     "pyrogram",
-    "shizumusic"
+    "Elyxmusic"
   ],
 
   "env": {
