@@ -28,7 +28,7 @@ async def stop_cmd(_, message: Message) -> None:
 
     await leave_vc(message.chat.id)
 
-   await message.reply(
+    await message.reply(
         "<b>❖ ᴍᴜsɪᴄ ᴇɴᴅᴇᴅ • ǫᴜᴇᴜᴇ ʀᴇsᴇᴛ • ᴠᴏɪᴄᴇ ᴄʜᴀᴛ ᴇxɪᴛᴇᴅ</b>",
         parse_mode=ParseMode.HTML,
     )
