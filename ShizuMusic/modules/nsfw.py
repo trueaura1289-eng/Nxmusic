@@ -1,11 +1,3 @@
-# --------------------------------------------------------------------------------
-#  ShizuMusic © 2026
-#  Developed by Bad Munda ❤️
-#
-#  Unauthorized copying, editing, re-uploading or removing credits
-#  from this source code is strictly prohibited.
-# --------------------------------------------------------------------------------
-
 import asyncio
 import html
 import json
@@ -382,9 +374,9 @@ async def nsfw_approve_cmd(client, message: Message) -> None:
     target = await _extract_user(client, message, target_args)
     if target is None:
         await message.reply(
-            "<b>❍ Reply to a user's message</b> (or provide their ID/username) "
+            "<b>❖ Reply to a user's message</b> (or provide their ID/username) "
             "<b>along with</b> <code>/nsfwapprove</code> <b>to whitelist them from the NSFW filter.</b>\n\n"
-            "<b>❍ Usage:</b>\n"
+            "<b>❖ Usage:</b>\n"
             "• <code>/nsfwapprove</code> — reply to approve\n"
             "• <code>/nsfwapprove off</code> — reply to remove approval\n"
             "• <code>/nsfwapprove list</code> — view approved users",
@@ -395,14 +387,14 @@ async def nsfw_approve_cmd(client, message: Message) -> None:
     if remove:
         disapprove_nsfw_user(message.chat.id, target.id)
         await message.reply(
-            f"<b>❍</b> {target.mention} <b>removed from the approved list ❌</b>\n"
+            f"<b>❖</b> {target.mention} <b>removed from the approved list ❌</b>\n"
             f"<b>Their media/text/files/links will now be checked again.</b>",
             parse_mode=ParseMode.HTML,
         )
     else:
         approve_nsfw_user(message.chat.id, target.id)
         await message.reply(
-            f"<b>❍</b> {target.mention} <b>Approved ✅</b>\n"
+            f"<b>❖</b> {target.mention} <b>Approved ✅</b>\n"
             f"<b>Their media/text/files/links will bypass all moderation filters.</b>",
             parse_mode=ParseMode.HTML,
         )
