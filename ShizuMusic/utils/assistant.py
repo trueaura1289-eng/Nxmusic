@@ -1,11 +1,3 @@
-# --------------------------------------------------------------------------------
-#  ShizuMusic © 2026
-#  Developed by Bad Munda ❤️
-#
-#  Unauthorized copying, editing, re-uploading or removing credits
-#  from this source code is strictly prohibited.
-# --------------------------------------------------------------------------------
-
 """
 Assistant utility functions.
 Handles checking whether the assistant is in a group and auto-joining it.
@@ -58,7 +50,7 @@ async def try_join_assistant(chat_id: int, pm: Message) -> bool:
 
     except Exception as e:
         await pm.edit_text(
-            f"<b>❍ ɪ ɴᴇᴇᴅ ɪɴᴠɪᴛᴇ ʟɪɴᴋ ᴘᴇʀᴍɪssɪᴏɴ</b>\n"
+            f"<b>❖ ɪɴᴠɪᴛᴇ ʟɪɴᴋ ᴘᴇʀᴍɪssɪᴏɴ ɪs ʀᴇǫᴜɪʀᴇᴅ ᴛᴏ ᴄᴏɴᴛɪɴᴜᴇ.</b>\n"
             f"<code>{e}</code>",
             parse_mode=ParseMode.HTML,
         )
@@ -81,7 +73,7 @@ async def try_join_assistant(chat_id: int, pm: Message) -> bool:
 
     except RPCError as e:
         await pm.edit_text(
-            f"<b>❍ ᴀssɪsᴛᴀɴᴛ ᴊᴏɪɴ ғᴀɪʟᴇᴅ</b>\n"
+            f"<b>❖ ᴜɴᴀʙʟᴇ ᴛᴏ ᴊᴏɪɴ ᴛʜᴇ ᴀssɪsᴛᴀɴᴛ ᴛᴏ ᴛʜɪs ᴄʜᴀᴛ.</b>\n"
             f"<code>{e}</code>",
             parse_mode=ParseMode.HTML,
         )
@@ -89,7 +81,7 @@ async def try_join_assistant(chat_id: int, pm: Message) -> bool:
 
     except Exception as e:
         await pm.edit_text(
-            f"<b>❍ ᴊᴏɪɴ ᴇʀʀᴏʀ</b>\n"
+            f"<b>● ᴊᴏɪɴ ᴇʀʀᴏʀ</b>\n"
             f"<code>{e}</code>",
             parse_mode=ParseMode.HTML,
         )
