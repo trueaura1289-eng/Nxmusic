@@ -48,7 +48,7 @@ async def bot_added_watcher(_, message: Message) -> None:
     "<b>❖ ᴡɪᴛʜᴏᴜᴛ ᴛʜᴇ ʀᴇǫᴜɪʀᴇᴅ ᴀᴅᴍɪɴ ʀɪɢʜᴛs, ᴠᴏɪᴄᴇ ᴘʟᴀʏʙᴀᴄᴋ ᴍᴀʏ ɴᴏᴛ ᴡᴏʀᴋ ᴘʀᴏᴘᴇʀʟʏ.</b>"
 )
             admin_kb = InlineKeyboardMarkup([[
-                InlineKeyboardButton("ᴘʀᴏᴍᴏᴛᴇ ᴍᴇ ɴᴏᴡ", url=f"tg://user?id={bot_user_obj.id}")
+                InlineKeyboardButton("ᴀɴɪᴄʟᴏᴜᴅ", url="https://t.me/Anicloudnx")
             ]])
             try:
                 await message.reply_text(admin_request_text, parse_mode=ParseMode.HTML, reply_markup=admin_kb)
