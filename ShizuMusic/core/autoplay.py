@@ -37,7 +37,6 @@ async def _fetch_more(chat_id: int, requester: str, requester_id: int) -> int:
     if _autoplay_fetching.get(chat_id):
         return 0
     _autoplay_fetching[chat_id] = True
-
     query   = _autoplay_query.get(chat_id, "")
     fetched = _autoplay_fetched.setdefault(chat_id, set())
     added   = 0
