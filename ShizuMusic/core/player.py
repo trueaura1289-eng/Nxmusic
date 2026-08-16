@@ -101,9 +101,7 @@ async def _update_progress(
 # ─────────────────────────────────────────────
 
 async def _ensure_vc(chat_id: int) -> bool:
-
     try:
-
         chat_id = int(chat_id)
         chat = await assistant.get_chat(chat_id)
 
@@ -129,23 +127,22 @@ async def _ensure_vc(chat_id: int) -> bool:
         return False
 
     except Exception as e:
-
         err = str(e).lower()
 
         # already active
         if "already" in err or "groupcall_already_started" in err:
             return True
 
-       # admin rights missing
-if "chat_admin_required" in err or "admin" in err:
-    await bot.send_message(
-        chat_id,
-        "<b>❖ Vᴏɪᴄᴇ ᴄʜᴀᴛ ᴀᴄᴄᴇss Rᴇǫᴜɪʀᴇᴅ</b>\n\n"
-        "<b>❖ Uᴘᴅᴀᴛᴇ ᴀssɪsᴛᴀɴᴛ Pᴇʀᴍɪssɪᴏɴs :</b>\n"
-        "• <code>Manage Video Chats</code>\n"
-        "• <code>Administrator Privileges</code>",
-        parse_mode=ParseMode.HTML,
-    )
+        # admin rights missing
+        if "chat_admin_required" in err or "admin" in err:
+            await bot.send_message(
+                chat_id,
+                "<b>❖ Vᴏɪᴄᴇ ᴄʜᴀᴛ ᴀᴄᴄᴇss Rᴇǫᴜɪʀᴇᴅ</b>\n\n"
+                "<b>❖ Uᴘᴅᴀᴛᴇ ᴀssɪsᴛᴀɴᴛ Pᴇʀᴍɪssɪᴏɴs :</b>\n"
+                "• <code>Manage Video Chats</code>\n"
+                "• <code>Administrator Privileges</code>",
+                parse_mode=ParseMode.HTML,
+            )
             return False
 
         LOGGER.error(f"[VC ERROR] {e}")
@@ -167,7 +164,6 @@ async def play_song(
     message: Message,
     song: dict,
 ) -> None:
-
     chat_id = int(chat_id)
     url = song.get("url")
 
@@ -181,7 +177,6 @@ async def play_song(
 
     try:
         await message.edit(loading_text, parse_mode=ParseMode.HTML)
-
     except Exception:
         message = await bot.send_message(
             chat_id,
@@ -195,7 +190,6 @@ async def play_song(
 
     try:
         media_path = await resolve_stream(url)
-
     except Exception as e:
         try:
             remove_from_queue(chat_id, 0)
@@ -220,7 +214,6 @@ async def play_song(
         try:
             from ShizuMusic.modules.effects import maybe_apply_effects
             media_path = await maybe_apply_effects(chat_id, media_path)
-
         except Exception as fx_err:
             LOGGER.warning(f"[Effects] Skipped: {fx_err}")
 
@@ -231,9 +224,7 @@ async def play_song(
     played = False
 
     for attempt in range(2):
-
         try:
-
             if is_video:
                 await call_py.play(
                     chat_id,
@@ -257,7 +248,6 @@ async def play_song(
             break
 
         except NoActiveGroupCall:
-
             if attempt == 0:
                 LOGGER.info(f"[VC] NoActiveGroupCall — Creating VC in {chat_id}")
                 ok = await _ensure_vc(chat_id)
@@ -289,7 +279,6 @@ async def play_song(
             return
 
         except Exception as e:
-
             err = str(e).lower()
 
             vc_missing = any(
@@ -325,15 +314,15 @@ async def play_song(
                 except Exception:
                     pass
                     
-await bot.send_message(
-    chat_id,
-    "<b>❖ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ ᴘᴇʀᴍɪssɪᴏɴ ʀᴇǫᴜɪʀᴇᴅ</b>\n\n"
-    "<b>❖ ɢʀᴀɴᴛ ᴛʜᴇ ᴀssɪsᴛᴀɴᴛ :</b>\n"
-    "• <code>Manage Video Chats</code>\n"
-    "• <code>Administrator Privileges</code>\n\n"
-    "<b>❖ ᴀssɪsᴛᴀɴᴛ ɴᴇᴇᴅs ᴀᴅᴍɪɴ ᴀᴄᴄᴇss</b>",
-    parse_mode=ParseMode.HTML,
-)
+                await bot.send_message(
+                    chat_id,
+                    "<b>❖ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ ᴘᴇʀᴍɪssɪᴏɴ ʀᴇǫᴜɪʀᴇᴅ</b>\n\n"
+                    "<b>❖ ɢʀᴀɴᴛ ᴛʜᴇ ᴀssɪsᴛᴀɴᴛ :</b>\n"
+                    "• <code>Manage Video Chats</code>\n"
+                    "• <code>Administrator Privileges</code>\n\n"
+                    "<b>❖ ᴀssɪsᴛᴀɴᴛ ɴᴇᴇᴅs ᴀᴅᴍɪɴ ᴀᴄᴄᴇss</b>",
+                    parse_mode=ParseMode.HTML,
+                )
                 LOGGER.error(f"[ADMIN ERROR] {e}")
                 return
 
@@ -393,21 +382,21 @@ await bot.send_message(
 
     total = parse_dur(song.get("duration", "0:00"))
 
-caption = (
-    "<blockquote>"
-    "<b>ᴇʟʏx ᴍᴜsɪᴄ 🎧</b>\n\n"
-    f"<b>❖ Tʀᴀᴄᴋ :</b> {short(song['title'])}\n"
-    f"<b>❖ Lᴇɴɢᴛʜ :</b> {song.get('duration', '?')}\n"
-    f"<b>❖ Rᴇǫᴜᴇsᴛᴇᴅ ʙʏ :</b> {song['requester']}"
-    "</blockquote>"
-)
+    caption = (
+        "<blockquote>"
+        "<b>ᴇʟʏx ᴍᴜsɪᴄ 🎧</b>\n\n"
+        f"<b>❖ Tʀᴀᴄᴋ :</b> {short(song['title'])}\n"
+        f"<b>❖ Lᴇɴɢᴛʜ :</b> {song.get('duration', '?')}\n"
+        f"<b>❖ Rᴇǫᴜᴇsᴛᴇᴅ ʙʏ :</b> {song['requester']}"
+        "</blockquote>"
+    )
 
-   btns = [
-    InlineKeyboardButton("▶", callback_data="resume"),
-    InlineKeyboardButton("⏸", callback_data="pause"),
-    InlineKeyboardButton("⏭", callback_data="skip"),
-    InlineKeyboardButton("⏹", callback_data="stop"),
-]
+    btns = [
+        InlineKeyboardButton("▶", callback_data="resume"),
+        InlineKeyboardButton("⏸", callback_data="pause"),
+        InlineKeyboardButton("⏭", callback_data="skip"),
+        InlineKeyboardButton("⏹", callback_data="stop"),
+    ]
 
     bar = progress_bar(0, total)
 
@@ -455,14 +444,14 @@ caption = (
     # LOGGER
     # ─────────────────────────────────────────
 
-   if config.LOGGER_ID:
-    asyncio.create_task(
-        bot.send_message(
-            config.LOGGER_ID,
-            "<b>❖ #ɴᴏᴡᴘʟᴀʏɪɴɢ</b>\n\n"
-            f"<b>❖ Tʀᴀᴄᴋ :</b> {song.get('title')}\n"
-            f"<b>❖ Lᴇɴɢᴛʜ :</b> {song.get('duration')}\n"
-            f"<b>❖ Rᴇǫᴜᴇsᴛᴇᴅ ʙʏ :</b> {song.get('requester')}",
-            parse_mode=ParseMode.HTML,
+    if config.LOGGER_ID:
+        asyncio.create_task(
+            bot.send_message(
+                config.LOGGER_ID,
+                "<b>❖ #ɴᴏᴡᴘʟᴀʏɪɴɢ</b>\n\n"
+                f"<b>❖ Tʀᴀᴄᴋ :</b> {song.get('title')}\n"
+                f"<b>❖ Lᴇɴɢᴛʜ :</b> {song.get('duration')}\n"
+                f"<b>❖ Rᴇǫᴜᴇsᴛᴇᴅ ʙʏ :</b> {song.get('requester')}",
+                parse_mode=ParseMode.HTML,
+            )
         )
-    )
