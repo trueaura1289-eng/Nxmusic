@@ -119,11 +119,12 @@ f"<b> ᴜsᴇʀs     :</b> <code>{served_users}</code>\n"
 f"<b> ʙʟᴏᴄᴋᴇᴅ   :</b> <code>{banned_chats}</code>\n"
 f"<b> ᴘʟᴀʏs     :</b> <code>{total_plays}</code>\n\n"
 
-"<b>❖ ʙʀᴏᴀᴅᴄᴀsᴛ ᴅᴀᴛᴀ</b>\n"
-f"<b> ᴛᴏᴛᴀʟ     :</b> <code>{bc['total']}</code>\n"
-f"<b> ɢʀᴏᴜᴘs    :</b> <code>{bc['groups']}</code>\n"
-f"<b> ᴘʀɪᴠᴀᴛᴇ   :</b> <code>{bc['private']}</code>\n\n"
-
-"<b>❖ ────────────────────────────────</b>"
-        
-        it_text(text, parse_mode=ParseMode.HTML)
+text = (
+        "<b>❖ ʙʀᴏᴀᴅᴄᴀsᴛ ᴅᴀᴛᴀ</b>\n"
+        f"<b> ᴛᴏᴛᴀʟ     :</b> <code>{bc['total']}</code>\n"
+        f"<b> ɢʀᴏᴜᴘs    :</b> <code>{bc['groups']}</code>\n"
+        f"<b> ᴘʀɪᴠᴀᴛᴇ   :</b> <code>{bc['private']}</code>\n\n"
+        "<b>❖ ────────────────────────────────</b>"
+    )
+    
+    await message.reply(text, parse_mode=ParseMode.HTML)
