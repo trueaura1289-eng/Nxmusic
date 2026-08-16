@@ -54,7 +54,7 @@ async def start_handler(_, message: Message) -> None:
             "<b>╰─➤ ᴛᴀᴘ ʜᴇʟᴘ ғᴏʀ ᴄᴏᴍᴍᴀɴᴅs & ᴍᴏʀᴇ ɪɴғᴏ.</b>"
         )
 
-  kb = InlineKeyboardMarkup([
+    kb = InlineKeyboardMarkup([
         [
             InlineKeyboardButton(
                 "ᴀᴅᴅ ᴍᴇ ᴛᴏ ɢʀᴏᴜᴘ",
