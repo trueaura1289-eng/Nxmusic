@@ -59,19 +59,16 @@ async def _update_progress(
     start_t: float,
     total: float,
     caption: str,
-) -> None:
-
-   btns = [
-    InlineKeyboardButton("▶", callback_data="resume"),
-    InlineKeyboardButton("⏸", callback_data="pause"),
-    InlineKeyboardButton("⏭", callback_data="skip"),
-    InlineKeyboardButton("⏹", callback_data="stop"),
-]
+async def update_progress(...) -> None:
+    btns = [
+        InlineKeyboardButton("▶", callback_data="resume"),
+        InlineKeyboardButton("⏸", callback_data="pause"),
+        InlineKeyboardButton("⏭", callback_data="skip"),
+        InlineKeyboardButton("⏹", callback_data="stop"),
+    ]
 
     while True:
-
         elapsed = min(time.time() - start_t, total)
-
         bar = progress_bar(elapsed, total)
 
         kb = InlineKeyboardMarkup(
