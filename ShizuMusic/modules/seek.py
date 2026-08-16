@@ -42,7 +42,7 @@ async def _seek_to(chat_id: int, target_sec: int, message: Message) -> None:
     total_sec  = parse_dur(song.get("duration", "0:00"))
     target_sec = max(0, min(target_sec, total_sec - 1))
 
-    pm = await message.reply(
+pm = await message.reply(
         f"<b> sᴇᴇᴋɪɴɢ</b> <code>{fmt_time(target_sec)}</code><b>...</b>",
         parse_mode=ParseMode.HTML,
     )
@@ -82,7 +82,7 @@ async def _seek_to(chat_id: int, target_sec: int, message: Message) -> None:
                 f"<b>Seek Failed.</b>\n<code>{e2}</code>",
                 parse_mode=ParseMode.HTML,
             )
-  return
+            return
 
     set_seek_state(chat_id, target_sec)
 
