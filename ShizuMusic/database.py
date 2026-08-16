@@ -1,16 +1,3 @@
-# --------------------------------------------------------------------------------
-#  ShizuMusic © 2026
-#  Developed by Bad Munda ❤️
-#
-#  Unauthorized copying, editing, re-uploading or removing credits
-#  from this source code is strictly prohibited.
-# --------------------------------------------------------------------------------
-#
-#  This file is a compatibility shim.
-#  All database logic lives in ShizuMusic/utils/db.py
-#  Import from there directly, or use this file — both work.
-# --------------------------------------------------------------------------------
-
 from ShizuMusic.utils.db import (
     start_mongo,
     get_db,
