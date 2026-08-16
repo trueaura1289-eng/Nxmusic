@@ -54,7 +54,7 @@ async def start_handler(_, message: Message) -> None:
             "<b>╰─➤ ᴛᴀᴘ ʜᴇʟᴘ ғᴏʀ ᴄᴏᴍᴍᴀɴᴅs & ᴍᴏʀᴇ ɪɴғᴏ.</b>"
         )
 
-    kb = InlineKeyboardMarkup([
+  kb = InlineKeyboardMarkup([
         [
             InlineKeyboardButton(
                 "ᴀᴅᴅ ᴍᴇ ᴛᴏ ɢʀᴏᴜᴘ",
@@ -78,14 +78,14 @@ async def start_handler(_, message: Message) -> None:
             )
         ]
     ])
-        sent = await message.reply_animation(
-            animation,
-            caption=caption,
-            parse_mode=ParseMode.HTML,
-            reply_markup=kb,
-            message_effect_id=random.choice(EFFECT_ID),
-        )
-
+    
+    sent = await message.reply_animation(
+        animation,
+        caption=caption,
+        parse_mode=ParseMode.HTML,
+        reply_markup=kb,
+        message_effect_id=random.choice(EFFECT_ID),
+    )
         try:
             add_broadcast_chat(chat_id, "private")
         except Exception:
