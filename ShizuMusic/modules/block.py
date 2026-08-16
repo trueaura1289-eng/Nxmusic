@@ -50,32 +50,32 @@ async def gblock_cmd(_, message: Message) -> None:
                 "<b>❖ ᴄᴏʀʀᴇᴄᴛ sʏɴᴛᴀx : /gblock -100xxxxxxx</b>",
                 parse_mode=ParseMode.HTML,
             )
-        return
+            return
     else:
         if message.chat.type.name == "PRIVATE":
-           await message.reply(
-    "<b>❖ ᴛʜɪs ᴜᴛɪʟɪᴛʏ ɪs sᴛʀɪᴄᴛʟʏ ғᴏʀ ɢʀᴏᴜᴘs</b>\n"
-    "<b>❖ ᴏʀ ɪɴᴘᴜᴛ ᴀ ᴄʜᴀᴛ ɪᴅ : /gblock -100xxxxxxx</b>",
-parse_mode=ParseMode.HTML,
-)
-return
-target_chat_id = message.chat.id
+            await message.reply(
+                "<b>❖ ᴛʜɪs ᴜᴛɪʟɪᴛʏ ɪs sᴛʀɪᴄᴛʟʏ ғᴏʀ ɢʀᴏᴜᴘs</b>\n"
+                "<b>❖ ᴏʀ ɪɴᴘᴜᴛ ᴀ ᴄʜᴀᴛ ɪᴅ : /gblock -100xxxxxxx</b>",
+                parse_mode=ParseMode.HTML,
+            )
+            return
+        target_chat_id = message.chat.id
 
-if is_group_blocked(target_chat_id):
+    if is_group_blocked(target_chat_id):
+        await message.reply(
+            f"<b>❖ ᴛʜɪs ᴄʜᴀᴛ ɪs ᴀʟʀᴇᴀᴅʏ ʙʟᴏᴄᴋʟɪsᴛᴇᴅ</b>\n"
+            f"<b>❖ ᴄʜᴀᴛ ɪᴅ :</b> <code>{target_chat_id}</code>",
+            parse_mode=ParseMode.HTML,
+        )
+        return
+
+    block_group(target_chat_id)
     await message.reply(
-        f"<b>❖ ᴛʜɪs ᴄʜᴀᴛ ɪs ᴀʟʀᴇᴀᴅʏ ʙʟᴏᴄᴋʟɪsᴛᴇᴅ</b>\n"
-        f"<b>❖ ᴄʜᴀᴛ ɪᴅ :</b> <code>{target_chat_id}</code>",
+        f"<b>❖ ᴄʜᴀᴛ ʜᴀs ʙᴇᴇɴ ʙʟᴏᴄᴋᴇᴅ sᴜᴄᴄᴇssғᴜʟʟʏ</b>\n"
+        f"<b>❖ ɪᴅ :</b> <code>{target_chat_id}</code>\n"
+        f"<b>❖ ʙᴏᴛ ғᴜɴᴄᴛɪᴏɴs ᴀʀᴇ ɴᴏᴡ ᴅᴇᴀᴄᴛɪᴠᴀᴛᴇᴅ ʜᴇʀᴇ</b>",
         parse_mode=ParseMode.HTML,
     )
-    return
-
-block_group(target_chat_id)
-await message.reply(
-    f"<b>❖ ᴄʜᴀᴛ ʜᴀs ʙᴇᴇɴ ʙʟᴏᴄᴋᴇᴅ sᴜᴄᴄᴇssғᴜʟʟʏ</b>\n"
-    f"<b>❖ ɪᴅ :</b> <code>{target_chat_id}</code>\n"
-    f"<b>❖ ʙᴏᴛ ғᴜɴᴄᴛɪᴏɴs ᴀʀᴇ ɴᴏᴡ ᴅᴇᴀᴄᴛɪᴠᴀᴛᴇᴅ ʜᴇʀᴇ</b>",
-    parse_mode=ParseMode.HTML,
-)
 
 
 # ── /gunblock ──────────────────────────────────────────────────────────────────
@@ -87,39 +87,39 @@ async def gunblock_cmd(_, message: Message) -> None:
 
     if parameters:
         try:
-           target_chat_id = int(parameters[0])
-except ValueError:
-    await message.reply(
-        "<b>❖ ᴛʜᴇ sᴘᴇᴄɪғɪᴇᴅ ᴄʜᴀᴛ ɪᴅ ɪs ғᴀᴜʟᴛʏ</b>\n"
-        "<b>❖ sᴀᴍᴘʟᴇ : /gunblock -100xxxxxxx</b>",
-        parse_mode=ParseMode.HTML,
-    )
-    return
-else:
-    if message.chat.type.name == "PRIVATE":
-        await message.reply(
-            "<b>❖ ᴇxᴇᴄᴜᴛᴇ ᴛʜɪs ɪɴsɪᴅᴇ ᴀ ɢʀᴏᴜᴘ</b>\n"
-            "<b>❖ ᴏʀ ᴘᴀss ᴀ ᴄʜᴀᴛ ɪᴅ : /gunblock -100xxxxxxx</b>",
-            parse_mode=ParseMode.HTML,
-        )
+            target_chat_id = int(parameters[0])
+        except ValueError:
+            await message.reply(
+                "<b>❖ ᴛʜᴇ sᴘᴇᴄɪғɪᴇᴅ ᴄʜᴀᴛ ɪᴅ ɪs ғᴀᴜʟᴛʏ</b>\n"
+                "<b>❖ sᴀᴍᴘʟᴇ : /gunblock -100xxxxxxx</b>",
+                parse_mode=ParseMode.HTML,
+            )
+            return
+    else:
+        if message.chat.type.name == "PRIVATE":
+            await message.reply(
+                "<b>❖ ᴇxᴇᴄᴜᴛᴇ ᴛʜɪs ɪɴsɪᴅᴇ ᴀ ɢʀᴏᴜᴘ</b>\n"
+                "<b>❖ ᴏʀ ᴘᴀss ᴀ ᴄʜᴀᴛ ɪᴅ : /gunblock -100xxxxxxx</b>",
+                parse_mode=ParseMode.HTML,
+            )
             return
         target_chat_id = message.chat.id
 
-  if not is_group_blocked(target_chat_id):
+    if not is_group_blocked(target_chat_id):
+        await message.reply(
+            f"<b>❖ ᴄʜᴀᴛ ɪs ɴᴏᴛ ᴘʀᴇsᴇɴᴛ ᴏɴ ʙʟᴏᴄᴋʟɪsᴛ</b>\n"
+            f"<b>❖ ᴄʜᴀᴛ ɪᴅ :</b> <code>{target_chat_id}</code>",
+            parse_mode=ParseMode.HTML,
+        )
+        return
+
+    unblock_group(target_chat_id)
     await message.reply(
-        f"<b>❖ ᴄʜᴀᴛ ɪs ɴᴏᴛ ᴘʀᴇsᴇɴᴛ ᴏɴ ʙʟᴏᴄᴋʟɪsᴛ</b>\n"
-        f"<b>❖ ᴄʜᴀᴛ ɪᴅ :</b> <code>{target_chat_id}</code>",
+        f"<b>❖ ᴄʜᴀᴛ ᴀᴄᴄᴇss ʜᴀs ʙᴇᴇɴ ʀᴇɪɴsᴛᴀᴛᴇᴅ</b>\n"
+        f"<b>❖ ᴄʜᴀᴛ ɪᴅ :</b> <code>{target_chat_id}</code>\n"
+        f"<b>❖ ᴀʟʟ ᴄᴏᴍᴍᴀɴᴅs ᴀʀᴇ ɴᴏᴡ ᴏᴘᴇʀᴀᴛɪᴏɴᴀʟ</b>",
         parse_mode=ParseMode.HTML,
     )
-    return
-
-unblock_group(target_chat_id)
-await message.reply(
-    f"<b>❖ ᴄʜᴀᴛ ᴀᴄᴄᴇss ʜᴀs ʙᴇᴇɴ ʀᴇɪɴsᴛᴀᴛᴇᴅ</b>\n"
-    f"<b>❖ ᴄʜᴀᴛ ɪᴅ :</b> <code>{target_chat_id}</code>\n"
-    f"<b>❖ ᴀʟʟ ᴄᴏᴍᴍᴀɴᴅs ᴀʀᴇ ɴᴏᴡ ᴏᴘᴇʀᴀᴛɪᴏɴᴀʟ</b>",
-    parse_mode=ParseMode.HTML,
-)
 
 
 # ── /ublock ────────────────────────────────────────────────────────────────────
@@ -138,33 +138,33 @@ async def ublock_cmd(_, message: Message) -> None:
         try:
             target_member_id = int(parameters[0])
         except ValueError:
-           await message.reply(
-    "<b>❖ ᴜsᴇʀ ɪᴅ ᴄᴏᴜʟᴅ ɴᴏᴛ ʙᴇ ᴘᴀʀsᴇᴅ</b>\n"
-    "<b>❖ ғᴏʀᴍᴀᴛ : /ublock 123456789 ᴏʀ ʀᴇᴘʟʏ</b>",
-    parse_mode=ParseMode.HTML,
-)
-return
-else:
-    await message.reply(
-        "<b>❖ ᴍᴇɴᴛɪᴏɴ ᴀ ᴜsᴇʀ ɪᴅ ᴏʀ ʀᴇᴘʟʏ ᴛᴏ ᴛʜᴇɪʀ ᴛᴇxᴛ</b>\n"
-        "<b>❖ sᴀᴍᴘʟᴇ : /ublock 123456789</b>",
-        parse_mode=ParseMode.HTML,
-    )
+            await message.reply(
+                "<b>❖ ᴜsᴇʀ ɪᴅ ᴄᴏᴜʟᴅ ɴᴏᴛ ʙᴇ ᴘᴀʀsᴇᴅ</b>\n"
+                "<b>❖ ғᴏʀᴍᴀᴛ : /ublock 123456789 ᴏʀ ʀᴇᴘʟʏ</b>",
+                parse_mode=ParseMode.HTML,
+            )
+            return
+    else:
+        await message.reply(
+            "<b>❖ ᴍᴇɴᴛɪᴏɴ ᴀ ᴜsᴇʀ ɪᴅ ᴏʀ ʀᴇᴘʟʏ ᴛᴏ ᴛʜᴇɪʀ ᴛᴇxᴛ</b>\n"
+            "<b>❖ sᴀᴍᴘʟᴇ : /ublock 123456789</b>",
+            parse_mode=ParseMode.HTML,
+        )
         return
 
     if target_member_id == config.OWNER_ID:
-await message.reply(
-    "<b>❖ ʙᴏᴛ ᴏᴡɴᴇʀ ᴄᴀɴɴᴏᴛ ʙᴇ ʀᴇsᴛʀɪᴄᴛᴇᴅ</b>",
-    parse_mode=ParseMode.HTML,
-)
-return
+        await message.reply(
+            "<b>❖ ʙᴏᴛ ᴏᴡɴᴇʀ ᴄᴀɴɴᴏᴛ ʙᴇ ʀᴇsᴛʀɪᴄᴛᴇᴅ</b>",
+            parse_mode=ParseMode.HTML,
+        )
+        return
 
-if is_user_blocked_db(target_member_id):
-    await message.reply(
-        f"<b>❖ ᴛʜɪs ᴍᴇᴍʙᴇʀ ɪs ᴀʟʀᴇᴀᴅʏ ʙᴀɴɴᴇᴅ</b>\n"
-        f"<b>❖ ᴜsᴇʀ ɪᴅ :</b> <code>{target_member_id}</code>",
-        parse_mode=ParseMode.HTML,
-    )
+    if is_user_blocked_db(target_member_id):
+        await message.reply(
+            f"<b>❖ ᴛʜɪs ᴍᴇᴍʙᴇʀ ɪs ᴀʟʀᴇᴀᴅʏ ʙᴀɴɴᴇᴅ</b>\n"
+            f"<b>❖ ᴜsᴇʀ ɪᴅ :</b> <code>{target_member_id}</code>",
+            parse_mode=ParseMode.HTML,
+        )
         return
 
     block_user(target_member_id)
@@ -233,12 +233,12 @@ async def blocklist_cmd(_, message: Message) -> None:
     blocked_users_collection = get_blocked_users()
 
     g_text = (
-        "\n".join(f"   • <code>{g}</code>" for g in blocked_groups_collection)
-        if blocked_groups_collection else "   ɴɪʟ"
+        "\n".join(f"    • <code>{g}</code>" for g in blocked_groups_collection)
+        if blocked_groups_collection else "    ɴɪʟ"
     )
     u_text = (
-        "\n".join(f"   • <code>{u}</code>" for u in blocked_users_collection)
-        if blocked_users_collection else "   ɴɪʟ"
+        "\n".join(f"    • <code>{u}</code>" for u in blocked_users_collection)
+        if blocked_users_collection else "    ɴɪʟ"
     )
 
     await message.reply(
