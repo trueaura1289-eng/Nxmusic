@@ -1,11 +1,3 @@
-# --------------------------------------------------------------------------------
-#  ShizuMusic © 2026
-#  Developed by Bad Munda ❤️
-#
-#  Unauthorized copying, editing, re-uploading or removing credits
-#  from this source code is strictly prohibited.
-# --------------------------------------------------------------------------------
-
 from pyrogram import filters
 from pyrogram.enums import ParseMode
 from pyrogram.types import Message
@@ -47,42 +39,43 @@ user_allowed  = filters.create(_user_not_blocked)
 @bot.on_message(filters.command("gblock") & filters.user(config.OWNER_ID))
 async def gblock_cmd(_, message: Message) -> None:
     """Block a group — /gblock or /gblock -100xxxxxxx"""
-    args = message.command[1:]
+    parameters = message.command[1:]
 
-    if args:
+    if parameters:
         try:
-            chat_id = int(args[0])
+            target_chat_id = int(parameters[0])
         except ValueError:
-            await message.reply(
-                "<b>❍ Invalid chat ID.</b>\n"
-                "<b>❍ Usage: /gblock -100xxxxxxx</b>",
-                parse_mode=ParseMode.HTML,
-            )
+           await message.reply(
+    "<b>❖ ᴘʀovɪᴅᴇᴅ ᴄʜᴀᴛ ɪᴅ ɪs ɪɴᴄoʀʀᴇᴄᴛ</b>\n"
+    "<b>❖ ᴄᴏʀʀᴇᴄᴛ sʏɴᴛᴀx : /gblock -100xxxxxxx</b>",
+    parse_mode=ParseMode.HTML,
+)
             return
     else:
         if message.chat.type.name == "PRIVATE":
-            await message.reply(
-                "<b>❍ Use in a group or provide a chat ID.</b>\n"
-                "<b>❍ Usage: /gblock -100xxxxxxx</b>",
-                parse_mode=ParseMode.HTML,
-            )
+           await message.reply(
+    "<b>❖ ᴛʜɪs ᴜᴛɪʟɪᴛʏ ɪs sᴛʀɪᴄᴛʟʏ ғᴏʀ ɢʀᴏᴜᴘs</b>\n"
+    "<b>❖ ᴏʀ ɪɴᴘᴜᴛ ᴀ ᴄʜᴀᴛ ɪᴅ : /gblock -100xxxxxxx</b>",
+    parse_mode=ParseMode.HTML,
+)
             return
-        chat_id = message.chat.id
+        target_chat_id = message.chat.id
 
-    if is_group_blocked(chat_id):
-        await message.reply(
-            f"<b>❍ Group <code>{chat_id}</code> is already blocked.</b>",
-            parse_mode=ParseMode.HTML,
-        )
-        return
-
-    block_group(chat_id)
+   if is_group_blocked(target_chat_id):
     await message.reply(
-        f"<b>❍ Group Blocked ✅</b>\n"
-        f"<b>❍ Chat ID :</b> <code>{chat_id}</code>\n"
-        f"<b>❍ No commands will work in this group now.</b>",
+        f"<b>❖ ᴛʜɪs ᴄʜᴀᴛ ɪs ᴀʟʀᴇᴀᴅʏ ʙʟᴏᴄᴋʟɪsᴛᴇᴅ</b>\n"
+        f"<b>❖ ᴄʜᴀᴛ ɪᴅ :</b> <code>{target_chat_id}</code>",
         parse_mode=ParseMode.HTML,
     )
+    return
+
+block_group(target_chat_id)
+await message.reply(
+    f"<b>❖ ᴄʜᴀᴛ ʜᴀs ʙᴇᴇɴ ʙʟᴏᴄᴋᴇᴅ sᴜᴄᴄᴇssғᴜʟʟʏ</b>\n"
+    f"<b>❖ ɪᴅ :</b> <code>{target_chat_id}</code>\n"
+    f"<b>❖ ʙᴏᴛ ғᴜɴᴄᴛɪᴏɴs ᴀʀᴇ ɴᴏᴡ ᴅᴇᴀᴄᴛɪᴠᴀᴛᴇᴅ ʜᴇʀᴇ</b>",
+    parse_mode=ParseMode.HTML,
+)
 
 
 # ── /gunblock ──────────────────────────────────────────────────────────────────
@@ -90,42 +83,43 @@ async def gblock_cmd(_, message: Message) -> None:
 @bot.on_message(filters.command("gunblock") & filters.user(config.OWNER_ID))
 async def gunblock_cmd(_, message: Message) -> None:
     """Unblock a group — /gunblock or /gunblock -100xxxxxxx"""
-    args = message.command[1:]
+    parameters = message.command[1:]
 
-    if args:
+    if parameters:
         try:
-            chat_id = int(args[0])
-        except ValueError:
-            await message.reply(
-                "<b>❍ Invalid chat ID.</b>\n"
-                "<b>❍ Usage: /gunblock -100xxxxxxx</b>",
-                parse_mode=ParseMode.HTML,
-            )
-            return
-    else:
-        if message.chat.type.name == "PRIVATE":
-            await message.reply(
-                "<b>❍ Use in a group or provide a chat ID.</b>\n"
-                "<b>❍ Usage: /gunblock -100xxxxxxx</b>",
-                parse_mode=ParseMode.HTML,
-            )
-            return
-        chat_id = message.chat.id
-
-    if not is_group_blocked(chat_id):
-        await message.reply(
-            f"<b>❍ Group <code>{chat_id}</code> is not blocked.</b>",
-            parse_mode=ParseMode.HTML,
-        )
-        return
-
-    unblock_group(chat_id)
+           target_chat_id = int(parameters[0])
+except ValueError:
     await message.reply(
-        f"<b>❍ Group Unblocked ✅</b>\n"
-        f"<b>❍ Chat ID :</b> <code>{chat_id}</code>\n"
-        f"<b>❍ Commands are now enabled in this group.</b>",
+        "<b>❖ ᴛʜᴇ sᴘᴇᴄɪғɪᴇᴅ ᴄʜᴀᴛ ɪᴅ ɪs ғᴀᴜʟᴛʏ</b>\n"
+        "<b>❖ sᴀᴍᴘʟᴇ : /gunblock -100xxxxxxx</b>",
         parse_mode=ParseMode.HTML,
     )
+    return
+else:
+    if message.chat.type.name == "PRIVATE":
+        await message.reply(
+            "<b>❖ ᴇxᴇᴄᴜᴛᴇ ᴛʜɪs ɪɴsɪᴅᴇ ᴀ ɢʀᴏᴜᴘ</b>\n"
+            "<b>❖ ᴏʀ ᴘᴀss ᴀ ᴄʜᴀᴛ ɪᴅ : /gunblock -100xxxxxxx</b>",
+            parse_mode=ParseMode.HTML,
+        )
+            return
+        target_chat_id = message.chat.id
+
+  if not is_group_blocked(target_chat_id):
+    await message.reply(
+        f"<b>❖ ᴄʜᴀᴛ ɪs ɴᴏᴛ ᴘʀᴇsᴇɴᴛ ᴏɴ ʙʟᴏᴄᴋʟɪsᴛ</b>\n"
+        f"<b>❖ ᴄʜᴀᴛ ɪᴅ :</b> <code>{target_chat_id}</code>",
+        parse_mode=ParseMode.HTML,
+    )
+    return
+
+unblock_group(target_chat_id)
+await message.reply(
+    f"<b>❖ ᴄʜᴀᴛ ᴀᴄᴄᴇss ʜᴀs ʙᴇᴇɴ ʀᴇɪɴsᴛᴀᴛᴇᴅ</b>\n"
+    f"<b>❖ ᴄʜᴀᴛ ɪᴅ :</b> <code>{target_chat_id}</code>\n"
+    f"<b>❖ ᴀʟʟ ᴄᴏᴍᴍᴀɴᴅs ᴀʀᴇ ɴᴏᴡ ᴏᴘᴇʀᴀᴛɪᴏɴᴀʟ</b>",
+    parse_mode=ParseMode.HTML,
+)
 
 
 # ── /ublock ────────────────────────────────────────────────────────────────────
@@ -133,51 +127,52 @@ async def gunblock_cmd(_, message: Message) -> None:
 @bot.on_message(filters.command("ublock") & filters.user(config.OWNER_ID))
 async def ublock_cmd(_, message: Message) -> None:
     """Block a user — reply to their message or /ublock 123456789"""
-    args      = message.command[1:]
-    user_id   = None
-    user_name = None
+    parameters = message.command[1:]
+    target_member_id = None
+    target_member_name = None
 
     if message.reply_to_message and message.reply_to_message.from_user:
-        user_id   = message.reply_to_message.from_user.id
-        user_name = message.reply_to_message.from_user.first_name
-    elif args:
+        target_member_id = message.reply_to_message.from_user.id
+        target_member_name = message.reply_to_message.from_user.first_name
+    elif parameters:
         try:
-            user_id = int(args[0])
+            target_member_id = int(parameters[0])
         except ValueError:
-            await message.reply(
-                "<b>❍ Invalid user ID.</b>\n"
-                "<b>❍ Usage: /ublock 123456789 or reply to a user.</b>",
-                parse_mode=ParseMode.HTML,
-            )
-            return
-    else:
-        await message.reply(
-            "<b>❍ Reply to a user's message or provide a user ID.</b>\n"
-            "<b>❍ Usage: /ublock 123456789</b>",
-            parse_mode=ParseMode.HTML,
-        )
-        return
-
-    if user_id == config.OWNER_ID:
-        await message.reply(
-            "<b>❍ You cannot block yourself (owner).</b>",
-            parse_mode=ParseMode.HTML,
-        )
-        return
-
-    if is_user_blocked_db(user_id):
-        await message.reply(
-            f"<b>❍ User <code>{user_id}</code> is already blocked.</b>",
-            parse_mode=ParseMode.HTML,
-        )
-        return
-
-    block_user(user_id)
-    name_str = f" (<b>{user_name}</b>)" if user_name else ""
+           await message.reply(
+    "<b>❖ ᴜsᴇʀ ɪᴅ ᴄᴏᴜʟᴅ ɴᴏᴛ ʙᴇ ᴘᴀʀsᴇᴅ</b>\n"
+    "<b>❖ ғᴏʀᴍᴀᴛ : /ublock 123456789 ᴏʀ ʀᴇᴘʟʏ</b>",
+    parse_mode=ParseMode.HTML,
+)
+return
+else:
     await message.reply(
-        f"<b>❍ User Blocked ✅</b>\n"
-        f"<b>❍ User ID :</b> <code>{user_id}</code>{name_str}\n"
-        f"<b>❍ This user cannot use any bot commands now.</b>",
+        "<b>❖ ᴍᴇɴᴛɪᴏɴ ᴀ ᴜsᴇʀ ɪᴅ ᴏʀ ʀᴇᴘʟʏ ᴛᴏ ᴛʜᴇɪʀ ᴛᴇxᴛ</b>\n"
+        "<b>❖ sᴀᴍᴘʟᴇ : /ublock 123456789</b>",
+        parse_mode=ParseMode.HTML,
+    )
+        return
+
+    if target_member_id == config.OWNER_ID:
+await message.reply(
+    "<b>❖ ʙᴏᴛ ᴏᴡɴᴇʀ ᴄᴀɴɴᴏᴛ ʙᴇ ʀᴇsᴛʀɪᴄᴛᴇᴅ</b>",
+    parse_mode=ParseMode.HTML,
+)
+return
+
+if is_user_blocked_db(target_member_id):
+    await message.reply(
+        f"<b>❖ ᴛʜɪs ᴍᴇᴍʙᴇʀ ɪs ᴀʟʀᴇᴀᴅʏ ʙᴀɴɴᴇᴅ</b>\n"
+        f"<b>❖ ᴜsᴇʀ ɪᴅ :</b> <code>{target_member_id}</code>",
+        parse_mode=ParseMode.HTML,
+    )
+        return
+
+    block_user(target_member_id)
+    name_str = f" (<b>{target_member_name}</b>)" if target_member_name else ""
+    await message.reply(
+        f"<b>❖ ᴍᴇᴍʙᴇʀ ʙʟᴏᴄᴋᴇᴅ sᴜᴄᴄᴇssғᴜʟʟʏ ✅</b>\n"
+        f"<b>❖ ᴜsᴇʀ ɪᴅ :</b> <code>{target_member_id}</code>{name_str}\n"
+        f"<b>❖ ᴛʜɪs ᴘᴇʀsᴏɴ ᴄᴀɴ ɴᴏ ʟᴏɴɢᴇʀ ᴇxᴇᴄᴜᴛᴇ ᴄᴏᴍᴍᴀɴᴅs.</b>",
         parse_mode=ParseMode.HTML,
     )
 
@@ -187,44 +182,44 @@ async def ublock_cmd(_, message: Message) -> None:
 @bot.on_message(filters.command("uunblock") & filters.user(config.OWNER_ID))
 async def uunblock_cmd(_, message: Message) -> None:
     """Unblock a user — reply to their message or /uunblock 123456789"""
-    args      = message.command[1:]
-    user_id   = None
-    user_name = None
+    parameters = message.command[1:]
+    target_member_id = None
+    target_member_name = None
 
     if message.reply_to_message and message.reply_to_message.from_user:
-        user_id   = message.reply_to_message.from_user.id
-        user_name = message.reply_to_message.from_user.first_name
-    elif args:
+        target_member_id = message.reply_to_message.from_user.id
+        target_member_name = message.reply_to_message.from_user.first_name
+    elif parameters:
         try:
-            user_id = int(args[0])
+            target_member_id = int(parameters[0])
         except ValueError:
             await message.reply(
-                "<b>❍ Invalid user ID.</b>\n"
-                "<b>❍ Usage: /uunblock 123456789 or reply to a user.</b>",
+                "<b>❖ ᴍᴀʟғᴏʀᴍᴇᴅ ᴜsᴇʀ ɪᴅ ᴘʀᴏᴠɪᴅᴇᴅ.</b>\n"
+                "<b>❖ ᴜsᴀɢᴇ: /uunblock 123456789 ᴏʀ ʀᴇᴘʟʏ.</b>",
                 parse_mode=ParseMode.HTML,
             )
             return
     else:
         await message.reply(
-            "<b>❍ Reply to a user's message or provide a user ID.</b>\n"
-            "<b>❍ Usage: /uunblock 123456789</b>",
+            "<b>❖ ʀᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇssᴀɢᴇ ᴏʀ ɪɴᴘᴜᴛ ᴀ ᴜsᴇʀ ɪᴅ.</b>\n"
+            "<b>❖ ᴜsᴀɢᴇ: /uunblock 123456789</b>",
             parse_mode=ParseMode.HTML,
         )
         return
 
-    if not is_user_blocked_db(user_id):
+    if not is_user_blocked_db(target_member_id):
         await message.reply(
-            f"<b>❍ User <code>{user_id}</code> is not blocked.</b>",
+            f"<b>❖ ᴍᴇᴍʙᴇʀ <code>{target_member_id}</code> ɪs ɴᴏᴛ ʙᴀɴɴᴇᴅ.</b>",
             parse_mode=ParseMode.HTML,
         )
         return
 
-    unblock_user(user_id)
-    name_str = f" (<b>{user_name}</b>)" if user_name else ""
+    unblock_user(target_member_id)
+    name_str = f" (<b>{target_member_name}</b>)" if target_member_name else ""
     await message.reply(
-        f"<b>❍ User Unblocked ✅</b>\n"
-        f"<b>❍ User ID :</b> <code>{user_id}</code>{name_str}\n"
-        f"<b>❍ This user can now use bot commands again.</b>",
+        f"<b>❖ ᴍᴇᴍʙᴇʀ ᴜɴʙʟᴏᴄᴋᴇᴅ sᴜᴄᴄᴇssғᴜʟʟʏ ✅</b>\n"
+        f"<b>❖ ᴜsᴇʀ ɪᴅ :</b> <code>{target_member_id}</code>{name_str}\n"
+        f"<b>❖ ᴛʜɪs ᴘᴇʀsᴏɴ ᴄᴀɴ ɴᴏᴡ ᴜsᴇ ʙᴏᴛ ᴄᴏᴍᴍᴀɴᴅs.</b>",
         parse_mode=ParseMode.HTML,
     )
 
@@ -234,21 +229,21 @@ async def uunblock_cmd(_, message: Message) -> None:
 @bot.on_message(filters.command("blocklist") & filters.user(config.OWNER_ID))
 async def blocklist_cmd(_, message: Message) -> None:
     """Show all blocked groups and users."""
-    groups = get_blocked_groups()
-    users  = get_blocked_users()
+    blocked_groups_collection = get_blocked_groups()
+    blocked_users_collection = get_blocked_users()
 
     g_text = (
-        "\n".join(f"  • <code>{g}</code>" for g in groups)
-        if groups else "  None"
+        "\n".join(f"   • <code>{g}</code>" for g in blocked_groups_collection)
+        if blocked_groups_collection else "   ɴɪʟ"
     )
     u_text = (
-        "\n".join(f"  • <code>{u}</code>" for u in users)
-        if users else "  None"
+        "\n".join(f"   • <code>{u}</code>" for u in blocked_users_collection)
+        if blocked_users_collection else "   ɴɪʟ"
     )
 
     await message.reply(
-        "<b>❍ Block List</b>\n\n"
-        f"<b>❍ Blocked Groups ({len(groups)}):</b>\n{g_text}\n\n"
-        f"<b>❍ Blocked Users ({len(users)}):</b>\n{u_text}",
+        "<b>❖ ʀᴇsᴛʀɪᴄᴛɪᴏɴ ʀᴇᴄᴏʀᴅs</b>\n\n"
+        f"<b>❖ ʙʟᴏᴄᴋᴇᴅ ᴄʜᴀᴛs ({len(blocked_groups_collection)}):</b>\n{g_text}\n\n"
+        f"<b>❖ ʙʟᴏᴄᴋᴇᴅ ᴜsᴇʀs ({len(blocked_users_collection)}):</b>\n{u_text}",
         parse_mode=ParseMode.HTML,
     )
