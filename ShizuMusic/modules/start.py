@@ -79,7 +79,7 @@ async def start_handler(_, message: Message) -> None:
             ]
         ])
         
-        sent = await message.reply_animation(
+        sent = await message.reply_photo(
             animation,
             caption=caption,
             parse_mode=ParseMode.HTML,
@@ -126,7 +126,7 @@ async def start_handler(_, message: Message) -> None:
                                  callback_data="show_help")],
         ])
 
-        sent = await message.reply_animation(
+        sent = await message.reply_photo(
             animation,
             caption=caption,
             parse_mode=ParseMode.HTML,
@@ -202,7 +202,7 @@ async def help_handler(_, message: Message) -> None:
     
     animation = random.choice(START_ANIMATIONS)
 
-    sent = await message.reply_animation(
+    sent = await message.reply_photo(
         animation,
         caption=(
             f"<b>✦ ʜᴇʏ</b> <a href='tg://user?id={uid}'>{name}</a> 👋\n\n"
