@@ -30,7 +30,7 @@ async def autoplay_cmd(_, message: Message) -> None:
     chat_id = message.chat.id
     user    = message.from_user
 
- if not await is_user_authorized(message):
+    if not await is_user_authorized(message):
         await message.reply(
             "<b>❖ ᴘʟᴀʏ ᴀᴄᴄᴇss ʀᴇsᴛʀɪᴄᴛᴇᴅ</b>\n"
             "<b>❖ /ᴀᴜᴛᴏᴘʟᴀʏ ɪs ᴀᴠᴀɪʟᴀʙʟᴇ ᴏɴʟʏ ғᴏʀ ɢʀᴏᴜᴘ ᴀᴅᴍɪɴs</b>",
