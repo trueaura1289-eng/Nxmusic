@@ -1,11 +1,3 @@
-# --------------------------------------------------------------------------------
-#  ShizuMusic © 2026
-#  Developed by Bad Munda ❤️
-#
-#  Unauthorized copying, editing, re-uploading or removing credits
-#  from this source code is strictly prohibited.
-# --------------------------------------------------------------------------------
-
 import asyncio
 import random
 import time
@@ -69,12 +61,12 @@ async def _update_progress(
     caption: str,
 ) -> None:
 
-    btns = [
-        InlineKeyboardButton("▷", callback_data="resume"),
-        InlineKeyboardButton("II", callback_data="pause"),
-        InlineKeyboardButton("‣‣I", callback_data="skip"),
-        InlineKeyboardButton("▢", callback_data="stop"),
-    ]
+   btns = [
+    InlineKeyboardButton("▶", callback_data="resume"),
+    InlineKeyboardButton("⏸", callback_data="pause"),
+    InlineKeyboardButton("⏭", callback_data="skip"),
+    InlineKeyboardButton("⏹", callback_data="stop"),
+]
 
     while True:
 
@@ -147,22 +139,22 @@ async def _ensure_vc(chat_id: int) -> bool:
         if "already" in err or "groupcall_already_started" in err:
             return True
 
-        # admin rights missing
-        if "chat_admin_required" in err or "admin" in err:
-            await bot.send_message(
-                chat_id,
-                "<b>❍ ᴠᴄ ꜱᴛᴀʀᴛ ᴘᴇʀᴍɪssɪᴏɴ ᴍɪssɪɴɢ</b>\n\n"
-                "<b>❍ ɢɪᴠᴇ ᴀssɪsᴛᴀɴᴛ :</b>\n"
-                "• <code>Manage Video Chats</code>\n"
-                "• <code>Admin Rights</code>",
-                parse_mode=ParseMode.HTML,
-            )
+       # admin rights missing
+if "chat_admin_required" in err or "admin" in err:
+    await bot.send_message(
+        chat_id,
+        "<b>❖ Vᴏɪᴄᴇ ᴄʜᴀᴛ ᴀᴄᴄᴇss Rᴇǫᴜɪʀᴇᴅ</b>\n\n"
+        "<b>❖ Uᴘᴅᴀᴛᴇ ᴀssɪsᴛᴀɴᴛ Pᴇʀᴍɪssɪᴏɴs :</b>\n"
+        "• <code>Manage Video Chats</code>\n"
+        "• <code>Administrator Privileges</code>",
+        parse_mode=ParseMode.HTML,
+    )
             return False
 
         LOGGER.error(f"[VC ERROR] {e}")
         await bot.send_message(
             chat_id,
-            "<b>❍ ᴠᴄ ꜱᴛᴀʀᴛ ғᴀɪʟᴇᴅ</b>\n"
+            "<b>❖ Vᴏɪᴄᴇ ᴄʜᴀᴛ sᴛᴀʀᴛ Fᴀɪʟᴇᴅ</b>\n"
             f"<code>{e}</code>",
             parse_mode=ParseMode.HTML,
         )
@@ -186,7 +178,7 @@ async def play_song(
         return
 
     loading_text = (
-        f"<b>❍ ʟᴏᴀᴅɪɴɢ :</b> "
+        f"<b>❖ Pʀᴏᴄᴇssɪɴɢ ʀᴇǫᴜᴇsᴛ :</b> "
         f"{short(song['title'])}"
     )
 
@@ -215,7 +207,7 @@ async def play_song(
 
         await bot.send_message(
             chat_id,
-            f"<b>❍ ᴅᴏᴡɴʟᴏᴀᴅ ғᴀɪʟᴇᴅ</b>\n\n"
+            f"<b>❖ ᴜɴᴀʙʟᴇ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ</b>\n\n"
             f"<code>{e}</code>",
             parse_mode=ParseMode.HTML,
         )
@@ -293,7 +285,7 @@ async def play_song(
 
             await bot.send_message(
                 chat_id,
-                "<b>❍ ᴘʟᴀʏʙᴀᴄᴋ ғᴀɪʟᴇᴅ (Telegram Server)</b>\n"
+                "<b>❖ ᴘʟᴀʏʙᴀᴄᴋ ᴇʀʀᴏʀ (Telegram Server)</b>\n"
                 f"<code>{e}</code>",
                 parse_mode=ParseMode.HTML,
             )
@@ -335,16 +327,16 @@ async def play_song(
                     remove_from_queue(chat_id, 0)
                 except Exception:
                     pass
-
-                await bot.send_message(
-                    chat_id,
-                    "<b>❍ ᴠᴄ ꜱᴛᴀʀᴛ ᴘᴇʀᴍɪssɪᴏɴ ᴍɪssɪɴɢ</b>\n\n"
-                    "<b>❍ ᴘʟᴇᴀsᴇ ɢɪᴠᴇ :</b>\n"
-                    "• <code>Manage Video Chats</code>\n"
-                    "• <code>Admin Rights</code>\n\n"
-                    "<b>❍ ᴀssɪsᴛᴀɴᴛ ᴍᴜsᴛ ʙᴇ ᴀᴅᴍɪɴ</b>",
-                    parse_mode=ParseMode.HTML,
-                )
+                    
+await bot.send_message(
+    chat_id,
+    "<b>❖ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ ᴘᴇʀᴍɪssɪᴏɴ ʀᴇǫᴜɪʀᴇᴅ</b>\n\n"
+    "<b>❖ ɢʀᴀɴᴛ ᴛʜᴇ ᴀssɪsᴛᴀɴᴛ :</b>\n"
+    "• <code>Manage Video Chats</code>\n"
+    "• <code>Administrator Privileges</code>\n\n"
+    "<b>❖ ᴀssɪsᴛᴀɴᴛ ɴᴇᴇᴅs ᴀᴅᴍɪɴ ᴀᴄᴄᴇss</b>",
+    parse_mode=ParseMode.HTML,
+)
                 LOGGER.error(f"[ADMIN ERROR] {e}")
                 return
 
@@ -356,7 +348,7 @@ async def play_song(
 
             await bot.send_message(
                 chat_id,
-                "<b>❍ ᴘʟᴀʏʙᴀᴄᴋ ғᴀɪʟᴇᴅ</b>\n\n"
+                "<b>❖ ᴘʟᴀʏʙᴀᴄᴋ ᴇʀʀᴏʀ</b>\n\n"
                 f"<code>{e}</code>",
                 parse_mode=ParseMode.HTML,
             )
@@ -404,21 +396,21 @@ async def play_song(
 
     total = parse_dur(song.get("duration", "0:00"))
 
-    caption = (
-        "<blockquote>"
-        "<b>🎧 Sʜɪᴢᴜ Mᴜsɪᴄ</b>\n\n"
-        f"<b>❍ ᴛɪᴛʟᴇ :</b> {short(song['title'])}\n"
-        f"<b>❍ ᴅᴜʀ :</b> {song.get('duration', '?')}\n"
-        f"<b>❍ ʙʏ :</b> {song['requester']}"
-        "</blockquote>"
-    )
+caption = (
+    "<blockquote>"
+    "<b>ᴇʟʏx ᴍᴜsɪᴄ 🎧</b>\n\n"
+    f"<b>❖ Tʀᴀᴄᴋ :</b> {short(song['title'])}\n"
+    f"<b>❖ Lᴇɴɢᴛʜ :</b> {song.get('duration', '?')}\n"
+    f"<b>❖ Rᴇǫᴜᴇsᴛᴇᴅ ʙʏ :</b> {song['requester']}"
+    "</blockquote>"
+)
 
-    btns = [
-        InlineKeyboardButton("▷", callback_data="resume"),
-        InlineKeyboardButton("II", callback_data="pause"),
-        InlineKeyboardButton("‣‣I", callback_data="skip"),
-        InlineKeyboardButton("▢", callback_data="stop"),
-    ]
+   btns = [
+    InlineKeyboardButton("▶", callback_data="resume"),
+    InlineKeyboardButton("⏸", callback_data="pause"),
+    InlineKeyboardButton("⏭", callback_data="skip"),
+    InlineKeyboardButton("⏹", callback_data="stop"),
+]
 
     bar = progress_bar(0, total)
 
@@ -466,14 +458,14 @@ async def play_song(
     # LOGGER
     # ─────────────────────────────────────────
 
-    if config.LOGGER_ID:
-        asyncio.create_task(
-            bot.send_message(
-                config.LOGGER_ID,
-                "<b>#ɴᴏᴡᴘʟᴀʏɪɴɢ</b>\n"
-                f"• <b>ᴛɪᴛʟᴇ :</b> {song.get('title')}\n"
-                f"• <b>ᴅᴜʀ :</b> {song.get('duration')}\n"
-                f"• <b>ʙʏ :</b> {song.get('requester')}",
-                parse_mode=ParseMode.HTML,
-            )
-         )
+   if config.LOGGER_ID:
+    asyncio.create_task(
+        bot.send_message(
+            config.LOGGER_ID,
+            "<b>❖ #ɴᴏᴡᴘʟᴀʏɪɴɢ</b>\n\n"
+            f"<b>❖ Tʀᴀᴄᴋ :</b> {song.get('title')}\n"
+            f"<b>❖ Lᴇɴɢᴛʜ :</b> {song.get('duration')}\n"
+            f"<b>❖ Rᴇǫᴜᴇsᴛᴇᴅ ʙʏ :</b> {song.get('requester')}",
+            parse_mode=ParseMode.HTML,
+        )
+    )
