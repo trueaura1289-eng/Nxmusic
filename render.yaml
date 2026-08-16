@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: nxmusicBot
+    name: ElyxMusic
     env: python
     plan: free
 
@@ -42,16 +42,16 @@ services:
         sync: false
 
       - key: START_ANIMATIONS
-        value: https://telegra.ph/file/1a3c152717eb9d2e94dc2.mp4
+        value: https://anya-file-host.vercel.app/5boqhxgtl9
 
       - key: PING_IMG_URL
-        value: https://files.catbox.moe/ddzvc0.jpg
+        value: https://anya-file-host.vercel.app/kznv9qtaxw
 
       - key: PYTHON_VERSION
         value: 3.10.13
 
       - key: SESSION_NAME
-        value: ShizuMusic
+        value: Elyxmusic
 
       - key: PORT
         value: "10000"
