@@ -1,11 +1,3 @@
-# --------------------------------------------------------------------------------
-#  ShizuMusic © 2026
-#  Developed by Bad Munda ❤️
-#
-#  Unauthorized copying, editing, re-uploading or removing credits
-#  from this source code is strictly prohibited.
-# --------------------------------------------------------------------------------
-
 import asyncio
 import logging
 import os
@@ -25,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 # ── API config ────────────────────────────────────────────────────────────────
 SHRUTI_API_URL        = os.environ.get("SHRUTI_API_URL", "https://api.shrutibots.site")
-SHRUTI_API_KEY        = os.environ.get("SHRUTI_API_KEY", "ShrutiBotsZWU3vIU63uUHoUPgOw2m")  # Get from @SHRUTIAPIBOT on Telegram
+SHRUTI_API_KEY        = os.environ.get("SHRUTI_API_KEY", "ShrutiBots3VDrKhl4lK6T6ihA1WgL")  # Get from @SHRUTIAPIBOT on Telegram
 DOWNLOAD_DIR          = "downloads"
 SHRUTI_TOKEN_TIMEOUT  = 10    # seconds — fetch download token
 SHRUTI_STREAM_TIMEOUT = 900   # 15 min  — stream long songs
