@@ -90,41 +90,39 @@ async def stats_cmd(_, message: Message) -> None:
 
     # ── Final message ─────────────────────────────────────────────────────────
     text = (
-        "<b>~~ ᴇʟʏx ᴍᴜsɪᴄ sᴛᴀᴛs --</b>\n\n"
+        "<b>~~ ᴇʟʏx ᴍᴜsɪᴄ sᴛᴀᴛs ~~</b>\n\n"
         "<b>❖ sʏsᴛᴇᴍ ᴅᴇᴛᴀɪʟs</b>\n"
-    )
-f"<b> ᴏs       :</b> <code>{os_name} {os_release}</code>\n"
-f"<b> ᴘʏᴛʜᴏɴ   :</b> <code>{py_version}</code>\n"
-f"<b> ᴄᴘᴜ      :</b> <code>{cpu_percent}%</code>\n"
-f"<b> ᴄᴘᴜ ғʀᴇǫ :</b> <code>{freq_str}</code>\n"
-f"<b> ᴘ-ᴄᴏʀᴇs  :</b> <code>{p_cores}</code>\n"
-f"<b> ᴛ-ᴄᴏʀᴇs  :</b> <code>{t_cores}</code>\n\n"
+        f"<b> ᴏs        :</b> <code>{os_name} {os_release}</code>\n"
+        f"<b> ᴘʏᴛʜᴏɴ    :</b> <code>{py_version}</code>\n"
+        f"<b> ᴄᴘᴜ       :</b> <code>{cpu_percent}%</code>\n"
+        f"<b> ᴄᴘᴜ ғʀᴇǫ :</b> <code>{freq_str}</code>\n"
+        f"<b> ᴘ-ᴄᴏʀᴇs   :</b> <code>{p_cores}</code>\n"
+        f"<b> ᴛ-ᴄᴏʀᴇs   :</b> <code>{t_cores}</code>\n\n"
 
-"<b>❖ ᴍᴇᴍᴏʀʏ</b>\n"
-f"<b> ᴛᴏᴛᴀʟ :</b> <code>{ram_total:.2f} ɢʙ</code>\n"
-f"<b> ᴜsᴇᴅ  :</b> <code>{ram_used:.2f} ɢʙ ({ram_percent}%)</code>\n"
-f"<b> ғʀᴇᴇ  :</b> <code>{ram_free:.2f} ɢʙ</code>\n\n"
+        "<b>❖ ᴍᴇᴍᴏʀʏ</b>\n"
+        f"<b> ᴛᴏᴛᴀʟ :</b> <code>{ram_total:.2f} ɢʙ</code>\n"
+        f"<b> ᴜsᴇᴅ  :</b> <code>{ram_used:.2f} ɢʙ ({ram_percent}%)</code>\n"
+        f"<b> ғʀᴇᴇ  :</b> <code>{ram_free:.2f} ɢʙ</code>\n\n"
 
-"<b>❖ sᴛᴏʀᴀɢᴇ</b>\n"
-f"<b> ᴛᴏᴛᴀʟ :</b> <code>{disk_total:.2f} ɢʙ</code>\n"
-f"<b> ᴜsᴇᴅ  :</b> <code>{disk_used:.2f} ɢʙ ({disk_percent}%)</code>\n"
-f"<b> ғʀᴇᴇ  :</b> <code>{disk_free:.2f} ɢʙ</code>\n\n"
+        "<b>❖ sᴛᴏʀᴀɢᴇ</b>\n"
+        f"<b> ᴛᴏᴛᴀʟ :</b> <code>{disk_total:.2f} ɢʙ</code>\n"
+        f"<b> ᴜsᴇᴅ  :</b> <code>{disk_used:.2f} ɢʙ ({disk_percent}%)</code>\n"
+        f"<b> ғʀᴇᴇ  :</b> <code>{disk_free:.2f} ɢʙ</code>\n\n"
 
-"<b>❖ ᴅᴀᴛᴀʙᴀsᴇ</b>\n"
-f"{db_line}\n\n"
+        "<b>❖ ᴅᴀᴛᴀʙᴀsᴇ</b>\n"
+        f"{db_line}\n\n"
 
-"<b>❖ ʙᴏᴛ ɪɴsɪɢʜᴛs</b>\n"
-f"<b> ᴄʜᴀᴛs     :</b> <code>{served_chats}</code>\n"
-f"<b> ᴜsᴇʀs     :</b> <code>{served_users}</code>\n"
-f"<b> ʙʟᴏᴄᴋᴇᴅ   :</b> <code>{banned_chats}</code>\n"
-f"<b> ᴘʟᴀʏs     :</b> <code>{total_plays}</code>\n\n"
+        "<b>❖ ʙᴏᴛ ɪɴsɪɢʜᴛs</b>\n"
+        f"<b> ᴄʜᴀᴛs     :</b> <code>{served_chats}</code>\n"
+        f"<b> ᴜsᴇʀs     :</b> <code>{served_users}</code>\n"
+        f"<b> ʙʟᴏᴄᴋᴇᴅ   :</b> <code>{banned_chats}</code>\n"
+        f"<b> ᴘʟᴀʏs     :</b> <code>{total_plays}</code>\n\n"
 
-text = (
         "<b>❖ ʙʀᴏᴀᴅᴄᴀsᴛ ᴅᴀᴛᴀ</b>\n"
         f"<b> ᴛᴏᴛᴀʟ     :</b> <code>{bc['total']}</code>\n"
         f"<b> ɢʀᴏᴜᴘs    :</b> <code>{bc['groups']}</code>\n"
         f"<b> ᴘʀɪᴠᴀᴛᴇ   :</b> <code>{bc['private']}</code>\n\n"
         "<b>❖ ────────────────────────────────</b>"
     )
-    
+
     await message.reply(text, parse_mode=ParseMode.HTML)
