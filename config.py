@@ -16,13 +16,13 @@ MONGO_DB_URL    = os.environ["MONGO_DB_URL"]
 OWNER_ID        = int(os.environ["OWNER_ID"])
 
 # ── Optional ──────────────────────────────────────────────────────────────────
-BOT_NAME         = os.getenv("BOT_NAME", "nx music")
-BOT_LINK         = os.getenv("BOT_LINK", "https://t.me/ncmusicBot")
-UPDATES_CHANNEL  = os.getenv("UPDATES_CHANNEL", "https://t.me/anicloudnx")
-SUPPORT_GROUP    = os.getenv("SUPPORT_GROUP", "https://t.me/novasupportchat")
+BOT_NAME         = os.getenv("BOT_NAME", "Eʟʏx Mᴜsɪᴄ ♪")
+BOT_LINK         = os.getenv("BOT_LINK", "https://t.me/Elyxmusicbot")
+UPDATES_CHANNEL  = os.getenv("UPDATES_CHANNEL", "https://t.me/Anicloudnx")
+SUPPORT_GROUP    = os.getenv("SUPPORT_GROUP", "https://t.me/Nxsupportchat")
 LOGGER_ID        = int(os.getenv("LOGGER_ID", "0"))
-PING_IMG_URL     = os.getenv("PING_IMG_URL", "https://files.catbox.moe/ddzvc0.jpg",)
-SESSION_NAME     = os.getenv("SESSION_NAME", "nxmusic")
+PING_IMG_URL     = os.getenv("PING_IMG_URL", "https://anya-file-host.vercel.app/kznv9qtaxw",)
+SESSION_NAME     = os.getenv("SESSION_NAME", "Elyxmusic")
 PORT             = int(os.getenv("PORT", 10000))
 
 # ── NSFW Moderation API ─────────────────────────────────────────────────────
@@ -37,13 +37,7 @@ NSFW_THRESHOLDS = {
 
 #── Start ───────────────────────────────────────────────────────────────────────
 START_ANIMATIONS = [
-    "https://telegra.ph/file/1a3c152717eb9d2e94dc2.mp4",
-    "https://graph.org/file/ba7699c28dab379b518ca.mp4",
-    "https://graph.org/file/83ebf52e8bbf138620de7.mp4",
-    "https://graph.org/file/82fd67aa56eb1b299e08d.mp4",
-    "https://graph.org/file/318eac81e3d4667edcb77.mp4",
-    "https://graph.org/file/7c1aa59649fbf3ab422da.mp4",
-    "https://graph.org/file/2a7f857f31b32766ac6fc.mp4",
+    "https://anya-file-host.vercel.app/5boqhxgtl9"
 ]
 
 # ── Limits ────────────────────────────────────────────────────────────────────
