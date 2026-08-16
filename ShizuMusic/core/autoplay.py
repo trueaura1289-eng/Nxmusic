@@ -14,7 +14,7 @@ _autoplay_query:    dict[int, str]  = {}
 _autoplay_fetched:  dict[int, set]  = {}
 _autoplay_fetching: dict[int, bool] = {}
 
-BATCH_SIZE       = 10  
+BATCH_SIZE        = 10  
 REFETCH_THRESHOLD = 2  
 
 
