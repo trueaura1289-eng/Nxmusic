@@ -82,19 +82,19 @@ async def _seek_to(chat_id: int, target_sec: int, message: Message) -> None:
                 f"<b>Seek Failed.</b>\n<code>{e2}</code>",
                 parse_mode=ParseMode.HTML,
             )
-            return
+  return
 
     set_seek_state(chat_id, target_sec)
 
-  caption = (
-    "<blockquote>"
-    "<b>⚘ ᴇʟʏx ᴍᴜsɪᴄ</b>\n\n"
-    f"<b>❖ Tʀᴀᴄᴋ :</b> {short(song['title'])}\n"
-    f"<b>❖ Lᴇɴɢᴛʜ :</b> {song.get('duration', '?')}\n"
-    f"<b>❖ Rᴇǫᴜᴇsᴛᴇᴅ ʙʏ :</b> {song['requester']}\n"
-    f"<b>❖ Cᴜʀʀᴇɴᴛ Pᴏɪɴᴛ :</b> <code>{fmt_time(target_sec)}</code>"
-    "</blockquote>"
-)
+    caption = (
+        "<blockquote>"
+        "<b>⚘ ᴇʟʏx ᴍᴜsɪᴄ</b>\n\n"
+        f"<b>❖ Tʀᴀᴄᴋ :</b> {short(song['title'])}\n"
+        f"<b>❖ Lᴇɴɢᴛʜ :</b> {song.get('duration', '?')}\n"
+        f"<b>❖ Rᴇǫᴜᴇsᴛᴇᴅ ʙʏ :</b> {song['requester']}\n"
+        f"<b>❖ Cᴜʀʀᴇɴᴛ Pᴏɪɴᴛ :</b> <code>{fmt_time(target_sec)}</code>"
+        "</blockquote>"
+    )
 
 btns = [
     InlineKeyboardButton("▶",  callback_data="resume"),
