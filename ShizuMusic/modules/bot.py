@@ -1,11 +1,3 @@
-# --------------------------------------------------------------------------------
-#  ShizuMusic © 2026
-#  Developed by Bad Munda ❤️
-#
-#  Unauthorized copying, editing, re-uploading or removing credits
-#  from this source code is strictly prohibited.
-# --------------------------------------------------------------------------------
-
 import random
 
 from pyrogram import filters
@@ -23,11 +15,7 @@ from ShizuMusic.utils.db import (
 )
 
 LEFT_PHOTOS = [
-    "https://telegra.ph/file/1949480f01355b4e87d26.jpg",
-    "https://telegra.ph/file/3ef2cc0ad2bc548bafb30.jpg",
-    "https://telegra.ph/file/a7d663cd2de689b811729.jpg",
-    "https://telegra.ph/file/6f19dc23847f5b005e922.jpg",
-    "https://telegra.ph/file/2973150dd62fd27a3a6ba.jpg",
+    "https://freeimage.host/i/KLc203F"
 ]
 
 
@@ -36,37 +24,37 @@ LEFT_PHOTOS = [
 @bot.on_message(filters.new_chat_members, group=-10)
 async def bot_added_watcher(_, message: Message) -> None:
     try:
-        chat    = message.chat
-        chat_id = chat.id
-        me      = await bot.get_me()
+        current_chat    = message.chat
+        chat_identifier = current_chat.id
+        bot_user_obj    = await bot.get_me()
 
-        for member in message.new_chat_members:
-            if member.id != me.id:
+        for member_item in message.new_chat_members:
+            if member_item.id != bot_user_obj.id:
                 continue
 
-            add_served_chat(chat_id)
-            add_broadcast_chat(chat_id, "group")
+            add_served_chat(chat_identifier)
+            add_broadcast_chat(chat_identifier, "group")
 
-            added_by         = message.from_user
-            added_by_mention = added_by.mention if added_by else "ᴜɴᴋɴᴏᴡɴ"
+            inviter_user    = message.from_user
+            inviter_mention = inviter_user.mention if inviter_user else "ᴜɴᴋɴᴏᴡɴ"
 
             admin_request_text = (
-                "<b>╭──────────────────────▣</b>\n"
-                "<b>│❍ ᴛʜᴀɴᴋs ғᴏʀ ᴀᴅᴅɪɴɢ ᴍᴇ! 🥀</b>\n"
-                "<b>├──────────────────────▣</b>\n"
-                "<b>│❍ ᴘʟᴇᴀsᴇ ᴍᴀᴋᴇ ᴍᴇ ᴀɴ ᴀᴅᴍɪɴ</b>\n"
-                "<b>│  ᴡɪᴛʜ ᴛʜᴇsᴇ ᴘᴇʀᴍɪssɪᴏɴs:</b>\n"
-                "<b>├──────────────────────▣</b>\n"
-                "<b>│ ❍ ᴅᴇʟᴇᴛᴇ ᴍᴇssᴀɢᴇs</b>\n"
-                "<b>│ ❍ ᴍᴀɴᴀɢᴇ ᴠɪᴅᴇᴏ ᴄʜᴀᴛs</b>\n"
-                "<b>│ ❍ ɪɴᴠɪᴛᴇ ᴜsᴇʀs</b>\n"
-                "<b>├──────────────────────▣</b>\n"
-                "<b>│❍ ᴡɪᴛʜᴏᴜᴛ ᴀᴅᴍɪɴ ᴘᴇʀᴍs</b>\n"
-                "<b>│  sᴏᴍᴇ ғᴇᴀᴛᴜʀᴇs ᴡᴏɴ'ᴛ ᴡᴏʀᴋ! 🚫</b>\n"
-                "<b>╰──────────────────────▣</b>"
+                "<b>❖──────────────────────❖</b>\n"
+                "<b>❖ ᴍᴜᴄʜ ᴏʙʟɪɢᴇᴅ ғᴏʀ ɪɴᴠɪᴛɪɴɢ ᴍᴇ ʜᴇʀᴇ! 🥀</b>\n"
+                "<b>❖──────────────────────❖</b>\n"
+                "<b>❖ ᴋɪɴᴅʟʏ ɢʀᴀɴᴛ ᴍᴇ ᴀᴅᴍɪɴɪsᴛʀᴀᴛᴏʀ</b>\n"
+                "<b>❖ ᴡɪᴛʜ ᴛʜᴇsᴇ ᴇssᴇɴᴛɪᴀʟ ᴘᴇʀᴍs:</b>\n"
+                "<b>❖──────────────────────❖</b>\n"
+                "<b>❖ ● ᴘᴜʀɢᴇ ᴍᴇssᴀɢᴇs</b>\n"
+                "<b>❖ ● ᴏᴘᴇʀᴀᴛᴇ ᴠɪᴅᴇᴏ ᴄʜᴀᴛs</b>\n"
+                "<b>❖ ● ɪɴᴠɪᴛᴇ ᴍᴇᴍʙᴇʀs</b>\n"
+                "<b>❖──────────────────────❖</b>\n"
+                "<b>❖ ᴡɪᴛʜᴏᴜᴛ ᴀᴅᴍɪɴ ᴀᴜᴛʜᴏʀɪᴛʏ</b>\n"
+                "<b>❖ sᴏᴍᴇ ᴄᴏᴍᴍᴀɴᴅs ᴍᴀʏ ᴍɪsғɪʀᴇ! 🚫</b>\n"
+                "<b>❖──────────────────────❖</b>"
             )
             admin_kb = InlineKeyboardMarkup([[
-                InlineKeyboardButton("⚡ ᴍᴀᴋᴇ ᴍᴇ ᴀᴅᴍɪɴ ⚡", url=f"tg://user?id={me.id}")
+                InlineKeyboardButton("❖ ᴘʀᴏᴍᴏᴛᴇ ᴍᴇ ɴᴏᴡ ❖", url=f"tg://user?id={bot_user_obj.id}")
             ]])
             try:
                 await message.reply_text(admin_request_text, parse_mode=ParseMode.HTML, reply_markup=admin_kb)
@@ -77,47 +65,47 @@ async def bot_added_watcher(_, message: Message) -> None:
                 return
 
             try:
-                invite_link = await bot.export_chat_invite_link(chat_id)
-                link_text   = f"<a href='{invite_link}'>ɢᴇᴛ ʟɪɴᴋ</a>"
+                chat_invite_link = await bot.export_chat_invite_link(chat_identifier)
+                link_text        = f"<a href='{chat_invite_link}'>ᴏʙᴛᴀɪɴ ʟɪɴᴋ</a>"
             except (ChatAdminRequired, Exception):
                 link_text = "ɴᴏ ʟɪɴᴋ"
 
             try:
-                count = await bot.get_chat_members_count(chat_id)
+                member_count = await bot.get_chat_members_count(chat_identifier)
             except Exception:
-                count = "N/A"
+                member_count = "N/A"
 
-            username   = f"@{chat.username}" if chat.username else "ᴘʀɪᴠᴀᴛᴇ ɢʀᴏᴜᴘ"
-            chat_photo = None
+            group_username  = f"@{current_chat.username}" if current_chat.username else "ᴘʀɪᴠᴀᴛᴇ ᴄʜᴀᴛ"
+            chat_photo_path = None
             try:
-                if chat.photo:
-                    chat_photo = await bot.download_media(
-                        chat.photo.big_file_id,
-                        file_name=f"grppp_{chat_id}.png",
+                if current_chat.photo:
+                    chat_photo_path = await bot.download_media(
+                        current_chat.photo.big_file_id,
+                        file_name=f"grppp_{chat_identifier}.png",
                     )
             except Exception:
-                chat_photo = None
+                chat_photo_path = None
 
             log_text = (
-                "<b>📝 #ɴᴇᴡɢʀᴏᴜᴘ — ʙᴏᴛ ᴀᴅᴅᴇᴅ!</b>\n\n"
-                f"<b>📌 ᴄʜᴀᴛ ɴᴀᴍᴇ  :</b> {chat.title}\n"
-                f"<b>🍂 ᴄʜᴀᴛ ɪᴅ    :</b> <code>{chat_id}</code>\n"
-                f"<b>🔐 ᴜsᴇʀɴᴀᴍᴇ   :</b> {username}\n"
-                f"<b>🖇️ ɢʀᴏᴜᴘ ʟɪɴᴋ  :</b> {link_text}\n"
-                f"<b>📈 ᴍᴇᴍʙᴇʀs    :</b> {count}\n"
-                f"<b>🤝 ᴀᴅᴅᴇᴅ ʙʏ   :</b> {added_by_mention}"
+                "<b>❖ #ɴᴇᴡɢʀᴏᴜᴘ ❖ ʙᴏᴛ ɪɴᴄᴏʀᴘᴏʀᴀᴛᴇᴅ!</b>\n\n"
+                f"<b>❖ ᴄʜᴀᴛ ᴛɪᴛʟᴇ  :</b> {current_chat.title}\n"
+                f"<b>❖ ᴄʜᴀᴛ ɪᴅ     :</b> <code>{chat_identifier}</code>\n"
+                f"<b>❖ ᴜsᴇʀɴᴀᴍᴇ   :</b> {group_username}\n"
+                f"<b>❖ ɪɴᴠɪᴛᴇ ᴜʀʟ  :</b> {link_text}\n"
+                f"<b>❖ ᴛᴏᴛᴀʟ ᴜsᴇʀs :</b> {member_count}\n"
+                f"<b>❖ ɪɴᴠɪᴛᴇᴅ ʙʏ :</b> {inviter_mention}"
             )
             log_kb = InlineKeyboardMarkup([[
                 InlineKeyboardButton(
-                    f"👤 {added_by.first_name if added_by else 'ᴜsᴇʀ'}",
-                    user_id=added_by.id if added_by else config.OWNER_ID,
+                    f"❖ {inviter_user.first_name if inviter_user else 'ᴜsᴇʀ'}",
+                    user_id=inviter_user.id if inviter_user else config.OWNER_ID,
                 )
-            ]]) if added_by else None
+            ]]) if inviter_user else None
 
             try:
-                if chat_photo:
+                if chat_photo_path:
                     await bot.send_photo(
-                        config.LOGGER_ID, photo=chat_photo,
+                        config.LOGGER_ID, photo=chat_photo_path,
                         caption=log_text, parse_mode=ParseMode.HTML, reply_markup=log_kb,
                     )
                 else:
@@ -129,8 +117,8 @@ async def bot_added_watcher(_, message: Message) -> None:
             except Exception:
                 pass
 
-    except Exception as e:
-        print(f"[watcher] bot_added_watcher error: {e}")
+    except Exception as err_msg:
+        print(f"[watcher] bot_added_watcher error: {err_msg}")
 
 
 # ── Bot left / removed ─────────────────────────────────────────────────────────
@@ -138,34 +126,34 @@ async def bot_added_watcher(_, message: Message) -> None:
 @bot.on_message(filters.left_chat_member, group=-12)
 async def bot_left_watcher(_, message: Message) -> None:
     try:
-        left_member = message.left_chat_member
-        if not left_member:
+        departed_member = message.left_chat_member
+        if not departed_member:
             return
 
-        me = await bot.get_me()
-        if left_member.id != me.id:
+        bot_user_obj = await bot.get_me()
+        if departed_member.id != bot_user_obj.id:
             return
 
-        chat    = message.chat
-        chat_id = chat.id
+        current_chat    = message.chat
+        chat_identifier = current_chat.id
 
-        remove_served_chat(chat_id)
-        remove_broadcast_chat(chat_id)
+        remove_served_chat(chat_identifier)
+        remove_broadcast_chat(chat_identifier)
 
-        removed_by         = message.from_user
-        removed_by_mention = removed_by.mention if removed_by else "ᴜɴᴋɴᴏᴡɴ ᴜsᴇʀ"
-        username           = f"@{chat.username}" if chat.username else "ᴘʀɪᴠᴀᴛᴇ ᴄʜᴀᴛ"
+        banner_user    = message.from_user
+        banner_mention = banner_user.mention if banner_user else "ᴜɴᴋɴᴏᴡɴ ᴜsᴇʀ"
+        group_username = f"@{current_chat.username}" if current_chat.username else "ᴘʀɪᴠᴀᴛᴇ ᴄʜᴀᴛ"
 
         if not config.LOGGER_ID:
             return
 
         left_text = (
-            "<b>✫ #ʟᴇғᴛɢʀᴏᴜᴘ ✫</b>\n\n"
-            f"<b>📌 ᴄʜᴀᴛ ᴛɪᴛʟᴇ   :</b> {chat.title}\n"
-            f"<b>🍂 ᴄʜᴀᴛ ɪᴅ     :</b> <code>{chat_id}</code>\n"
-            f"<b>🔐 ᴜsᴇʀɴᴀᴍᴇ    :</b> {username}\n"
-            f"<b>👢 ʀᴇᴍᴏᴠᴇᴅ ʙʏ  :</b> {removed_by_mention}\n"
-            f"<b>🤖 ʙᴏᴛ          :</b> @{me.username}"
+            "<b>❖ #ʟᴇғᴛɢʀᴏᴜᴘ ❖ ʙᴏᴛ ᴇᴊᴇᴄᴛᴇᴅ!</b>\n\n"
+            f"<b>❖ ᴄʜᴀᴛ ᴛɪᴛʟᴇ  :</b> {current_chat.title}\n"
+            f"<b>❖ ᴄʜᴀᴛ ɪᴅ     :</b> <code>{chat_identifier}</code>\n"
+            f"<b>❖ ᴜsᴇʀɴᴀᴍᴇ   :</b> {group_username}\n"
+            f"<b>❖ ᴇᴊᴇᴄᴛᴇᴅ ʙʏ :</b> {banner_mention}\n"
+            f"<b>❖ ʙᴏᴛ ᴀᴄᴄᴏᴜɴᴛ:</b> @{bot_user_obj.username}"
         )
 
         try:
@@ -181,5 +169,5 @@ async def bot_left_watcher(_, message: Message) -> None:
             except Exception:
                 pass
 
-    except Exception as e:
-        print(f"[watcher] bot_left_watcher error: {e}")
+    except Exception as err_msg:
+        print(f"[watcher] bot_left_watcher error: {err_msg}")
