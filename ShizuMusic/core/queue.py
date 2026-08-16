@@ -1,12 +1,3 @@
-# --------------------------------------------------------------------------------
-# --------------------------------------------------------------------------------
-#  ShizuMusic © 2026
-#  Developed by Bad Munda ❤️
-#  Unauthorized copying, editing, re-uploading or removing credits
-#  from this source code is strictly prohibited.
-# --------------------------------------------------------------------------------
-
-
 # chat_id -> queue list
 chat_queues: dict[int, list] = {}
 
