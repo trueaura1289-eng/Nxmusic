@@ -45,12 +45,12 @@ async def gblock_cmd(_, message: Message) -> None:
         try:
             target_chat_id = int(parameters[0])
         except ValueError:
-           await message.reply(
-    "<b>❖ ᴘʀovɪᴅᴇᴅ ᴄʜᴀᴛ ɪᴅ ɪs ɪɴᴄoʀʀᴇᴄᴛ</b>\n"
-    "<b>❖ ᴄᴏʀʀᴇᴄᴛ sʏɴᴛᴀx : /gblock -100xxxxxxx</b>",
-    parse_mode=ParseMode.HTML,
-)
-            return
+await message.reply(
+            "<b>❖ ᴘʀovɪᴅᴇᴅ ᴄʜᴀᴛ ɪᴅ ɪs ɪɴᴄoʀʀᴇᴄᴛ</b>\n"
+            "<b>❖ ᴄᴏʀʀᴇᴄᴛ sʏɴᴛᴀx : /gblock -100xxxxxxx</b>",
+            parse_mode=ParseMode.HTML,
+        )
+        return
     else:
         if message.chat.type.name == "PRIVATE":
            await message.reply(
