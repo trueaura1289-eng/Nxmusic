@@ -1,11 +1,3 @@
-# --------------------------------------------------------------------------------
-#  ShizuMusic © 2026
-#  Developed by Bad Munda ❤️
-#
-#  Unauthorized copying, editing, re-uploading or removing credits
-#  from this source code is strictly prohibited.
-# --------------------------------------------------------------------------------
-
 from pyrogram import filters
 from pyrogram.enums import ParseMode
 from pyrogram.types import Message
@@ -29,7 +21,7 @@ async def stop_cmd(_, message: Message) -> None:
 
     if not await is_user_authorized(message):
         await message.reply(
-            "<b>❍ ᴀᴅᴍɪɴ ᴏɴʟʏ</b>",
+            "<b>❖ ɢʀᴏᴜᴘ ᴀᴅᴍɪɴs ᴄᴀɴ ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ.</b>",
             parse_mode=ParseMode.HTML,
         )
         return
@@ -37,9 +29,7 @@ async def stop_cmd(_, message: Message) -> None:
     await leave_vc(message.chat.id)
 
     await message.reply(
-        "<b>❍ ᴘʟᴀʏʙᴀᴄᴋ ꜱᴛᴏᴘᴘᴇᴅ</b>\n"
-        "<b>❍ Qᴜᴇᴜᴇ ᴄʟᴇᴀʀᴇᴅ</b>\n"
-        "<b>❍ ʟᴇꜰᴛ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ</b>",
+        "<b>❖ ᴍᴜsɪᴄ ᴇɴᴅᴇᴅ • ǫᴜᴇᴜᴇ ʀᴇsᴇᴛ • ᴠᴏɪᴄᴇ ᴄʜᴀᴛ ᴇxɪᴛᴇᴅ</b>"
         parse_mode=ParseMode.HTML,
     )
 
@@ -56,7 +46,7 @@ async def clear_cmd(_, message: Message) -> None:
 
     if not await is_user_authorized(message):
         await message.reply(
-            "<b>❍ ᴀᴅᴍɪɴ ᴏɴʟʏ</b>",
+            "<b>❖ ɢʀᴏᴜᴘ ᴀᴅᴍɪɴs ᴄᴀɴ ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ.</b>",
             parse_mode=ParseMode.HTML,
         )
         return
@@ -71,15 +61,15 @@ async def clear_cmd(_, message: Message) -> None:
 
     if not queue_size(chat_id):
         await message.reply(
-            "<b>❍ Qᴜᴇᴜᴇ ɪꜱ ᴇᴍᴘᴛʏ</b>",
+            "<b>❖ ɴᴏ sᴏɴɢs ᴀʀᴇ ǫᴜᴇᴜᴇᴅ</b>",
             parse_mode=ParseMode.HTML,
         )
         return
 
     clear_queue(chat_id)
     await message.reply(
-        "<b>❍ Qᴜᴇᴜᴇ ᴄʟᴇᴀʀᴇᴅ</b>\n"
-        "<b>❍ ᴀʟʟ ꜱᴏɴɢꜱ ʀᴇᴍᴏᴠᴇᴅ</b>",
+        "<b>❖ ᴀʟʟ ᴛʀᴀᴄᴋs ʀᴇᴍᴏᴠᴇᴅ ғʀᴏᴍ ǫᴜᴇᴜᴇ</b>\n"
+        "<b>❖ ǫᴜᴇᴜᴇ ʜᴀs ʙᴇᴇɴ ᴇᴍᴘᴛɪᴇᴅ</b>",
         parse_mode=ParseMode.HTML,
     )
 
@@ -94,7 +84,7 @@ async def clear_cmd(_, message: Message) -> None:
 async def reboot_cmd(_, message: Message) -> None:
     await leave_vc(message.chat.id)
     await message.reply(
-        "<b>❍ ᴄʜᴀᴛ ʀᴇʙᴏᴏᴛᴇᴅ</b>\n"
-        "<b>❍ ᴀʟʟ ꜱᴛᴀᴛᴇꜱ ʀᴇꜱᴇᴛ</b>",
+        "<b>❖ ᴄʜᴀᴛ ʀᴇʙᴏᴏᴛᴇᴅ sᴜᴄᴄᴇssғᴜʟʟʏ</b>\n"
+        "<b>❖ ᴄʜᴀᴛ sᴛᴀᴛᴇ ʜᴀs ʙᴇᴇɴ ʀᴇsᴇᴛ ᴄʟᴇᴀʀʟʏ</b>",
         parse_mode=ParseMode.HTML,
     )
