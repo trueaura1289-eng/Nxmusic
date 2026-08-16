@@ -56,12 +56,12 @@ async def gblock_cmd(_, message: Message) -> None:
            await message.reply(
     "<b>❖ ᴛʜɪs ᴜᴛɪʟɪᴛʏ ɪs sᴛʀɪᴄᴛʟʏ ғᴏʀ ɢʀᴏᴜᴘs</b>\n"
     "<b>❖ ᴏʀ ɪɴᴘᴜᴛ ᴀ ᴄʜᴀᴛ ɪᴅ : /gblock -100xxxxxxx</b>",
-    parse_mode=ParseMode.HTML,
+parse_mode=ParseMode.HTML,
 )
-            return
-        target_chat_id = message.chat.id
+return
+target_chat_id = message.chat.id
 
-   if is_group_blocked(target_chat_id):
+if is_group_blocked(target_chat_id):
     await message.reply(
         f"<b>❖ ᴛʜɪs ᴄʜᴀᴛ ɪs ᴀʟʀᴇᴀᴅʏ ʙʟᴏᴄᴋʟɪsᴛᴇᴅ</b>\n"
         f"<b>❖ ᴄʜᴀᴛ ɪᴅ :</b> <code>{target_chat_id}</code>",
