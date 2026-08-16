@@ -145,8 +145,8 @@ async def start_handler(_, message: Message) -> None:
 
         admin_kb = InlineKeyboardMarkup([[
             InlineKeyboardButton(
-                "➕ ɢʀᴀɴᴛ ᴀᴅᴍɪɴ ᴀᴄᴄᴇss",
-                url=f"tg://user?id={(await bot.get_me()).id}",
+                "ᴀɴɪᴄʟᴏᴜᴅ",
+                url=f"https://t.me/Anicloudnx",
             )
         ]])
 
