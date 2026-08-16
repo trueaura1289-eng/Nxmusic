@@ -1,11 +1,3 @@
-# --------------------------------------------------------------------------------
-#  ShizuMusic © 2026
-#  Developed by Bad Munda ❤️
-#
-#  Unauthorized copying, editing, re-uploading or removing credits
-#  from this source code is strictly prohibited.
-# --------------------------------------------------------------------------------
-
 import time
 
 from pyrogram import filters
@@ -44,14 +36,14 @@ async def _seek_to(chat_id: int, target_sec: int, message: Message) -> None:
 
     song = peek_current(chat_id)
     if not song:
-        await message.reply("<b>❍ Nothing is playing right now.</b>", parse_mode=ParseMode.HTML)
+        await message.reply("<b>❖ ɴᴏ ᴛʀᴀᴄᴋ ɪs ᴄᴜʀʀᴇɴᴛʟʏ ᴘʟᴀʏɪɴɢ.</b>", parse_mode=ParseMode.HTML)
         return
 
     total_sec  = parse_dur(song.get("duration", "0:00"))
     target_sec = max(0, min(target_sec, total_sec - 1))
 
     pm = await message.reply(
-        f"<b>❍ Seeking to</b> <code>{fmt_time(target_sec)}</code><b>...</b>",
+        f"<b> sᴇᴇᴋɪɴɢ</b> <code>{fmt_time(target_sec)}</code><b>...</b>",
         parse_mode=ParseMode.HTML,
     )
 
@@ -59,7 +51,7 @@ async def _seek_to(chat_id: int, target_sec: int, message: Message) -> None:
         media_path = await resolve_stream(song["url"])
     except Exception as e:
         await pm.edit_text(
-            f"<b>❍ Seek failed — could not resolve stream.</b>\n<code>{e}</code>",
+            f"<b>❖ ᴜɴᴀʙʟᴇ ᴛᴏ ᴊᴜᴍᴘ ᴛᴏ ᴛʜᴇ ʀᴇǫᴜᴇsᴛᴇᴅ ᴘᴏɪɴᴛ.</b>\n<code>{e}</code>",
             parse_mode=ParseMode.HTML,
         )
         return
@@ -87,28 +79,29 @@ async def _seek_to(chat_id: int, target_sec: int, message: Message) -> None:
             )
         except Exception as e2:
             await pm.edit_text(
-                f"<b>❍ Seek failed.</b>\n<code>{e2}</code>",
+                f"<b>Seek Failed.</b>\n<code>{e2}</code>",
                 parse_mode=ParseMode.HTML,
             )
             return
 
     set_seek_state(chat_id, target_sec)
 
-    caption = (
-        "<blockquote>"
-        "<b>🎧 Sʜɪᴢᴜ Mᴜsɪᴄ</b>\n\n"
-        f"<b>❍ Title :</b> {short(song['title'])}\n"
-        f"<b>❍ Duration :</b> {song.get('duration', '?')}\n"
-        f"<b>❍ By :</b> {song['requester']}\n"
-        f"<b>❍ Seeked to :</b> <code>{fmt_time(target_sec)}</code>"
-        "</blockquote>"
-    )
-    btns = [
-        InlineKeyboardButton("▷",   callback_data="resume"),
-        InlineKeyboardButton("II",  callback_data="pause"),
-        InlineKeyboardButton("‣‣I", callback_data="skip"),
-        InlineKeyboardButton("▢",   callback_data="stop"),
-    ]
+  caption = (
+    "<blockquote>"
+    "<b>⚘ ᴇʟʏx ᴍᴜsɪᴄ</b>\n\n"
+    f"<b>❖ Tʀᴀᴄᴋ :</b> {short(song['title'])}\n"
+    f"<b>❖ Lᴇɴɢᴛʜ :</b> {song.get('duration', '?')}\n"
+    f"<b>❖ Rᴇǫᴜᴇsᴛᴇᴅ ʙʏ :</b> {song['requester']}\n"
+    f"<b>❖ Cᴜʀʀᴇɴᴛ Pᴏɪɴᴛ :</b> <code>{fmt_time(target_sec)}</code>"
+    "</blockquote>"
+)
+
+btns = [
+    InlineKeyboardButton("▶",  callback_data="resume"),
+    InlineKeyboardButton("⏸", callback_data="pause"),
+    InlineKeyboardButton("⏭", callback_data="skip"),
+    InlineKeyboardButton("⏹", callback_data="stop"),
+]
     bar = progress_bar(target_sec, total_sec)
     kb  = InlineKeyboardMarkup([
         [InlineKeyboardButton(bar, callback_data="noop")],
@@ -130,14 +123,14 @@ async def seek_cmd(_, message: Message) -> None:
     song    = peek_current(chat_id)
 
     if not song:
-        await message.reply("<b>❍ No song is currently playing.</b>", parse_mode=ParseMode.HTML)
+        await message.reply("<b>❖ ɴᴏ ᴛʀᴀᴄᴋ ɪs ᴘʟᴀʏɪɴɢ ʀɪɢʜᴛ ɴᴏᴡ.</b>", parse_mode=ParseMode.HTML)
         return
 
     sec = int(message.matches[0].group("sec"))
     if sec < 1:
         await message.reply(
-            "<b>❍ Please provide a number of seconds greater than 0.</b>\n"
-            "<b>❍ Usage :</b> <code>/seek 30</code>",
+            "<b>❖ ᴇɴᴛᴇʀ ᴀ ᴠᴀʟɪᴅ sᴇᴇᴋ ᴛɪᴍᴇ ɢʀᴇᴀᴛᴇʀ ᴛʜᴀɴ 0 sᴇᴄᴏɴᴅs.</b>\n"
+            "<b>❖ ᴄᴏᴍᴍᴀɴᴅ ᴜsᴀɢᴇ :</b> <code>/seek 30</code>",
             parse_mode=ParseMode.HTML,
         )
         return
@@ -147,16 +140,16 @@ async def seek_cmd(_, message: Message) -> None:
     total_sec   = parse_dur(song.get("duration", "0:00"))
 
     if current_pos >= total_sec - 1:
-        await message.reply("<b>❍ Song is almost finished. Cannot seek forward.</b>", parse_mode=ParseMode.HTML)
+        await message.reply("<b>❖ ᴛʀᴀᴄᴋ ɪs ɴᴇᴀʀʟʏ ᴏᴠᴇʀ — ᴄᴀɴ'ᴛ sᴇᴇᴋ ғᴜʀᴛʜᴇʀ.</b>", parse_mode=ParseMode.HTML)
         return
 
     if target >= total_sec:
-        await message.reply(
-            f"<b>❍ Cannot seek that far forward.</b>\n"
-            f"<b>❍ Current position :</b> <code>{fmt_time(current_pos)}</code>\n"
-            f"<b>❍ Song duration :</b> <code>{fmt_time(total_sec)}</code>",
-            parse_mode=ParseMode.HTML,
-        )
+       await message.reply(
+    f"<b>❖ ᴜɴᴀʙʟᴇ ᴛᴏ sᴇᴇᴋ ᴛʜᴀᴛ ғᴀʀ</b>\n"
+    f"<b>❖ ᴘʟᴀʏᴇᴅ :</b> <code>{fmt_time(current_pos)}</code>\n"
+    f"<b>❖ ᴛᴏᴛᴀʟ ʟᴇɴɢᴛʜ :</b> <code>{fmt_time(total_sec)}</code>",
+    parse_mode=ParseMode.HTML,
+)
         return
 
     try:
@@ -180,14 +173,14 @@ async def seekback_cmd(_, message: Message) -> None:
     song    = peek_current(chat_id)
 
     if not song:
-        await message.reply("<b>❍ No song is currently playing.</b>", parse_mode=ParseMode.HTML)
+        await message.reply("<b>❖ ɴᴏ ᴛʀᴀᴄᴋ ɪs ᴘʟᴀʏɪɴɢ ʀɪɢʜᴛ ɴᴏᴡ.</b>", parse_mode=ParseMode.HTML)
         return
 
     sec = int(message.matches[0].group("sec"))
     if sec < 1:
         await message.reply(
-            "<b>❍ Please provide a number of seconds greater than 0.</b>\n"
-            "<b>❍ Usage :</b> <code>/seekback 30</code>",
+            "<b>❖ ᴇɴᴛᴇʀ ᴀ ᴠᴀʟɪᴅ sᴇᴇᴋ ᴛɪᴍᴇ ɢʀᴇᴀᴛᴇʀ ᴛʜᴀɴ 0 sᴇᴄᴏɴᴅs.</b>\n"
+            "<b>❖ ᴄᴏᴍᴍᴀɴᴅ ᴜsᴀɢᴇ:</b> <code>/seekback 30</code>",
             parse_mode=ParseMode.HTML,
         )
         return
@@ -218,15 +211,15 @@ async def seek_usage(_, message: Message) -> None:
         pos       = get_current_position(chat_id)
         total_sec = parse_dur(song.get("duration", "0:00"))
         await message.reply(
-            f"<b>❍ Current position :</b> <code>{fmt_time(pos)}</code> / <code>{fmt_time(total_sec)}</code>\n\n"
-            f"<b>❍ Usage :</b>\n"
+            f"<b>❖ ᴄᴜʀʀᴇɴᴛ ᴘᴏsɪᴛɪᴏɴ :</b> <code>{fmt_time(pos)}</code> / <code>{fmt_time(total_sec)}</code>\n\n"
+            f"<b>❖ ᴄᴏᴍᴍᴀɴᴅ ᴜsᴀɢᴇ :</b>\n"
             f"<code>/seek 30</code>     → forward 30 seconds\n"
             f"<code>/seekback 30</code> → backward 30 seconds",
             parse_mode=ParseMode.HTML,
         )
     else:
         await message.reply(
-            "<b>❍ Usage :</b>\n"
+            "<b>❖ ᴄᴏᴍᴍᴀɴᴅ ᴜsᴀɢᴇ :</b>\n"
             "<code>/seek 30</code>     → forward 30 seconds\n"
             "<code>/seekback 30</code> → backward 30 seconds",
             parse_mode=ParseMode.HTML,
