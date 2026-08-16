@@ -16,21 +16,21 @@ from ShizuMusic.utils.permissions import is_user_authorized
 
 # ❖ help menu dashboard layout ❖
 #
-#    row 1 : [ᴍᴀɴᴀɢᴇʀ]  [ᴀ-ᴘʟᴀʏ]   [ʙʀᴏᴀᴅᴄᴀsᴛ]
+#    row 1 : [ᴍᴀɴᴀɢᴇʀ]  [ᴀ-ᴘʟᴀʏ]    [ʙʀᴏᴀᴅᴄᴀsᴛ]
 #    row 2 : [ʙʟ-ᴄʜᴀᴛ]  [ʙʟ-ᴜsᴇʀs] [ᴘɪɴɢ]
 #    row 3 : [ᴘʟᴀʏ]    [sᴘᴇᴇᴅ]    [ɪɴғᴏ]
 #    row 4 :          [⌯ ʜᴏᴍᴇ ⌯]
 #
 # ❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖
 
-kb = InlineKeyboardMarkup([
+_HELP_KB = InlineKeyboardMarkup([
     [
         InlineKeyboardButton("ᴘʟᴀʏ",    callback_data="help_play"),
         InlineKeyboardButton("ᴀ-ᴘʟᴀʏ",  callback_data="help_autoplay"),
-        InlineKeyboardButton("sᴘᴇᴇᴅ",   callback_data="help_speed"),
+        InlineKeyboardButton("sᴘᴇᴇᴅ",    callback_data="help_speed"),
     ],
     [
-        InlineKeyboardButton("ᴀᴅᴍɪɴ",   callback_data="help_admin"),
+        InlineKeyboardButton("ᴀᴅᴍɪɴ",    callback_data="help_admin"),
         InlineKeyboardButton("ɢ-ᴄᴀsᴛ",  callback_data="help_gcast"),
         InlineKeyboardButton("ᴘɪɴɢ",    callback_data="help_ping"),
     ],
@@ -67,7 +67,7 @@ _HELP_TEXTS = {
 "help_autoplay": (
     "<b>🔁 ᴀᴜᴛᴏᴘʟᴀʏ</b>\n\n"
     "<b>/autoplay</b> <code>&lt;query&gt;</code>\n"
-    "ᴋᴇᴇᴘs ᴛʜᴇ ᴍᴜsɪᴄ ǫᴜᴇᴜᴇ ᴍᴏᴠɪɴɢ ᴡɪᴛʜ ɴᴇᴡ ᴛʀᴀᴄᴋs.\n\n"
+    "ᴋᴇᴇᴘs ᴛʜᴇ ᴍᴜsɪc ǫᴜᴇᴜᴇ ᴍᴏᴠɪɴɢ ᴡɪᴛʜ ɴᴇᴡ ᴛʀᴀᴄᴋs.\n\n"
     "<b>ᴇxᴀᴍᴘʟᴇs</b>\n"
     "<code>/autoplay trending hits</code>\n"
     "<code>/autoplay lo-fi beats</code>\n\n"
@@ -148,7 +148,7 @@ _HELP_TEXTS = {
 
 
 # ❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖
-#   callback query handler router
+#    callback query handler router
 # ❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖
 
 @bot.on_callback_query()
@@ -307,33 +307,39 @@ async def _go_back(cbq: CallbackQuery) -> None:
     name = cbq.from_user.first_name or "User"
 
     caption = (
-        "<b>╭────────────────────▣</b>\n"
-        f"<b>│❖ ʜᴇʟʟᴏ</b> <a href='tg://user?id={uid}'>{name}</a>, 🥀\n"
-        f"<b>│❖ ᴛʜɪs ɪs {config.BOT_NAME} !</b>\n"
-        "<b>├────────────────────▣</b>\n"
-        "<b>│❖ ᴀ ғᴀsᴛ & ᴘᴏᴡᴇʀғᴜʟ ᴍᴜsɪᴄ ʙᴏᴛ.</b>\n"
-        "<b>├────────────────────▣</b>\n"
-        f"<b>│❖ ᴩᴏᴡᴇʀᴇᴅ ʙʏ » "
-        f"<a href='https://t.me/PBXCHATS'>sʜɪᴢᴜ-ᴍᴜsɪᴄ™</a></b>\n"
-        "<b>╰────────────────────▣</b>"
+        f"<b>✦ ʜᴇʟʟᴏ</b> <a href='tg://user?id={uid}'>{name}</a> 👋\n\n"
+        f"<b>╰┈➤ ɪ'ᴍ {config.BOT_NAME}</b> — ʏᴏᴜʀ ᴍᴜsɪᴄ ʙᴏᴛ ғᴏʀ ᴄʜᴀᴛs.\n\n"
+        "<b>❖ ᴡʜᴀᴛ ɪ ᴄᴀɴ ᴅᴏ</b>\n\n"
+        "<b>› ᴘʟᴀʏ ʏᴏᴜʀ ғᴀᴠᴏᴜʀɪᴛᴇ sᴏɴɢs ɪɴ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ.</b>\n\n"
+        "<b>› ᴇɴᴊᴏʏ ғᴀsᴛ & sᴍᴏᴏᴛʜ ʜᴅ ᴘʟᴀʏʙᴀᴄᴋ.</b>\n\n"
+        "<b>› ᴍᴜᴄʜ ᴍᴏʀᴇ ᴛᴏ ᴇxᴘʟᴏʀᴇ.</b>\n\n"
+        "<b>╰─➤ ᴛᴀᴘ ʜᴇʟᴘ ғᴏʀ ᴄᴏᴍᴍᴀɴᴅs & ᴍᴏʀᴇ ɪɴғᴏ.</b>"
     )
-    kb = InlineKeyboardMarkup([
-        [InlineKeyboardButton("⛩️ ᴀᴅᴅ ᴍᴇ ʙᴀʙʏ ⛩️",
-                            url=f"{config.BOT_LINK}?startgroup=true")],
-        [
-            InlineKeyboardButton("🍬 sᴜᴩᴩᴏʀᴛ 🍬", url=config.SUPPORT_GROUP),
-            InlineKeyboardButton("🍹 ᴜᴩᴅᴀᴛᴇs 🍹",  url=config.UPDATES_CHANNEL),
-        ],
-        [InlineKeyboardButton("🏩 ʜᴇʟᴩ & ᴄᴏᴍᴍᴀɴᴅs 🏩",
-                            callback_data="show_help")],
-        [
-            InlineKeyboardButton("🫧 ᴏᴡɴᴇʀ 🫧",
-                                url=f"tg://user?id={config.OWNER_ID}"),
-            InlineKeyboardButton("🍡 sᴏᴜʀᴄᴇ 🍡",
-                                url="https://github.com/Badmunda05/ShizuMusic/fork"),
-        ],
-    ])
 
+    kb = InlineKeyboardMarkup([
+        [
+            InlineKeyboardButton(
+                "ᴀᴅᴅ ᴍᴇ ᴛᴏ ɢʀᴏᴜᴘ",
+                url=f"{config.BOT_LINK}?startgroup=true"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "ʜᴇʟᴘ & ᴄᴏᴍᴍᴀɴᴅs",
+                callback_data="show_help"
+            ),
+            InlineKeyboardButton(
+                "ᴏᴡɴᴇʀ",
+                url="https://t.me/nyxzre"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "ᴜᴘᴅᴀᴛᴇs",
+                url=config.UPDATES_CHANNEL
+            )
+        ]
+    ])
     try:
         await cbq.message.edit_caption(
             caption=caption,
