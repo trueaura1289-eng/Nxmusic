@@ -1,11 +1,3 @@
-# --------------------------------------------------------------------------------
-#  ShizuMusic © 2026
-#  Developed by Bad Munda ❤️
-#
-#  Unauthorized copying, editing, re-uploading or removing credits
-#  from this source code is strictly prohibited.
-# --------------------------------------------------------------------------------
-
 import asyncio
 import importlib
 import os
@@ -32,7 +24,7 @@ _flask = Flask(__name__)
 
 @_flask.route("/")
 def _home():
-    return "❍ ꜱʜɪᴢᴜᴍᴜꜱɪᴄ ɪꜱ ʀᴜɴɴɪɴɢ ᴍᴀᴅᴇ ʙʏ ʙᴀᴅᴍᴜɴᴅᴀ 💕", 200
+    return "✦ ᴇʟʏx ᴍᴜsɪᴄ ɪs ʟɪᴠᴇ", 200
 
 
 @_flask.route("/health")
@@ -65,9 +57,9 @@ async def _notify_owner(me, assistant_username: str) -> None:
     try:
         await bot.send_message(
             config.LOGGER_ID,
-            f"🎵 ꜱʜɪᴢᴜᴍᴜꜱɪᴄ ꜱᴛᴀʀᴛᴇᴅ💕\n\n"
-            f"❍ ʙᴏᴛ : @{me.username}\n"
-            f"❍ ᴀꜱꜱɪꜱᴛᴀɴᴛ : @{assistant_username}",
+            f"Eʟʏx ᴍᴜsɪᴄ ɪs ᴘʟᴀʏɪɴɢ🎵\n\n"
+            f"❖ Bᴏᴛ: @{me.username}\n"
+            f"❖ Aꜱꜱɪꜱᴛᴀɴᴛ: @{assistant_username}",
         )
     except Exception as e:
         LOGGER.warning(f"Logger Notification Error : {e}")
@@ -124,17 +116,16 @@ if __name__ == "__main__":
 
     # 6. Set bot commands
     try:
-        bot.set_bot_commands([
-            BotCommand("start",  "✧ sᴛᴀʀᴛ ᴛʜᴇ ʙᴏᴛ ✧"),
-            BotCommand("help",   "✧ ɢᴇᴛ ʜᴇʟᴘ ᴍᴇɴᴜ ✧"),
-            BotCommand("play",   "✧ ᴘʟᴀʏ ᴀ sᴏɴɢ ✧"),
-            BotCommand("pause",  "✧ ᴘᴀᴜsᴇ ᴘʟᴀʏʙᴀᴄᴋ ✧"),
-            BotCommand("resume", "✧ ʀᴇsᴜᴍᴇ ᴘʟᴀʏʙᴀᴄᴋ ✧"),
-            BotCommand("skip",   "✧ sᴋɪᴘ sᴏɴɢ ✧"),
-            BotCommand("stop",   "✧ sᴛᴏᴘ & ᴄʟᴇᴀʀ ✧"),
-            BotCommand("ping",   "✧ ʙᴏᴛ sᴛᴀᴛs ✧"),
-            BotCommand("repo",   "✧ sᴏᴜʀᴄᴇ ᴍᴜsɪᴄ ʙᴏᴛ ✧"),
-        ])
+      bot.set_bot_commands([
+    BotCommand("start",  "sᴛᴀʀᴛ ᴛʜᴇ ᴍᴜsɪᴄ ʙᴏᴛ"),
+    BotCommand("play",   "ᴘʟᴀʏ ʏᴏᴜʀ ғᴀᴠᴏᴜʀɪᴛᴇ sᴏɴɢ"),
+    BotCommand("pause",  "ᴘᴀᴜsᴇ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ sᴏɴɢ"),
+    BotCommand("resume", "ᴄᴏɴᴛɪɴᴜᴇ ᴘʟᴀʏʙᴀᴄᴋ"),
+    BotCommand("skip",   "ᴘʟᴀʏ ɴᴇxᴛ sᴏɴɢ"),
+    BotCommand("stop",   "sᴛᴏᴘ ᴍᴜsɪᴄ & ᴄʟᴇᴀʀ"),
+    BotCommand("help",   "ɢᴇᴛ ʜᴇʟᴘ & ɪɴғᴏ"),
+    BotCommand("ping",   "ᴄʜᴇᴄᴋ ʙᴏᴛ sᴛᴀᴛᴜs"),
+])
         LOGGER.info("Bot commands set")
     except Exception as e:
         LOGGER.warning(f"Could not set bot commands: {e}")
@@ -181,7 +172,7 @@ if __name__ == "__main__":
     loop.create_task(watchdog())
     LOGGER.info("Watchdog started")
 
-    LOGGER.info("ShizuMusic is running")
+    LOGGER.info("ᴇʟʏx ᴍᴜsɪᴄ ɪs ʟɪᴠᴇ")
 
     idle()
 
@@ -196,5 +187,5 @@ if __name__ == "__main__":
     except Exception:
         pass
 
-    LOGGER.info("✧ ShizuMusic stopped ✧")
+    LOGGER.info("ᴇʟʏx ᴍᴜsɪᴄ sᴛᴏᴘ")
             
