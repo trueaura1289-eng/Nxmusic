@@ -1,11 +1,3 @@
-# --------------------------------------------------------------------------------
-#  ShizuMusic © 2026
-#  Developed by Bad Munda ❤️
-#
-#  Unauthorized copying, editing, re-uploading or removing credits
-#  from this source code is strictly prohibited.
-# --------------------------------------------------------------------------------
-
 import asyncio
 
 from pyrogram.enums import ParseMode
@@ -83,7 +75,7 @@ async def on_stream_end(_: object, update: StreamEnded) -> None:
 
             # Fetch more songs in background if queue is getting low
             asyncio.create_task(
-                maybe_refetch(chat_id, "🔁 AutoPlay", 0)
+                maybe_refetch(chat_id, "Aᴜᴛᴏᴘʟᴀʏ 🔁", 0)
             )
 
     except Exception as ap_err:
@@ -103,8 +95,8 @@ async def on_stream_end(_: object, update: StreamEnded) -> None:
         try:
             msg = await bot.send_message(
                 chat_id,
-                f"<b>❍ ɴᴇxᴛ ᴛʀᴀᴄᴋ :</b>\n"
-                f"<b>❍ ᴛɪᴛʟᴇ :</b> <code>{nxt['title']}</code>",
+                f"<b>❖ Nᴇxᴛ Tʀᴀᴄᴋ :</b>\n"
+                f"<b>❖ Tɪᴛʟᴇ :</b> <code>{nxt['title']}</code>",
                 parse_mode=ParseMode.HTML,
             )
 
@@ -118,7 +110,7 @@ async def on_stream_end(_: object, update: StreamEnded) -> None:
 
             await bot.send_message(
                 chat_id,
-                f"<b>❍ ᴇʀʀᴏʀ :</b> <code>{e}</code>",
+                f"<b>❖Eʀʀᴏʀ :</b> <code>{e}</code>",
                 parse_mode=ParseMode.HTML,
             )
 
@@ -152,7 +144,7 @@ async def on_stream_end(_: object, update: StreamEnded) -> None:
 
                     msg2 = await bot.send_message(
                         chat_id,
-                        f"<b>❍ ɴᴇxᴛ ᴛʀᴀᴄᴋ :</b> "
+                        f"<b>❖ Nᴇxᴛ Tʀᴀᴄᴋ :</b> "
                         f"<code>{nxt2['title']}</code>",
                         parse_mode=ParseMode.HTML,
                     )
@@ -162,7 +154,7 @@ async def on_stream_end(_: object, update: StreamEnded) -> None:
 
                 # If still nothing after waiting, try one more fetch
                 from ShizuMusic.core.autoplay import maybe_refetch
-                await maybe_refetch(chat_id, "🔁 AutoPlay", 0)
+                await maybe_refetch(chat_id, "ᴀᴜᴛᴏ ᴘʟᴀʏ 🔁", 0)
                 await asyncio.sleep(5)
 
                 nxt3 = peek_current(chat_id)
@@ -185,7 +177,7 @@ async def on_stream_end(_: object, update: StreamEnded) -> None:
 
         await bot.send_message(
             chat_id,
-            "<b>❍ ǫᴜᴇᴜᴇ ꜰɪɴɪꜱʜᴇᴅ</b>\n"
-            "<b>❍ ʟᴇꜰᴛ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ.</b>",
+            "<b>❖ Tʜᴇ ǫᴜᴇᴜᴇ ʜᴀs Eɴᴅᴇᴅ</b>\n"
+            "<b>❖ Assɪsᴛᴀɴᴛ Lᴇғᴛ ᴛʜᴇ ᴠᴏɪᴄᴇ Cʜᴀᴛ</b>",
             parse_mode=ParseMode.HTML,
                     )
