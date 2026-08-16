@@ -1,5 +1,4 @@
-# ── Youtube Song Search ─────────────────────
-py-yt-search==0.6.2
+# ── Youtube Song Search & Streaming ──────
 yt-dlp
 
 # ── Voice Chat Streaming ─────────────────
