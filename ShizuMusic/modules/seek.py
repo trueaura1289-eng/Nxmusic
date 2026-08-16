@@ -42,7 +42,7 @@ async def _seek_to(chat_id: int, target_sec: int, message: Message) -> None:
     total_sec  = parse_dur(song.get("duration", "0:00"))
     target_sec = max(0, min(target_sec, total_sec - 1))
 
-pm = await message.reply(
+    pm = await message.reply(
         f"<b> sᴇᴇᴋɪɴɢ</b> <code>{fmt_time(target_sec)}</code><b>...</b>",
         parse_mode=ParseMode.HTML,
     )
@@ -96,12 +96,12 @@ pm = await message.reply(
         "</blockquote>"
     )
 
-btns = [
-    InlineKeyboardButton("▶",  callback_data="resume"),
-    InlineKeyboardButton("⏸", callback_data="pause"),
-    InlineKeyboardButton("⏭", callback_data="skip"),
-    InlineKeyboardButton("⏹", callback_data="stop"),
-]
+    btns = [
+        InlineKeyboardButton("▶",  callback_data="resume"),
+        InlineKeyboardButton("⏸", callback_data="pause"),
+        InlineKeyboardButton("⏭", callback_data="skip"),
+        InlineKeyboardButton("⏹", callback_data="stop"),
+    ]
     bar = progress_bar(target_sec, total_sec)
     kb  = InlineKeyboardMarkup([
         [InlineKeyboardButton(bar, callback_data="noop")],
@@ -144,12 +144,12 @@ async def seek_cmd(_, message: Message) -> None:
         return
 
     if target >= total_sec:
-       await message.reply(
-    f"<b>❖ ᴜɴᴀʙʟᴇ ᴛᴏ sᴇᴇᴋ ᴛʜᴀᴛ ғᴀʀ</b>\n"
-    f"<b>❖ ᴘʟᴀʏᴇᴅ :</b> <code>{fmt_time(current_pos)}</code>\n"
-    f"<b>❖ ᴛᴏᴛᴀʟ ʟᴇɴɢᴛʜ :</b> <code>{fmt_time(total_sec)}</code>",
-    parse_mode=ParseMode.HTML,
-)
+        await message.reply(
+            f"<b>❖ ᴜɴᴀʙʟᴇ ᴛᴏ sᴇᴇᴋ ᴛʜᴀᴛ ғᴀʀ</b>\n"
+            f"<b>❖ ᴘʟᴀʏᴇᴅ :</b> <code>{fmt_time(current_pos)}</code>\n"
+            f"<b>❖ ᴛᴏᴛᴀʟ ʟᴇɴɢᴛʜ :</b> <code>{fmt_time(total_sec)}</code>",
+            parse_mode=ParseMode.HTML,
+        )
         return
 
     try:
@@ -208,7 +208,7 @@ async def seek_usage(_, message: Message) -> None:
     song    = peek_current(chat_id)
 
     if song:
-        pos       = get_current_position(chat_id)
+        pos        = get_current_position(chat_id)
         total_sec = parse_dur(song.get("duration", "0:00"))
         await message.reply(
             f"<b>❖ ᴄᴜʀʀᴇɴᴛ ᴘᴏsɪᴛɪᴏɴ :</b> <code>{fmt_time(pos)}</code> / <code>{fmt_time(total_sec)}</code>\n\n"
