@@ -1,11 +1,3 @@
-# --------------------------------------------------------------------------------
-#  ShizuMusic © 2026
-#  Developed by Bad Munda ❤️
-#
-#  Unauthorized copying, editing, re-uploading or removing credits
-#  from this source code is strictly prohibited.
-# --------------------------------------------------------------------------------
-
 import asyncio
 import re
 import time
@@ -84,7 +76,7 @@ async def play_handler(_, message: Message) -> None:
         message.reply_to_message.audio or message.reply_to_message.video
     ):
         pm = await message.reply(
-            "<b>❍ ᴘʀᴏᴄᴇssɪɴɢ ᴍᴇᴅɪᴀ...</b>",
+            "<b>ɢᴇᴛᴛɪɴɢ ᴍᴇᴅɪᴀ...</b>",
             parse_mode=ParseMode.HTML,
         )
 
@@ -94,14 +86,14 @@ async def play_handler(_, message: Message) -> None:
 
         if fresh.audio and getattr(fresh.audio, "file_size", 0) > 100 * 1024 * 1024:
             await pm.edit_text(
-                "<b>❍ ғɪʟᴇ ᴛᴏᴏ ʟᴀʀɢᴇ</b>\n"
-                "<b>❍ ᴍᴀx :</b> <code>100 MB</code>",
+                "<b>❖ ғɪʟᴇ sɪᴢᴇ ᴇxᴄᴇᴇᴅs ᴛʜᴇ ʟɪᴍɪᴛ</b>\n"
+                "<b>❖ ᴍᴀxɪᴍᴜᴍ :</b> <code>100 MB</code>",
                 parse_mode=ParseMode.HTML,
             )
             return
 
         await pm.edit_text(
-            "<b>❍ ᴅᴏᴡɴʟᴏᴀᴅɪɴɢ ᴍᴇᴅɪᴀ...</b>",
+            "<b>❖ ʀᴇᴛʀɪᴇᴠɪɴɢ ᴍᴇᴅɪᴀ..</b>",
             parse_mode=ParseMode.HTML,
         )
 
@@ -109,7 +101,7 @@ async def play_handler(_, message: Message) -> None:
             fp = await bot.download_media(media)
         except Exception as e:
             await pm.edit_text(
-                f"<b>❍ ᴅᴏᴡɴʟᴏᴀᴅ ғᴀɪʟᴇᴅ</b>\n<code>{e}</code>",
+                f"<b❖ ᴅᴏᴡɴʟᴏᴀᴅ ᴄᴏᴜʟᴅɴ'ᴛ ʙᴇ ᴄᴏᴍᴘʟᴇᴛᴇᴅ</b>\n<code>{e}</code>",
                 parse_mode=ParseMode.HTML,
             )
             return
@@ -150,7 +142,7 @@ async def play_handler(_, message: Message) -> None:
     if any(x in query.lower() for x in BLOCKED_WORDS):
         await bot.send_message(
             chat_id,
-            "<b>❍ ᴛʜɪs sᴏɴɢ ɪs ʙʟᴏᴄᴋᴇᴅ</b>",
+            "<b>❖ ᴘʟᴀʏʙᴀᴄᴋ ᴏғ ᴛʜɪs sᴏɴɢ ɪs ʙʟᴏᴄᴋᴇᴅ</b>",
             parse_mode=ParseMode.HTML,
         )
         return
@@ -162,8 +154,7 @@ async def play_handler(_, message: Message) -> None:
         if chat_id not in _pending:
             rep = await bot.send_message(
                 chat_id,
-                f"<b>❍ ᴄᴏᴏʟᴅᴏᴡɴ ᴀᴄᴛɪᴠᴇ</b>\n"
-                f"<b>❍ ᴘʀᴏᴄᴇssɪɴɢ ɪɴ :</b> <code>{rem}s</code>",
+                f"<b>❖ ᴘʀᴏᴄᴇssɪɴɢ ʏᴏᴜʀ ʀᴇǫᴜᴇsᴛ :</b> <code>{rem}s</code>",
                 parse_mode=ParseMode.HTML,
             )
             _pending[chat_id] = (message, rep)
@@ -175,9 +166,9 @@ async def play_handler(_, message: Message) -> None:
     if not query:
         await bot.send_message(
             chat_id,
-            "<b>❍ ᴜsᴀɢᴇ :</b> <code>/play song name</code>\n"
-            "<b>❍ ᴏʀ :</b> <code>/play youtube url</code>\n"
-            "<b>❍ ᴠɪᴅᴇᴏ :</b> <code>/vplay song name</code>",
+            "<b>❖ ʜᴏᴡ ᴛᴏ ᴜsᴇ :</b> <code>/play song name</code>\n"
+            "<b>❖ ʜᴏᴡ ᴛᴏ ᴜsᴇ :</b> <code>/play youtube url</code>\n"
+            "<b>❖ ʜᴏᴡ ᴛᴏ ᴜsᴇ ᴠɪᴅᴇᴏ :</b> <code>/vplay song name</code>",
             parse_mode=ParseMode.HTML,
         )
         return
@@ -200,15 +191,14 @@ async def _process_play(message: Message, query: str, video: bool = False) -> No
 
     if status == "banned":
         await pm.edit_text(
-            "<b>❍ ᴀssɪsᴛᴀɴᴛ ʙᴀɴɴᴇᴅ</b>\n"
-            "<b>❍ ᴘʟᴇᴀsᴇ ᴜɴʙᴀɴ ᴀssɪsᴛᴀɴᴛ ᴀɴᴅ ᴛʀʏ ᴀɢᴀɪɴ</b>",
+            "<b>❖ ᴀssɪsᴛᴀɴᴛ ɪs ʙᴀɴɴᴇᴅ ғʀᴏᴍ ᴛʜɪs ᴄʜᴀᴛ, ᴜɴʙᴀɴ ɪᴛ ᴛᴏ ᴄᴏɴᴛɪɴᴜᴇ</b>",
             parse_mode=ParseMode.HTML,
         )
         return
 
     if not status:
         await pm.edit_text(
-            "<b>❍ ᴀssɪsᴛᴀɴᴛ ɪs ᴊᴏɪɴɪɴɢ ᴛʜᴇ ɢʀᴏᴜᴘ...</b>",
+            "<b>❖ ᴊᴏɪɴɪɴɢ ᴛʜᴇ ɢʀᴏᴜᴘ ᴡɪᴛʜ ᴛʜᴇ ᴀssɪsᴛᴀɴᴛ--</b>",
             parse_mode=ParseMode.HTML,
         )
         ok = await try_join_assistant(chat_id, pm)
@@ -231,7 +221,7 @@ async def _process_play(message: Message, query: str, video: bool = False) -> No
         result = await search_yt(query)
     except Exception as e:
         await pm.edit_text(
-            f"<b>❍ sᴇᴀʀᴄʜ ғᴀɪʟᴇᴅ</b>\n<code>{e}</code>",
+            f"<b>❖ ɴᴏ ʀᴇsᴜʟᴛs ғᴏᴜɴᴅ</b>\n<code>{e}</code>",
             parse_mode=ParseMode.HTML,
         )
         return
@@ -240,7 +230,7 @@ async def _process_play(message: Message, query: str, video: bool = False) -> No
     if isinstance(result, dict) and "playlist" in result:
         items = result["playlist"]
         if not items:
-            await pm.edit_text("<b>❍ ᴘʟᴀʏʟɪsᴛ ᴇᴍᴩᴛʏ</b>", parse_mode=ParseMode.HTML)
+            await pm.edit_text("<b>❖ ɴᴏ sᴏɴɢs ᴀʀᴇ ǫᴜᴇᴜᴇᴅ</b>", parse_mode=ParseMode.HTML)
             return
 
         req    = message.from_user.first_name if message.from_user else "Unknown"
@@ -260,12 +250,12 @@ async def _process_play(message: Message, query: str, video: bool = False) -> No
             })
 
         text = (
-            f"<b>❍ ᴘʟᴀʏʟɪsᴛ ᴀᴅᴅᴇᴅ</b>\n"
-            f"<b>❍ sᴏɴɢs :</b> <code>{len(items)}</code>\n"
-            f"<b>❍ ғɪʀsᴛ :</b> <code>{short(items[0]['title'])}</code>"
+            f"<b>● Qᴜᴇᴜᴇ ᴀᴅᴅᴇᴅ</b>\n"
+            f"<b>● Sᴏɴɢs :</b> <code>{len(items)}</code>\n"
+            f"<b>● Fɪʀsᴛ :</b> <code>{short(items[0]['title'])}</code>"
         )
         if len(items) > 1:
-            text += f"\n<b>❍ ɴᴇxᴛ :</b> <code>{short(items[1]['title'])}</code>"
+            text += f"\n<b>❖ ᴜᴘᴄᴏᴍɪɴɢ ᴛʀᴀᴄᴋ :</b> <code>{short(items[1]['title'])}</code>"
 
         await message.reply(text, parse_mode=ParseMode.HTML)
 
@@ -288,9 +278,9 @@ async def _process_play(message: Message, query: str, video: bool = False) -> No
 
     if secs > config.MAX_DURATION_SECONDS:
         await pm.edit_text(
-            f"<b>❍ sᴏɴɢ ᴛᴏᴏ ʟᴏɴɢ</b>\n"
-            f"<b>❍ ᴅᴜʀ :</b> <code>{iso_to_human(dur_iso)}</code>\n"
-            f"<b>❍ ᴍᴀx :</b> <code>{config.MAX_DURATION_SECONDS // 60} min</code>",
+            f"<b>❖ ᴛʀᴀᴄᴋ sᴏɴɢ ᴇxᴄᴇᴇᴅs ᴛʜᴇ ʟɪᴍɪᴛb>\n"
+            f"<b>❖ ᴛʀᴀᴄᴋ ʟᴇɴɢᴛʜ :</b> <code>{iso_to_human(dur_iso)}</code>\n"
+            f"<b>❖ ᴍᴀxɪᴍᴜᴍ ʟɪᴍɪᴛ :</b> <code>{config.MAX_DURATION_SECONDS // 60} min</code>",
             parse_mode=ParseMode.HTML,
         )
         return
@@ -315,15 +305,15 @@ async def _process_play(message: Message, query: str, video: bool = False) -> No
         await play_song(chat_id, pm, song)
     else:
         kb = InlineKeyboardMarkup([[
-            InlineKeyboardButton("⌯ sᴋɪᴩ ⌯",  callback_data="skip"),
-            InlineKeyboardButton("⌯ ᴄʟᴇᴀʀ ⌯", callback_data="clear"),
+            InlineKeyboardButton("Sᴋɪᴩ",  callback_data="skip"),
+            InlineKeyboardButton("Cʟᴇᴀʀ", callback_data="clear"),
         ]])
         await message.reply(
-            f"<b>❍ ᴀᴅᴅᴇᴅ ᴛᴏ ǫᴜᴇᴜᴇ</b>\n"
-            f"<b>❍ ᴛɪᴛʟᴇ :</b> <code>{short(title)}</code>\n"
-            f"<b>❍ ᴅᴜʀ :</b> <code>{iso_to_human(dur_iso)}</code>\n"
-            f"<b>❍ ʙʏ :</b> <code>{req}</code>\n"
-            f"<b>❍ ᴩᴏs :</b> <code>#{pos - 1}</code>",
+            f"<b>❖ ᴛʀᴀᴄᴋ ᴀᴅᴅᴇᴅ sᴜᴄᴄᴇssғᴜʟʟʏ</b>\n"
+            f"<b>❖ sᴏɴɢ :</b> <code>{short(title)}</code>\n"
+            f"<b>❖ ʟᴇɴɢᴛʜ :</b> <code>{iso_to_human(dur_iso)}</code>\n"
+            f"<b>❖ ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ:</b> <code>{req}</code>\n"
+            f"<b>❖ ǫᴜᴇᴜᴇ ᴘᴏsɪᴛɪᴏɴ :</b> <code>#{pos - 1}</code>",
             parse_mode=ParseMode.HTML,
             reply_markup=kb,
         )
