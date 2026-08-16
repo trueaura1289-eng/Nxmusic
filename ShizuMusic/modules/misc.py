@@ -1,14 +1,5 @@
-# --------------------------------------------------------------------------------
-#  ShizuMusic © 2026
-#  Developed by Bad Munda ❤️
-#
-#  Unauthorized copying, editing, re-uploading or removing credits
-#  from this source code is strictly prohibited.
-# --------------------------------------------------------------------------------
-
 """
 Utility commands:
-  /repo  — send source code link
   /id    — get IDs of message / user / chat / replied message
 """
 
@@ -23,68 +14,6 @@ from pyrogram.types import (
 
 from ShizuMusic import bot
 from ShizuMusic.modules.block import user_allowed
-
-# ── Source repo URL ────────────────────────────────────────────────────────────
-SOURCE_URL = "https://github.com/Badmunda05/ShizuMusic"
-
-
-# ── /repo ──────────────────────────────────────────────────────────────────────
-@bot.on_message(filters.command("repo") & user_allowed)
-async def repo_cmd(_, message: Message) -> None:
-
-    kb = InlineKeyboardMarkup(
-        [
-            [
-                InlineKeyboardButton(
-                    "🍡 sᴏᴜʀᴄᴇ ᴄᴏᴅᴇ 🍡",
-                    url=SOURCE_URL,
-                ),
-                InlineKeyboardButton(
-                    "🔱 ғᴏʀᴋ 🔱",
-                    url=f"{SOURCE_URL}/fork",
-                ),
-            ],
-            [
-                InlineKeyboardButton(
-                    "🍬 sᴜᴘᴘᴏʀᴛ 🍬",
-                    url=config.SUPPORT_GROUP,
-                ),
-                InlineKeyboardButton(
-                    "🍹 ᴜᴘᴅᴀᴛᴇs 🍹",
-                    url=config.UPDATES_CHANNEL,
-                ),
-            ],
-        ]
-    )
-
-    await message.reply(
-        "<b>╭────────────────────▣</b>\n"
-        "<b>│ 🍡 sʜɪᴢᴜᴍᴜsɪᴄ sᴏᴜʀᴄᴇ</b>\n"
-        "<b>├────────────────────▣</b>\n"
-        "<b>│ ❍ ᴏᴘᴇɴ sᴏᴜʀᴄᴇ ᴍᴜsɪᴄ ʙᴏᴛ</b>\n"
-        "<b>│ ❍ ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ ʙᴀᴅ ᴍᴜɴᴅᴀ ❤️</b>\n"
-        "<b>├────────────────────▣</b>\n"
-        "<b>│ ⚡ ʜᴏsᴛɪɴɢ sᴜᴘᴘᴏʀᴛ</b>\n"
-        "<b>│</b>\n"
-        "<b>│ ❍ ʀᴇɴᴅᴇʀ ✅</b>\n"
-        "<b>│ ❍ ᴋᴏʏᴇʙ ✅</b>\n"
-        "<b>│ ❍ ʀᴀɪʟᴡᴀʏ ✅</b>\n"
-        "<b>│ ❍ ғʀᴇᴇ ʜᴏsᴛɪɴɢ ⚡</b>\n"
-        "<b>│ ❍ sᴍᴏᴏᴛʜ ᴘᴇʀғᴏʀᴍᴀɴᴄᴇ 🚀</b>\n"
-        "<b>│</b>\n"
-        "<b>│ 💎 ᴘʀᴇᴍɪᴜᴍ ʜᴏsᴛɪɴɢ</b>\n"
-        "<b>│ ❍ ʜᴇʀᴏᴋᴜ 💎</b>\n"
-        "<b>│ ❍ ᴠᴘs 🚀</b>\n"
-        "<b>│ ❍ 24x7 sᴍᴏᴏᴛʜ ʜᴏsᴛ ⚡</b>\n"
-        "<b>├────────────────────▣</b>\n"
-        f"<b>│ ❍ <a href='{SOURCE_URL}'>ɢɪᴛʜᴜʙ ʀᴇᴘᴏ</a></b>\n"
-        "<b>│ ❍ ғᴇᴇʟ ғʀᴇᴇ ᴛᴏ ʜɪᴛ ⭐ ᴏɴ ɢɪᴛʜᴜʙ</b>\n"
-        "<b>╰────────────────────▣</b>",
-        parse_mode=ParseMode.HTML,
-        reply_markup=kb,
-        disable_web_page_preview=True,
-    )
-
 
 # ── /id ────────────────────────────────────────────────────────────────────────
 
