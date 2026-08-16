@@ -1,11 +1,3 @@
-# --------------------------------------------------------------------------------
-#  ShizuMusic © 2026
-#  Developed by Bad Munda ❤️
-#
-#  Unauthorized copying, editing, re-uploading or removing credits
-#  from this source code is strictly prohibited.
-# --------------------------------------------------------------------------------
-
 import asyncio
 import logging
 import re
@@ -34,237 +26,237 @@ from ShizuMusic.utils.db import (
 
 logger = logging.getLogger(__name__)
 
-# ── Broadcast lock ─────────────────────────────────────────────────────────────
-_IS_BROADCASTING = False
-_broadcast_lock  = asyncio.Lock()
+# ❖ broadcast safety guard lock ❖
+_is_broadcasting_active = False
+_broadcast_sync_lock  = asyncio.Lock()
 
-# ── Flags ──────────────────────────────────────────────────────────────────────
+# ❖ execution flags info ❖
 #
-#  /broadcast or /gcast — reply to a message OR write text after command
+#   /broadcast or /gcast — reply to any text or pass message right after cmd
 #
-#  -pin       → pin in groups silently
-#  -pinloud   → pin in groups with notification
-#  -nogroup   → skip groups, send to private users only
-#  -user      → also send to private users
+#   -pin        → stick message silently inside groups
+#   -pinloud    → stick message with alert sound in groups
+#   -nogroup    → skip groups, route strictly to dm users
+#   -user       → send copies to dm users as well
 #
-#  Examples:
-#    /broadcast -pin              (reply to msg — groups, pin silently)
-#    /broadcast -pinloud -user    (reply to msg — groups + users, loud pin)
-#    /broadcast -nogroup -user    (reply to msg — users only)
-#    /broadcast Hello everyone    (text — groups)
-#    /gcast -user Hello           (text — groups + users)
+#   examples:
+#     /broadcast -pin               (reply to msg — groups only, silent stick)
+#     /broadcast -pinloud -user     (reply to msg — groups plus users, loud stick)
+#     /broadcast -nogroup -user     (reply to msg — dm users only)
+#     /broadcast hey guys           (text mode — groups)
+#     /gcast -user hi               (text mode — groups plus users)
 #
-# ──────────────────────────────────────────────────────────────────────────────
+# ❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖❖
 
 
-def _parse_flags(raw: str) -> tuple[bool, bool, bool, bool]:
+def _extract_flag_options(content: str) -> tuple[bool, bool, bool, bool]:
     """
-    Returns (pin, pinloud, nogroup, user).
-    BUG FIX: use regex word-boundary so -pin doesn't match inside -pinloud.
+    returns tuple: (pin, pinloud, nogroup, user).
+    fix applied: regex word-boundary utilized so -pin won't trigger inside -pinloud.
     """
-    pin     = bool(re.search(r"-pin(?!loud)", raw))
-    pinloud = "-pinloud" in raw
-    nogroup = "-nogroup" in raw
-    user    = "-user"    in raw
+    pin     = bool(re.search(r"-pin(?!loud)", content))
+    pinloud = "-pinloud" in content
+    nogroup = "-nogroup" in content
+    user    = "-user"    in content
     return pin, pinloud, nogroup, user
 
 
-def _strip_flags(text: str) -> str:
-    """Remove all flags from text, return clean content."""
-    for flag in ("-pinloud", "-nogroup", "-user", "-pin"):
-        text = text.replace(flag, "")
-    return text.strip()
+def _clean_out_flags(txt: str) -> str:
+    """strip all control flags out, yielding purely core payload text."""
+    for tag in ("-pinloud", "-nogroup", "-user", "-pin"):
+        txt = txt.replace(tag, "")
+    return txt.strip()
 
 
-# ── Send one message — forward with copy fallback for protected chats ──────────
+# ❖ delivery handler — forward payload with safe fallback copy routine for protected chats ❖
 
-async def _send(target_id: int, bm: Message, broadcast_type: str, text: str) -> Message:
+async def _dispatch_single(receiver_id: int, base_msg: Message, mode_type: str, payload_text: str) -> Message:
     """
-    Send broadcast content to a single chat.
-    For 'reply' type: tries forward first, falls back to copy_message
-    so protected/restricted chats still receive the message.
-    Raises on any unrecoverable error.
+    pushes broadcast item to a single destination chat.
+    for reply payload type: attempts native forward first, falls back to copy_message
+    so restricted/protected group contents go through smoothly without breaking.
+    raises error on hard failure.
     """
-    if broadcast_type == "text":
-        return await bot.send_message(target_id, text, parse_mode=ParseMode.HTML)
+    if mode_type == "text":
+        return await bot.send_message(receiver_id, payload_text, parse_mode=ParseMode.HTML)
 
-    # Try forward first
+    # try native forward pass first
     try:
-        return await bot.forward_messages(target_id, bm.chat.id, bm.id)
+        return await bot.forward_messages(receiver_id, base_msg.chat.id, base_msg.id)
     except (ChatForwardsRestricted, MediaEmpty, MessageIdInvalid):
-        # Fallback: copy without forward tag
-        return await bot.copy_message(target_id, bm.chat.id, bm.id)
+        # fallback path: copy content cleanly without forwarding tag headers
+        return await bot.copy_message(receiver_id, base_msg.chat.id, base_msg.id)
 
 
-# ── Main command ───────────────────────────────────────────────────────────────
+# ❖ primary command routing ❖
 
 @bot.on_message(
     filters.command(["broadcast", "gcast"])
     & filters.user(config.OWNER_ID)
 )
-async def broadcast_cmd(_, message: Message) -> None:
-    global _IS_BROADCASTING
+async def broadcast_command_entry(_, message: Message) -> None:
+    global _is_broadcasting_active
 
-    async with _broadcast_lock:
-        if _IS_BROADCASTING:
+    async with _broadcast_sync_lock:
+        if _is_broadcasting_active:
             await message.reply(
-                "<b>❍ A broadcast is already running.</b>\n"
-                "<b>❍ Please wait for it to finish.</b>",
+                "<b>❖ ᴀ ʙʀᴏᴀᴅᴄᴀsᴛ ɪs ᴀʟʀᴇᴀᴅʏ ʀᴜɴɴɪɴɢ ʀɪɢʜᴛ ɴᴏᴡ.</b>\n"
+                "<b>❖ ᴘʟᴇᴀsᴇ ʜᴏʟᴅ ᴏɴ ᴜɴᴛɪʟ ɪᴛ ᴄᴏᴍᴘʟᴇᴛᴇs.</b>",
                 parse_mode=ParseMode.HTML,
             )
             return
-        _IS_BROADCASTING = True
+        _is_broadcasting_active = True
 
     try:
-        await _run_broadcast(message)
+        await _execute_broadcast_routine(message)
     finally:
-        _IS_BROADCASTING = False
+        _is_broadcasting_active = False
 
 
-async def _run_broadcast(message: Message) -> None:
+async def _execute_broadcast_routine(message: Message) -> None:
 
-    # ── Parse args ────────────────────────────────────────────────────────────
-    raw = message.text or ""
+    # ❖ parse input arguments ❖
+    raw_content = message.text or ""
     try:
-        raw_args = raw.split(None, 1)[1]
+        parsed_args = raw_content.split(None, 1)[1]
     except IndexError:
-        raw_args = ""
+        parsed_args = ""
 
-    flag_pin, flag_pinloud, flag_nogroup, flag_user = _parse_flags(raw_args)
-    clean_text = _strip_flags(raw_args)
+    f_pin, f_pinloud, f_nogroup, f_user = _extract_flag_options(parsed_args)
+    pure_payload = _clean_out_flags(parsed_args)
 
-    # ── Determine content ─────────────────────────────────────────────────────
+    # ❖ figure out content payload type ❖
     if message.reply_to_message:
-        bm             = message.reply_to_message
-        broadcast_type = "reply"
-    elif clean_text:
-        bm             = None
-        broadcast_type = "text"
+        base_msg   = message.reply_to_message
+        mode_type = "reply"
+    elif pure_payload:
+        base_msg   = None
+        mode_type = "text"
     else:
         await message.reply(
-            "<b>❍ Reply to a message or provide text.</b>\n\n"
-            "<b>❍ Flags :</b>\n"
-            "<code>-pin</code>      → pin silently in groups\n"
-            "<code>-pinloud</code>  → pin with notification\n"
-            "<code>-nogroup</code>  → skip groups\n"
-            "<code>-user</code>     → also send to private users",
+            "<b>❖ ᴘʟᴇᴀsᴇ ʀᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇssᴀɢᴇ ᴏʀ ᴛʏᴘᴇ ᴛᴇxᴛ ᴄᴏɴᴛᴇɴᴛ.</b>\n\n"
+            "<b>❖ ᴀᴠᴀɪʟᴀʙʟᴇ ғʟᴀɢs :</b>\n"
+            "<code>-pin</code>     → sᴛɪᴄᴋ sɪʟᴇɴᴛʟʏ ɪɴ ɢʀᴏᴜᴘs\n"
+            "<code>-pinloud</code>  → sᴛɪᴄᴋ ᴡɪᴛʜ ɴᴏᴛɪғɪᴄᴀᴛɪᴏɴ\n"
+            "<code>-nogroup</code>  → sᴋɪᴘ ɢʀᴏᴜᴘ ᴄʜᴀᴛs\n"
+            "<code>-user</code>     → ᴀʟsᴏ ᴅɪsᴘᴀᴛᴄʜ ᴛᴏ ᴅᴍ ᴜsᴇʀs",
             parse_mode=ParseMode.HTML,
         )
         return
 
-    # ── Load DB ───────────────────────────────────────────────────────────────
-    all_docs = get_broadcast_chats()
-    counts   = get_broadcast_count()
-    groups   = [d for d in all_docs if d.get("type") == "group"]
-    private  = [d for d in all_docs if d.get("type") == "private"]
+    # ❖ fetch data records from database ❖
+    all_chat_docs = get_broadcast_chats()
+    totals_info   = get_broadcast_count()
+    group_list    = [d for d in all_chat_docs if d.get("type") == "group"]
+    private_list  = [d for d in all_chat_docs if d.get("type") == "private"]
 
-    targets = (0 if flag_nogroup else len(groups)) + (len(private) if flag_user else 0)
+    computed_targets = (0 if f_nogroup else len(group_list)) + (len(private_list) if f_user else 0)
 
-    if targets == 0:
+    if computed_targets == 0:
         await message.reply(
-            "<b>❍ No targets found in broadcast list.</b>",
+            "<b>❖ ɴᴏ ᴛᴀʀɢᴇᴛ ᴄʜᴀᴛs ғᴏᴜɴᴅ ɪɴ ᴛʜᴇ ʀᴇᴄᴏʀᴅs.</b>",
             parse_mode=ParseMode.HTML,
         )
         return
 
-    # Active flags text
-    active_flags = " ".join(filter(None, [
-        "-pin"     if flag_pin     else "",
-        "-pinloud" if flag_pinloud else "",
-        "-nogroup" if flag_nogroup else "",
-        "-user"    if flag_user    else "",
-    ])) or "none"
+    # active flag tags string summary
+    active_flags_str = " ".join(filter(None, [
+        "-pin"     if f_pin     else "",
+        "-pinloud" if f_pinloud else "",
+        "-nogroup" if f_nogroup else "",
+        "-user"    if f_user    else "",
+    ])) or "ɴᴏɴᴇ"
 
-    pm = await message.reply(
-        f"<b>❍ Broadcast Started</b>\n\n"
-        f"<b>❍ Total   :</b> <code>{counts['total']}</code>\n"
-        f"<b>❍ Groups  :</b> <code>{len(groups)}</code>\n"
-        f"<b>❍ Users   :</b> <code>{len(private)}</code>\n"
-        f"<b>❍ Targets :</b> <code>{targets}</code>\n"
-        f"<b>❍ Flags   :</b> <code>{active_flags}</code>",
+    status_tracker_msg = await message.reply(
+        f"<b>❖ ʙʀᴏᴀᴅᴄᴀsᴛ sᴛᴀʀᴛᴇᴅ</b>\n\n"
+        f"<b>❖ ᴛᴏᴛᴀʟ   :</b> <code>{totals_info['total']}</code>\n"
+        f"<b>❖ ɢʀᴏᴜᴘs  :</b> <code>{len(group_list)}</code>\n"
+        f"<b>❖ ᴜsᴇʀs   :</b> <code>{len(private_list)}</code>\n"
+        f"<b>❖ ᴛᴀʀɢᴇᴛs :</b> <code>{computed_targets}</code>\n"
+        f"<b>❖ ғʟᴀɢs   :</b> <code>{active_flags_str}</code>",
         parse_mode=ParseMode.HTML,
     )
 
-    success_g = success_u = pinned = failed = 0
+    success_groups_count = success_users_count = pinned_count = failed_count = 0
 
-    # ── Groups ────────────────────────────────────────────────────────────────
-    if not flag_nogroup:
-        for doc in groups:
-            cid = int(doc["chat_id"])
+    # ❖ group routing phase ❖
+    if not f_nogroup:
+        for item_doc in group_list:
+            chat_identifier = int(item_doc["chat_id"])
             try:
-                sent = await _send(cid, bm, broadcast_type, clean_text)
-                success_g += 1
+                sent_msg = await _dispatch_single(chat_identifier, base_msg, mode_type, pure_payload)
+                success_groups_count += 1
 
-                if flag_pin or flag_pinloud:
+                if f_pin or f_pinloud:
                     try:
                         await bot.pin_chat_message(
-                            cid, sent.id,
-                            disable_notification=not flag_pinloud,
+                            chat_identifier, sent_msg.id,
+                            disable_notification=not f_pinloud,
                         )
-                        pinned += 1
+                        pinned_count += 1
                     except ChatAdminRequired:
                         pass
                     except Exception:
                         pass
 
-            except FloodWait as e:
-                wait = int(e.value)
-                if wait > 200:
-                    failed += 1
+            except FloodWait as flood_err:
+                wait_duration = int(flood_err.value)
+                if wait_duration > 200:
+                    failed_count += 1
                     continue
-                await asyncio.sleep(wait)
+                await asyncio.sleep(wait_duration)
                 try:
-                    await _send(cid, bm, broadcast_type, clean_text)
-                    success_g += 1
+                    await _dispatch_single(chat_identifier, base_msg, mode_type, pure_payload)
+                    success_groups_count += 1
                 except Exception:
-                    failed += 1
+                    failed_count += 1
 
             except (UserIsBlocked, ChatWriteForbidden, PeerIdInvalid):
-                remove_broadcast_chat(cid)
-                failed += 1
+                remove_broadcast_chat(chat_identifier)
+                failed_count += 1
 
-            except Exception as e:
-                logger.warning(f"[Broadcast] group {cid}: {e}")
-                failed += 1
+            except Exception as runtime_err:
+                logger.warning(f"[Broadcast] group target {chat_identifier}: {runtime_err}")
+                failed_count += 1
 
-            await asyncio.sleep(0.4)
+            await asyncio.sleep(1.5)
 
-    # ── Private users ─────────────────────────────────────────────────────────
-    if flag_user:
-        for doc in private:
-            uid = int(doc["chat_id"])
+    # ❖ private dm routing phase ❖
+    if f_user:
+        for item_doc in private_list:
+            user_identifier = int(item_doc["chat_id"])
             try:
-                await _send(uid, bm, broadcast_type, clean_text)
-                success_u += 1
+                await _dispatch_single(user_identifier, base_msg, mode_type, pure_payload)
+                success_users_count += 1
 
-            except FloodWait as e:
-                wait = int(e.value)
-                if wait > 200:
-                    failed += 1
+            except FloodWait as flood_err:
+                wait_duration = int(flood_err.value)
+                if wait_duration > 200:
+                    failed_count += 1
                     continue
-                await asyncio.sleep(wait)
+                await asyncio.sleep(wait_duration)
                 try:
-                    await _send(uid, bm, broadcast_type, clean_text)
-                    success_u += 1
+                    await _dispatch_single(user_identifier, base_msg, mode_type, pure_payload)
+                    success_users_count += 1
                 except Exception:
-                    failed += 1
+                    failed_count += 1
 
             except (UserIsBlocked, PeerIdInvalid):
-                remove_broadcast_chat(uid)
-                failed += 1
+                remove_broadcast_chat(user_identifier)
+                failed_count += 1
 
-            except Exception as e:
-                logger.warning(f"[Broadcast] user {uid}: {e}")
-                failed += 1
+            except Exception as runtime_err:
+                logger.warning(f"[Broadcast] user target {user_identifier}: {runtime_err}")
+                failed_count += 1
 
-            await asyncio.sleep(0.4)
+            await asyncio.sleep(1.5)
 
-    # ── Done ──────────────────────────────────────────────────────────────────
-    await pm.edit_text(
-        "<b>❍ Broadcast Completed ✅</b>\n\n"
-        f"<b>❍ Groups :</b> <code>{success_g}</code>\n"
-        f"<b>❍ Users  :</b> <code>{success_u}</code>\n"
-        f"<b>❍ Pinned :</b> <code>{pinned}</code>\n"
-        f"<b>❍ Failed :</b> <code>{failed}</code>",
+    # ❖ wrap up final update ❖
+    await status_tracker_msg.edit_text(
+        "<b>❖ ʙʀᴏᴀᴅᴄᴀsᴛ ᴄᴏᴍᴘʟᴇᴛᴇᴅ ✅</b>\n\n"
+        f"<b>❖ ɢʀᴏᴜᴘs :</b> <code>{success_groups_count}</code>\n"
+        f"<b>❖ ᴜsᴇʀs  :</b> <code>{success_users_count}</code>\n"
+        f"<b>❖ ᴘɪɴɴᴇᴅ :</b> <code>{pinned_count}</code>\n"
+        f"<b>❖ ғᴀɪʟᴇᴅ :</b> <code>{failed_count}</code>",
         parse_mode=ParseMode.HTML,
-                )
+    )
