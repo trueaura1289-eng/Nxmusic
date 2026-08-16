@@ -114,18 +114,18 @@ if __name__ == "__main__":
     me = bot.get_me()
     LOGGER.info(f"Bot: @{me.username}")
 
-    # 6. Set bot commands
+  # 6. Set bot commands
     try:
-      bot.set_bot_commands([
-    BotCommand("start",  "sᴛᴀʀᴛ ᴛʜᴇ ᴍᴜsɪᴄ ʙᴏᴛ"),
-    BotCommand("play",   "ᴘʟᴀʏ ʏᴏᴜʀ ғᴀᴠᴏᴜʀɪᴛᴇ sᴏɴɢ"),
-    BotCommand("pause",  "ᴘᴀᴜsᴇ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ sᴏɴɢ"),
-    BotCommand("resume", "ᴄᴏɴᴛɪɴᴜᴇ ᴘʟᴀʏʙᴀᴄᴋ"),
-    BotCommand("skip",   "ᴘʟᴀʏ ɴᴇxᴛ sᴏɴɢ"),
-    BotCommand("stop",   "sᴛᴏᴘ ᴍᴜsɪᴄ & ᴄʟᴇᴀʀ"),
-    BotCommand("help",   "ɢᴇᴛ ʜᴇʟᴘ & ɪɴғᴏ"),
-    BotCommand("ping",   "ᴄʜᴇᴄᴋ ʙᴏᴛ sᴛᴀᴛᴜs"),
-])
+        bot.set_bot_commands([
+            BotCommand("start", "sᴛᴀʀᴛ ᴛʜᴇ ᴍᴜsɪᴄ ʙᴏᴛ"),
+            BotCommand("play", "ᴘʟᴀʏ ʏᴏᴜʀ ғᴀᴠᴏᴜʀɪᴛᴇ sᴏɴɢ"),
+            BotCommand("pause", "ᴘᴀᴜsᴇ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ sᴏɴɢ"),
+            BotCommand("resume", "ᴄᴏɴᴛɪɴᴜᴇ ᴘʟᴀʏʙᴀᴄᴋ"),
+            BotCommand("skip", "ᴘʟᴀʏ ɴᴇxᴛ sᴏɴɢ"),
+            BotCommand("stop", "sᴛᴏᴘ ᴍᴜsɪᴄ & ᴄʟᴇᴀʀ"),
+            BotCommand("help", "ɢᴇᴛ ʜᴇʟᴘ & ɪɴғᴏ"),
+            BotCommand("ping", "ᴄʜᴇᴄᴋ ʙᴏᴛ sᴛᴀᴛᴜs"),
+        ])
         LOGGER.info("Bot commands set")
     except Exception as e:
         LOGGER.warning(f"Could not set bot commands: {e}")
