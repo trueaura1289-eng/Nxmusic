@@ -1,11 +1,3 @@
-# --------------------------------------------------------------------------------
-#  ShizuMusic © 2026
-#  Developed by Bad Munda ❤️
-#
-#  Unauthorized copying, editing, re-uploading or removing credits
-#  from this source code is strictly prohibited.
-# --------------------------------------------------------------------------------
-
 import asyncio
 
 from pyrogram import filters
@@ -33,22 +25,21 @@ async def skip_cmd(_, message: Message) -> None:
 
     if not await is_user_authorized(message):
         await message.reply(
-            "<b>❍ ᴀᴅᴍɪɴ ᴏɴʟʏ</b>\n"
-            "<b>❍ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ɪs ғᴏʀ ɢʀᴏᴜᴘ ᴀᴅᴍɪɴs.</b>",
+            "<b>❖ ᴏɴʟʏ ɢʀᴏᴜᴘ ᴀᴅᴍɪɴs ᴄᴀɴ ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ</b>",
             parse_mode=ParseMode.HTML,
         )
         return
 
     if not queue_size(chat_id):
         await message.reply(
-            "<b>❍ ǫᴜᴇᴜᴇ ɪs ᴇᴍᴘᴛʏ</b>\n"
-            "<b>❍ ɴᴏ sᴏɴɢs ᴛᴏ sᴋɪᴘ.</b>",
+            "<b>❖ ɴᴏ sᴏɴɢs ᴀʀᴇ ǫᴜᴇᴜᴇᴅ</b>\n"
+            "<b>❖ ɴᴏ sᴏɴɢ ɪs ᴀᴠᴀɪʟᴀʙʟᴇ ғᴏʀ sᴋɪᴘᴘɪɴɢ</b>",
             parse_mode=ParseMode.HTML,
         )
         return
 
     sm = await message.reply(
-        "<b>❍ sᴋɪᴘᴘɪɴɢ ᴄᴜʀʀᴇɴᴛ ᴛʀᴀᴄᴋ...</b>",
+        "<b>❖ sᴋɪᴘᴘɪɴɢ ᴛʜɪs ᴛʀᴀᴄᴋ...</b>",
         parse_mode=ParseMode.HTML,
     )
 
@@ -70,19 +61,19 @@ async def skip_cmd(_, message: Message) -> None:
 
     if nxt:
         await sm.edit_text(
-            f"<b>❍ sᴋɪᴘᴘᴇᴅ ᴛʀᴀᴄᴋ :</b> <code>{short(skipped['title'])}</code>\n"
-            f"<b>❍ ɴᴏᴡ ᴘʟᴀʏɪɴɢ :</b>\n<code>{nxt['title']}</code>",
+            f"<b>❖ sᴋɪᴘᴘᴇᴅ ᴛʀᴀᴄᴋ :</b> <code>{short(skipped['title'])}</code>\n"
+            f"<b>❖ ᴄᴜʀʀᴇɴᴛʟʏ ᴘʟᴀʏɪɴɢ :</b>\n<code>{nxt['title']}</code>",
             parse_mode=ParseMode.HTML,
         )
         dm = await bot.send_message(
             chat_id,
-            f"<b>❍ ɴᴇxᴛ ᴛʀᴀᴄᴋ :</b> <code>{nxt['title']}</code>",
+            f"<b>❖ ᴜᴘᴄᴏᴍɪɴɢ ᴛʀᴀᴄᴋ :</b> <code>{nxt['title']}</code>",
             parse_mode=ParseMode.HTML,
         )
         await play_song(chat_id, dm, nxt)
     else:
         await sm.edit_text(
-            f"<b>❍ sᴋɪᴘᴘᴇᴅ ᴛʀᴀᴄᴋ :</b> <code>{short(skipped['title'])}</code>\n"
-            "<b>❍ ǫᴜᴇᴜᴇ ɪs ɴᴏᴡ ᴇᴍᴘᴛʏ</b>",
+            f"<b>❖ sᴋɪᴘᴘᴇᴅ ᴛʀᴀᴄᴋ :</b> <code>{short(skipped['title'])}</code>\n"
+            "<b>❖ ɴᴏ ᴛʀᴀᴄᴋs ʀᴇᴍᴀɪɴ ɪɴ ᴛʜᴇ ǫᴜᴇᴜᴇ</b>",
             parse_mode=ParseMode.HTML,
         )
