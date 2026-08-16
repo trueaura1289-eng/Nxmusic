@@ -59,7 +59,7 @@ async def _update_progress(
     start_t: float,
     total: float,
     caption: str,
-async def update_progress(...) -> None:
+) -> None:
     btns = [
         InlineKeyboardButton("▶", callback_data="resume"),
         InlineKeyboardButton("⏸", callback_data="pause"),
