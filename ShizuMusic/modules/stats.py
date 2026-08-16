@@ -1,11 +1,3 @@
-# --------------------------------------------------------------------------------
-#  ShizuMusic © 2026
-#  Developed by Bad Munda ❤️
-#
-#  Unauthorized copying, editing, re-uploading or removing credits
-#  from this source code is strictly prohibited.
-# --------------------------------------------------------------------------------
-
 import platform
 import sys
 
@@ -35,7 +27,7 @@ async def stats_cmd(_, message: Message) -> None:
     """Full system + MongoDB stats for the bot owner."""
 
     processing = await message.reply(
-        "<b>❍ Fetching stats, please wait...</b>",
+        "<b>❖ ɢᴀᴛʜᴇʀɪɴɢ sᴛᴀᴛs, ᴘʟᴇᴀsᴇ ᴡᴀɪᴛ...</b>",
         parse_mode=ParseMode.HTML,
     )
 
@@ -65,13 +57,13 @@ async def stats_cmd(_, message: Message) -> None:
 
     except Exception as e:
         await processing.edit_text(
-            f"<b>❍ System stats error:</b> <code>{e}</code>",
+            f"<b>❖ ᴜɴᴀʙʟᴇ ᴛᴏ ʀᴇᴛʀɪᴇᴠᴇ sʏsᴛᴇᴍ sᴛᴀᴛs:</b> <code>{e}</code>",
             parse_mode=ParseMode.HTML,
         )
         return
 
     # ── MongoDB stats ─────────────────────────────────────────────────────────
-    db_line = "<b>❍ MongoDB :</b> <code>Not connected</code>"
+    db_line = "<b>❖ MongoDB :</b> <code>Not connected</code>"
     if is_connected():
         try:
             client   = get_mongo_client()
@@ -81,13 +73,13 @@ async def stats_cmd(_, message: Message) -> None:
             col_cnt  = db_stats.get("collections", 0)
             obj_cnt  = db_stats.get("objects",     0)
             db_line  = (
-                f"<b>❍ DB Data    :</b> <code>{data_kb:.2f} KB</code>\n"
-                f"<b>❍ DB Storage :</b> <code>{stor_kb:.2f} KB</code>\n"
-                f"<b>❍ Collections:</b> <code>{col_cnt}</code>\n"
-                f"<b>❍ Objects    :</b> <code>{obj_cnt}</code>"
+                f"<b>⚘ DB Data    :</b> <code>{data_kb:.2f} KB</code>\n"
+                f"<b>⚘ DB Storage :</b> <code>{stor_kb:.2f} KB</code>\n"
+                f"<b>⚘ Collections:</b> <code>{col_cnt}</code>\n"
+                f"<b>⚘ Objects    :</b> <code>{obj_cnt}</code>"
             )
         except Exception as e:
-            db_line = f"<b>❍ MongoDB stats error:</b> <code>{e}</code>"
+            db_line = f"<b>⚘ MongoDB stats error:</b> <code>{e}</code>"
 
     # ── Bot DB counts ─────────────────────────────────────────────────────────
     served_chats = get_served_chats_count()
@@ -98,41 +90,40 @@ async def stats_cmd(_, message: Message) -> None:
 
     # ── Final message ─────────────────────────────────────────────────────────
     text = (
-        "<b>━━━━━━━━ ShizuMusic Stats ━━━━━━━━</b>\n\n"
+        "<b>~~ ᴇʟʏx ᴍᴜsɪᴄ sᴛᴀᴛs --</b>\n\n"
 
-        "<b>❍ System</b>\n"
-        f"<b>  OS        :</b> <code>{os_name} {os_release}</code>\n"
-        f"<b>  Python    :</b> <code>{py_version}</code>\n"
-        f"<b>  CPU Usage :</b> <code>{cpu_percent}%</code>\n"
-        f"<b>  CPU Freq  :</b> <code>{freq_str}</code>\n"
-        f"<b>  P-Cores   :</b> <code>{p_cores}</code>\n"
-        f"<b>  T-Cores   :</b> <code>{t_cores}</code>\n\n"
+      "<b>❖ sʏsᴛᴇᴍ ᴅᴇᴛᴀɪʟs</b>\n"
+f"<b> ᴏs       :</b> <code>{os_name} {os_release}</code>\n"
+f"<b> ᴘʏᴛʜᴏɴ   :</b> <code>{py_version}</code>\n"
+f"<b> ᴄᴘᴜ      :</b> <code>{cpu_percent}%</code>\n"
+f"<b> ᴄᴘᴜ ғʀᴇǫ :</b> <code>{freq_str}</code>\n"
+f"<b> ᴘ-ᴄᴏʀᴇs  :</b> <code>{p_cores}</code>\n"
+f"<b> ᴛ-ᴄᴏʀᴇs  :</b> <code>{t_cores}</code>\n\n"
 
-        "<b>❍ Memory (RAM)</b>\n"
-        f"<b>  Total :</b> <code>{ram_total:.2f} GB</code>\n"
-        f"<b>  Used  :</b> <code>{ram_used:.2f} GB  ({ram_percent}%)</code>\n"
-        f"<b>  Free  :</b> <code>{ram_free:.2f} GB</code>\n\n"
+"<b>❖ ᴍᴇᴍᴏʀʏ</b>\n"
+f"<b> ᴛᴏᴛᴀʟ :</b> <code>{ram_total:.2f} ɢʙ</code>\n"
+f"<b> ᴜsᴇᴅ  :</b> <code>{ram_used:.2f} ɢʙ ({ram_percent}%)</code>\n"
+f"<b> ғʀᴇᴇ  :</b> <code>{ram_free:.2f} ɢʙ</code>\n\n"
 
-        "<b>❍ Disk</b>\n"
-        f"<b>  Total :</b> <code>{disk_total:.2f} GB</code>\n"
-        f"<b>  Used  :</b> <code>{disk_used:.2f} GB  ({disk_percent}%)</code>\n"
-        f"<b>  Free  :</b> <code>{disk_free:.2f} GB</code>\n\n"
+"<b>❖ sᴛᴏʀᴀɢᴇ</b>\n"
+f"<b> ᴛᴏᴛᴀʟ :</b> <code>{disk_total:.2f} ɢʙ</code>\n"
+f"<b> ᴜsᴇᴅ  :</b> <code>{disk_used:.2f} ɢʙ ({disk_percent}%)</code>\n"
+f"<b> ғʀᴇᴇ  :</b> <code>{disk_free:.2f} ɢʙ</code>\n\n"
 
-        "<b>❍ MongoDB</b>\n"
-        f"{db_line}\n\n"
+"<b>❖ ᴅᴀᴛᴀʙᴀsᴇ</b>\n"
+f"{db_line}\n\n"
 
-        "<b>❍ Bot Stats</b>\n"
-        f"<b>  Served Chats :</b> <code>{served_chats}</code>\n"
-        f"<b>  Served Users :</b> <code>{served_users}</code>\n"
-        f"<b>  Banned Chats :</b> <code>{banned_chats}</code>\n"
-        f"<b>  Total Plays  :</b> <code>{total_plays}</code>\n\n"
+"<b>❖ ʙᴏᴛ ɪɴsɪɢʜᴛs</b>\n"
+f"<b> ᴄʜᴀᴛs     :</b> <code>{served_chats}</code>\n"
+f"<b> ᴜsᴇʀs     :</b> <code>{served_users}</code>\n"
+f"<b> ʙʟᴏᴄᴋᴇᴅ   :</b> <code>{banned_chats}</code>\n"
+f"<b> ᴘʟᴀʏs     :</b> <code>{total_plays}</code>\n\n"
 
-        "<b>❍ Broadcast List</b>\n"
-        f"<b>  Total   :</b> <code>{bc['total']}</code>\n"
-        f"<b>  Groups  :</b> <code>{bc['groups']}</code>\n"
-        f"<b>  Users   :</b> <code>{bc['private']}</code>\n\n"
+"<b>❖ ʙʀᴏᴀᴅᴄᴀsᴛ ᴅᴀᴛᴀ</b>\n"
+f"<b> ᴛᴏᴛᴀʟ     :</b> <code>{bc['total']}</code>\n"
+f"<b> ɢʀᴏᴜᴘs    :</b> <code>{bc['groups']}</code>\n"
+f"<b> ᴘʀɪᴠᴀᴛᴇ   :</b> <code>{bc['private']}</code>\n\n"
 
-        "<b>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</b>"
-    )
-
-    await processing.edit_text(text, parse_mode=ParseMode.HTML)
+"<b>❖ ────────────────────────────────</b>"
+        
+        it_text(text, parse_mode=ParseMode.HTML)
