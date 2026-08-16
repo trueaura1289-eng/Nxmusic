@@ -1,11 +1,3 @@
-# --------------------------------------------------------------------------------
-#  ShizuMusic © 2026
-#  Developed by Bad Munda ❤️
-#
-#  Unauthorized copying, editing, re-uploading or removing credits
-#  from this source code is strictly prohibited.
-# --------------------------------------------------------------------------------
-
 from pyrogram import filters
 from pyrogram.enums import ParseMode
 from pyrogram.types import Message
@@ -25,8 +17,7 @@ async def resume_cmd(_, message: Message) -> None:
 
     if not await is_user_authorized(message):
         await message.reply(
-            "<b>❍ ᴀᴅᴍɪɴ ᴏɴʟʏ</b>\n"
-            "<b>❍ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ɪs ғᴏʀ ɢʀᴏᴜᴘ ᴀᴅᴍɪɴs.</b>",
+            "<b>❖ ᴏɴʟʏ ɢʀᴏᴜᴘ ᴀᴅᴍɪɴs ᴄᴀɴ ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ.</b>",
             parse_mode=ParseMode.HTML,
         )
         return
@@ -34,12 +25,11 @@ async def resume_cmd(_, message: Message) -> None:
     try:
         await call_py.resume(message.chat.id)
         await message.reply(
-            "<b>❍ sᴛʀᴇᴀᴍ ʀᴇsᴜᴍᴇᴅ</b>\n"
-            "<b>❍ ᴍᴜsɪᴄ ᴘʟᴀʏʙᴀᴄᴋ ᴄᴏɴᴛɪɴᴜᴇᴅ.</b>",
+            "<b>❖ ʀᴇsᴜᴍᴇᴅ, sᴛʀᴇᴀᴍ ɪs ʙᴀᴄᴋ ᴜᴘ ᴀɴᴅ ʀᴜɴɴɪɴɢ</b>",
             parse_mode=ParseMode.HTML,
         )
     except Exception as e:
         await message.reply(
-            f"<b>❍ ʀᴇsᴜᴍᴇ ғᴀɪʟᴇᴅ</b>\n<code>{e}</code>",
+            f"<b>❖ ᴜɴᴀʙʟᴇ ᴛᴏ ʀᴇsᴜᴍᴇ ᴘʟᴀʏʙᴀᴄᴋ</b>\n<code>{e}</code>",
             parse_mode=ParseMode.HTML,
         )
