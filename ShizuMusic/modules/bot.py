@@ -39,22 +39,16 @@ async def bot_added_watcher(_, message: Message) -> None:
             inviter_mention = inviter_user.mention if inviter_user else "ᴜɴᴋɴᴏᴡɴ"
 
             admin_request_text = (
-                "<b>❖──────────────────────❖</b>\n"
-                "<b>❖ ᴍᴜᴄʜ ᴏʙʟɪɢᴇᴅ ғᴏʀ ɪɴᴠɪᴛɪɴɢ ᴍᴇ ʜᴇʀᴇ! 🥀</b>\n"
-                "<b>❖──────────────────────❖</b>\n"
-                "<b>❖ ᴋɪɴᴅʟʏ ɢʀᴀɴᴛ ᴍᴇ ᴀᴅᴍɪɴɪsᴛʀᴀᴛᴏʀ</b>\n"
-                "<b>❖ ᴡɪᴛʜ ᴛʜᴇsᴇ ᴇssᴇɴᴛɪᴀʟ ᴘᴇʀᴍs:</b>\n"
-                "<b>❖──────────────────────❖</b>\n"
-                "<b>❖ ● ᴘᴜʀɢᴇ ᴍᴇssᴀɢᴇs</b>\n"
-                "<b>❖ ● ᴏᴘᴇʀᴀᴛᴇ ᴠɪᴅᴇᴏ ᴄʜᴀᴛs</b>\n"
-                "<b>❖ ● ɪɴᴠɪᴛᴇ ᴍᴇᴍʙᴇʀs</b>\n"
-                "<b>❖──────────────────────❖</b>\n"
-                "<b>❖ ᴡɪᴛʜᴏᴜᴛ ᴀᴅᴍɪɴ ᴀᴜᴛʜᴏʀɪᴛʏ</b>\n"
-                "<b>❖ sᴏᴍᴇ ᴄᴏᴍᴍᴀɴᴅs ᴍᴀʏ ᴍɪsғɪʀᴇ! 🚫</b>\n"
-                "<b>❖──────────────────────❖</b>"
-            )
+    "<b>✦ ᴍᴜsɪᴄ ᴘʟᴀʏᴇʀ ɪs ʀᴇᴀᴅʏ 🎧</b>\n\n"
+    "<b>❖ ᴏɴᴇ ʟᴀsᴛ sᴛᴇᴘ : ᴘʟᴇᴀsᴇ ɢʀᴀɴᴛ ᴍᴇ ᴀᴅᴍɪɴ ᴀᴄᴄᴇss.</b>\n\n"
+    "<b>ᴛʜɪs ᴀʟʟᴏᴡs ᴍᴇ ᴛᴏ :</b>\n"
+    "<b>• ᴅᴇʟᴇᴛᴇ ᴍᴇssᴀɢᴇs</b>\n"
+    "<b>• ᴄᴏɴᴛʀᴏʟ ᴠᴏɪᴄᴇ ᴄʜᴀᴛs</b>\n"
+    "<b>• ɪɴᴠɪᴛᴇ ᴜsᴇʀs ᴘᴇʀᴍɪssɪᴏɴ</b>\n\n"
+    "<b>❖ ᴡɪᴛʜᴏᴜᴛ ᴛʜᴇ ʀᴇǫᴜɪʀᴇᴅ ᴀᴅᴍɪɴ ʀɪɢʜᴛs, ᴠᴏɪᴄᴇ ᴘʟᴀʏʙᴀᴄᴋ ᴍᴀʏ ɴᴏᴛ ᴡᴏʀᴋ ᴘʀᴏᴘᴇʀʟʏ.</b>"
+)
             admin_kb = InlineKeyboardMarkup([[
-                InlineKeyboardButton("❖ ᴘʀᴏᴍᴏᴛᴇ ᴍᴇ ɴᴏᴡ ❖", url=f"tg://user?id={bot_user_obj.id}")
+                InlineKeyboardButton("ᴘʀᴏᴍᴏᴛᴇ ᴍᴇ ɴᴏᴡ", url=f"tg://user?id={bot_user_obj.id}")
             ]])
             try:
                 await message.reply_text(admin_request_text, parse_mode=ParseMode.HTML, reply_markup=admin_kb)
