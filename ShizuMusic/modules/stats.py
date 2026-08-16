@@ -91,8 +91,8 @@ async def stats_cmd(_, message: Message) -> None:
     # ── Final message ─────────────────────────────────────────────────────────
     text = (
         "<b>~~ ᴇʟʏx ᴍᴜsɪᴄ sᴛᴀᴛs --</b>\n\n"
-
-      "<b>❖ sʏsᴛᴇᴍ ᴅᴇᴛᴀɪʟs</b>\n"
+        "<b>❖ sʏsᴛᴇᴍ ᴅᴇᴛᴀɪʟs</b>\n"
+    )
 f"<b> ᴏs       :</b> <code>{os_name} {os_release}</code>\n"
 f"<b> ᴘʏᴛʜᴏɴ   :</b> <code>{py_version}</code>\n"
 f"<b> ᴄᴘᴜ      :</b> <code>{cpu_percent}%</code>\n"
