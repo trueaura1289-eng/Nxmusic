@@ -55,11 +55,11 @@ def time_to_seconds(time) -> int:
 
 
 # ═════════════════════════════════════════════════════════════════════════════
-# DOWNLOAD HELPERS (New API — single-step direct stream)
+# DOWNLOAD HELPERS (API with yt-dlp fallback)
 # ═════════════════════════════════════════════════════════════════════════════
 
 async def download_song(link: str) -> str:
-    """Download audio via Shruti API. Returns local file path or None on failure."""
+    """Download audio via Shruti API with yt-dlp fallback. Returns local file path or None on failure."""
     video_id = _extract_video_id(link)
     if not video_id or len(video_id) < 3:
         return None
@@ -71,6 +71,7 @@ async def download_song(link: str) -> str:
     if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
         return file_path
 
+    # Step 1: Try Shruti API
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(
@@ -78,21 +79,47 @@ async def download_song(link: str) -> str:
                 params={"url": video_id, "type": "audio", "api_key": SHRUTI_API_KEY},
                 timeout=aiohttp.ClientTimeout(total=SHRUTI_STREAM_TIMEOUT),
             ) as resp:
-                if resp.status != 200:
-                    logger.warning(f"[shruti] Audio download failed: HTTP {resp.status}")
-                    return None
-                async with aiofiles.open(file_path, "wb") as f:
-                    async for chunk in resp.content.iter_chunked(131072):
-                        await f.write(chunk)
+                if resp.status == 200:
+                    async with aiofiles.open(file_path, "wb") as f:
+                        async for chunk in resp.content.iter_chunked(131072):
+                            await f.write(chunk)
+                    if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
+                        return file_path
+                else:
+                    logger.warning(f"[shruti] Audio download failed: HTTP {resp.status}, switching to yt-dlp fallback...")
+    except Exception as e:
+        logger.error(f"[shruti] download_song error: {e}, switching to yt-dlp fallback...")
+
+    # Step 2: Fallback to yt-dlp if Shruti API fails
+    _cleanup(file_path)
+    try:
+        loop = asyncio.get_event_loop()
+        def _ytdl_download():
+            ydl_opts = {
+                'format': 'bestaudio/best',
+                'outtmpl': os.path.join(DOWNLOAD_DIR, f'{video_id}.%(ext)s'),
+                'postprocessors': [{
+                    'key': 'FFmpegExtractAudio',
+                    'preferredcodec': 'mp3',
+                    'preferredquality': '192',
+                }],
+                'quiet': True,
+                'no_warnings': True,
+            }
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                ydl.download([f"https://www.youtube.com/watch?v={video_id}"])
+
+        await loop.run_in_executor(None, _ytdl_download)
 
         if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
+            logger.info(f"[yt-dlp fallback] Successfully downloaded: {video_id}")
             return file_path
-        return None
+            
+    except Exception as ex:
+        logger.error(f"[yt-dlp fallback error]: {ex}")
 
-    except Exception as e:
-        logger.error(f"[shruti] download_song error: {e}")
-        _cleanup(file_path)
-        return None
+    _cleanup(file_path)
+    return None
 
 
 async def download_video(link: str) -> str:
@@ -159,7 +186,7 @@ async def resolve_stream(url: str) -> str:
         logger.info(f"[shruti] Done — {os.path.getsize(downloaded) // 1024} KB")
         return downloaded
 
-    raise Exception("Shruti API download failed. Please try again.")
+    raise Exception("Song API download failed. Please try again.")
 
 
 # ═════════════════════════════════════════════════════════════════════════════
