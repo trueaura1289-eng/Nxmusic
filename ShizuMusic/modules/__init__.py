@@ -3,7 +3,6 @@ ALL_MODULES = [
     "bot",
     "block",
     "effects",
-    "nsfw",
     "play",
     "pause",
     "resume",
