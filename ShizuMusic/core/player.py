@@ -171,7 +171,7 @@ async def play_song(
         return
 
     loading_text = (
-        f"<b>❖ Pʀᴏᴄᴇssɪɴɢ ʀᴇǫᴜᴇsᴛ :</b> "
+        f"<b>❏ Pʀᴏᴄᴇssɪɴɢ ʀᴇǫᴜᴇsᴛ :</b> "
         f"{short(song['title'])}"
     )
 
