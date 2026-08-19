@@ -63,7 +63,7 @@ async def _update_progress(
     btns = [
         InlineKeyboardButton("▷", callback_data="resume"),
         InlineKeyboardButton("Ⅱ", callback_data="pause"),
-        InlineKeyboardButton("≫", callback_data="skip"),
+        InlineKeyboardButton("»", callback_data="skip"),
         InlineKeyboardButton("■", callback_data="stop"),
     ]
 
@@ -394,7 +394,7 @@ async def play_song(
     btns = [
         InlineKeyboardButton("▷", callback_data="resume"),
         InlineKeyboardButton("Ⅱ", callback_data="pause"),
-        InlineKeyboardButton("≫", callback_data="skip"),
+        InlineKeyboardButton("»", callback_data="skip"),
         InlineKeyboardButton("■", callback_data="stop"),
     ]
 
