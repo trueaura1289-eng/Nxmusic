@@ -88,7 +88,7 @@ async def _seek_to(chat_id: int, target_sec: int, message: Message) -> None:
 
     caption = (
         "<blockquote>"
-        "<b>⚘ ᴇʟʏx ᴍᴜsɪᴄ</b>\n\n"
+        "<b>ᴇʟʏx ᴍᴜsɪᴄ sᴛʀᴇᴀᴍɪɴɢ 🎧</b>\n\n"
         f"<b>❖ Tʀᴀᴄᴋ :</b> {short(song['title'])}\n"
         f"<b>❖ Lᴇɴɢᴛʜ :</b> {song.get('duration', '?')}\n"
         f"<b>❖ Rᴇǫᴜᴇsᴛᴇᴅ ʙʏ :</b> {song['requester']}\n"
@@ -97,10 +97,10 @@ async def _seek_to(chat_id: int, target_sec: int, message: Message) -> None:
     )
 
     btns = [
-        InlineKeyboardButton("▶",  callback_data="resume"),
-        InlineKeyboardButton("⏸", callback_data="pause"),
-        InlineKeyboardButton("⏭", callback_data="skip"),
-        InlineKeyboardButton("⏹", callback_data="stop"),
+        InlineKeyboardButton("⏵",  callback_data="resume"),
+        InlineKeyboardButton("❙❙", callback_data="pause"),
+        InlineKeyboardButton("≫", callback_data="skip"),
+        InlineKeyboardButton("■", callback_data="stop"),
     ]
     bar = progress_bar(target_sec, total_sec)
     kb  = InlineKeyboardMarkup([
