@@ -97,9 +97,9 @@ async def _seek_to(chat_id: int, target_sec: int, message: Message) -> None:
     )
 
     btns = [
-        InlineKeyboardButton("⏵",  callback_data="resume"),
-        InlineKeyboardButton("❙❙", callback_data="pause"),
-        InlineKeyboardButton("≫", callback_data="skip"),
+        InlineKeyboardButton("▷",  callback_data="resume"),
+        InlineKeyboardButton("Ⅱ", callback_data="pause"),
+        InlineKeyboardButton("»", callback_data="skip"),
         InlineKeyboardButton("■", callback_data="stop"),
     ]
     bar = progress_bar(target_sec, total_sec)
