@@ -61,10 +61,10 @@ async def _update_progress(
     caption: str,
 ) -> None:
     btns = [
-        InlineKeyboardButton("▶", callback_data="resume"),
-        InlineKeyboardButton("⏸", callback_data="pause"),
-        InlineKeyboardButton("⏭", callback_data="skip"),
-        InlineKeyboardButton("⏹", callback_data="stop"),
+        InlineKeyboardButton("⏵", callback_data="resume"),
+        InlineKeyboardButton("❙❙", callback_data="pause"),
+        InlineKeyboardButton("≫", callback_data="skip"),
+        InlineKeyboardButton("■", callback_data="stop"),
     ]
 
     while True:
@@ -120,7 +120,7 @@ async def _ensure_vc(chat_id: int) -> bool:
         LOGGER.error(f"[VC] TelegramServerError: {e}")
         await bot.send_message(
             chat_id,
-            "<b>❍ ᴠᴄ ꜱᴛᴀʀᴛ ғᴀɪʟᴇᴅ (Telegram Server)</b>\n"
+            "<b>❱ ᴠᴄ ꜱᴛᴀʀᴛ ғᴀɪʟᴇᴅ (Telegram Server)</b>\n"
             f"<code>{e}</code>",
             parse_mode=ParseMode.HTML,
         )
@@ -384,7 +384,7 @@ async def play_song(
 
     caption = (
         "<blockquote>"
-        "<b>ᴇʟʏx ᴍᴜsɪᴄ 🎧</b>\n\n"
+        "<b>ᴇʟʏx ᴍᴜsɪᴄ sᴛʀᴇᴀᴍɪɴɢ 🎧</b>\n\n"
         f"<b>❖ Tʀᴀᴄᴋ :</b> {short(song['title'])}\n"
         f"<b>❖ Lᴇɴɢᴛʜ :</b> {song.get('duration', '?')}\n"
         f"<b>❖ Rᴇǫᴜᴇsᴛᴇᴅ ʙʏ :</b> {song['requester']}"
@@ -392,10 +392,10 @@ async def play_song(
     )
 
     btns = [
-        InlineKeyboardButton("▶", callback_data="resume"),
-        InlineKeyboardButton("⏸", callback_data="pause"),
-        InlineKeyboardButton("⏭", callback_data="skip"),
-        InlineKeyboardButton("⏹", callback_data="stop"),
+        InlineKeyboardButton("⏵", callback_data="resume"),
+        InlineKeyboardButton("❙❙", callback_data="pause"),
+        InlineKeyboardButton("≫", callback_data="skip"),
+        InlineKeyboardButton("■", callback_data="stop"),
     ]
 
     bar = progress_bar(0, total)
