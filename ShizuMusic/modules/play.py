@@ -154,7 +154,7 @@ async def play_handler(_, message: Message) -> None:
         if chat_id not in _pending:
             rep = await bot.send_message(
                 chat_id,
-                f"<b>❖ ᴘʀᴏᴄᴇssɪɴɢ ʏᴏᴜʀ ʀᴇǫᴜᴇsᴛ :</b> <code>{rem}s</code>",
+                f"<b>❏ ᴘʀᴏᴄᴇssɪɴɢ ʏᴏᴜʀ ʀᴇǫᴜᴇsᴛ :</b> <code>{rem}s</code>",
                 parse_mode=ParseMode.HTML,
             )
             _pending[chat_id] = (message, rep)
@@ -205,8 +205,8 @@ async def _process_play(message: Message, query: str, video: bool = False) -> No
         if not ok:
             return
         await pm.edit_text(
-            "<b>❍ ᴀssɪsᴛᴀɴᴛ ʜᴀs ᴊᴏɪɴᴇᴅ ✓</b>\n"
-            "<b>❍ ᴘʀᴏᴄᴇssɪɴɢ...</b>",
+            "<b>➤ Assɪsᴛᴀɴᴛ ʜᴀs ᴊᴏɪɴᴇᴅ ✓</b>\n"
+            "<b>➤ ᴘʀᴏᴄᴇssɪɴɢ...</b>",
             parse_mode=ParseMode.HTML,
         )
 
@@ -278,7 +278,7 @@ async def _process_play(message: Message, query: str, video: bool = False) -> No
 
     if secs > config.MAX_DURATION_SECONDS:
         await pm.edit_text(
-            f"<b>❖ ᴛʀᴀᴄᴋ sᴏɴɢ ᴇxᴄᴇᴇᴅs ᴛʜᴇ ʟɪᴍɪᴛb>\n"
+            f"<b>❏ ᴛʀᴀᴄᴋ sᴏɴɢ ᴇxᴄᴇᴇᴅs ᴛʜᴇ ʟɪᴍɪᴛb>\n"
             f"<b>❖ ᴛʀᴀᴄᴋ ʟᴇɴɢᴛʜ :</b> <code>{iso_to_human(dur_iso)}</code>\n"
             f"<b>❖ ᴍᴀxɪᴍᴜᴍ ʟɪᴍɪᴛ :</b> <code>{config.MAX_DURATION_SECONDS // 60} min</code>",
             parse_mode=ParseMode.HTML,
@@ -309,7 +309,7 @@ async def _process_play(message: Message, query: str, video: bool = False) -> No
             InlineKeyboardButton("Cʟᴇᴀʀ", callback_data="clear"),
         ]])
         await message.reply(
-            f"<b>❖ ᴛʀᴀᴄᴋ ᴀᴅᴅᴇᴅ sᴜᴄᴄᴇssғᴜʟʟʏ</b>\n"
+            f"<b>❏ ᴛʀᴀᴄᴋ ᴀᴅᴅᴇᴅ sᴜᴄᴄᴇssғᴜʟʟʏ</b>\n"
             f"<b>❖ sᴏɴɢ :</b> <code>{short(title)}</code>\n"
             f"<b>❖ ʟᴇɴɢᴛʜ :</b> <code>{iso_to_human(dur_iso)}</code>\n"
             f"<b>❖ ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ:</b> <code>{req}</code>\n"
