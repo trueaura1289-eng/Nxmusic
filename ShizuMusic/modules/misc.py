@@ -26,8 +26,8 @@ async def id_cmd(client, message: Message) -> None:
     reply      = message.reply_to_message
 
     # ── Base text ──────────────────────────────────────────────────────────────
-    text  = f"<b>❍ <a href='{message.link}'>ᴍᴇssᴀɢᴇ ɪᴅ</a> :</b> <code>{message_id}</code>\n"
-    text += f"<b>❍ <a href='tg://user?id={your_id}'>ʏᴏᴜʀ ɪᴅ</a>     :</b> <code>{your_id}</code>\n"
+    text  = f"<b>➤ <a href='{message.link}'>ᴍᴇssᴀɢᴇ ɪᴅ</a> :</b> <code>{message_id}</code>\n"
+    text += f"<b>➤ <a href='tg://user?id={your_id}'>ʏᴏᴜʀ ɪᴅ</a>     :</b> <code>{your_id}</code>\n"
 
     # ── Optional: lookup another user by username or ID ───────────────────────
     args = message.command[1:]
@@ -35,10 +35,10 @@ async def id_cmd(client, message: Message) -> None:
         try:
             target    = await client.get_users(args[0])
             target_id = target.id
-            text += f"<b>❍ <a href='tg://user?id={target_id}'>ᴜsᴇʀ ɪᴅ</a>      :</b> <code>{target_id}</code>\n"
+            text += f"<b>➤ <a href='tg://user?id={target_id}'>ᴜsᴇʀ ɪᴅ</a>      :</b> <code>{target_id}</code>\n"
         except Exception:
             await message.reply(
-                "<b>❍ User not found.</b>",
+                "<b>➤ User not found.</b>",
                 parse_mode=ParseMode.HTML,
             )
             return
@@ -49,7 +49,7 @@ async def id_cmd(client, message: Message) -> None:
     else:
         chat_link = f"tg://user?id={chat.id}"
 
-    text += f"<b>❍ <a href='{chat_link}'>ᴄʜᴀᴛ ɪᴅ</a>      :</b> <code>{chat.id}</code>\n"
+    text += f"<b>➤ <a href='{chat_link}'>ᴄʜᴀᴛ ɪᴅ</a>      :</b> <code>{chat.id}</code>\n"
 
     # ── Replied message ────────────────────────────────────────────────────────
     if reply and not getattr(reply, "empty", True):
@@ -57,24 +57,24 @@ async def id_cmd(client, message: Message) -> None:
         # Replied user ID
         if reply.from_user and not getattr(reply, "sender_chat", None):
             text += (
-                f"\n<b>❍ <a href='{reply.link}'>ʀᴇᴘʟɪᴇᴅ ᴍsɢ ɪᴅ</a> :</b> <code>{reply.id}</code>\n"
-                f"<b>❍ <a href='tg://user?id={reply.from_user.id}'>ʀᴇᴘʟɪᴇᴅ ᴜsᴇʀ</a>    :</b> <code>{reply.from_user.id}</code>\n"
+                f"\n<b>➤ <a href='{reply.link}'>ʀᴇᴘʟɪᴇᴅ ᴍsɢ ɪᴅ</a> :</b> <code>{reply.id}</code>\n"
+                f"<b>➤ <a href='tg://user?id={reply.from_user.id}'>ʀᴇᴘʟɪᴇᴅ ᴜsᴇʀ</a>    :</b> <code>{reply.from_user.id}</code>\n"
             )
 
         # Forwarded from channel
         if getattr(reply, "forward_from_chat", None):
             fwd = reply.forward_from_chat
             text += (
-                f"\n<b>❍ ғᴡᴅ ᴄʜᴀɴɴᴇʟ    :</b> {fwd.title}\n"
-                f"<b>❍ ғᴡᴅ ᴄʜᴀɴɴᴇʟ ɪᴅ :</b> <code>{fwd.id}</code>\n"
+                f"\n<b>➤ ғᴡᴅ ᴄʜᴀɴɴᴇʟ    :</b> {fwd.title}\n"
+                f"<b>➤ ғᴡᴅ ᴄʜᴀɴɴᴇʟ ɪᴅ :</b> <code>{fwd.id}</code>\n"
             )
 
         # Sender chat (anonymous group admin / channel post)
         if getattr(reply, "sender_chat", None):
             sc = reply.sender_chat
             text += (
-                f"\n<b>❍ sᴇɴᴅᴇʀ ᴄʜᴀᴛ    :</b> {sc.title}\n"
-                f"<b>❍ sᴇɴᴅᴇʀ ᴄʜᴀᴛ ɪᴅ :</b> <code>{sc.id}</code>\n"
+                f"\n<b>➤ sᴇɴᴅᴇʀ ᴄʜᴀᴛ    :</b> {sc.title}\n"
+                f"<b>➤ sᴇɴᴅᴇʀ ᴄʜᴀᴛ ɪᴅ :</b> <code>{sc.id}</code>\n"
             )
 
     await message.reply(
