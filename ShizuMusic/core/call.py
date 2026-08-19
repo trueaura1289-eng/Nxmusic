@@ -162,7 +162,7 @@ async def on_stream_end(_: object, update: StreamEnded) -> None:
                     from ShizuMusic.core.player import play_song
                     msg3 = await bot.send_message(
                         chat_id,
-                        f"<b>❍ ɴᴇxᴛ ᴛʀᴀᴄᴋ :</b> "
+                        f"<b>❖ Nᴇxᴛ ᴛʀᴀᴄᴋ :</b> "
                         f"<code>{nxt3['title']}</code>",
                         parse_mode=ParseMode.HTML,
                     )
