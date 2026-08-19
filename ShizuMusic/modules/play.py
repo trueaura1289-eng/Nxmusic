@@ -182,7 +182,7 @@ async def _process_play(message: Message, query: str, video: bool = False) -> No
     chat_id = message.chat.id
 
     pm = await message.reply(
-        "<b>❍ ᴘʀᴏᴄᴇssɪɴɢ...</b>",
+        "<b>➥ ᴘʀᴏᴄᴇssɪɴɢ...</b>",
         parse_mode=ParseMode.HTML,
     )
 
