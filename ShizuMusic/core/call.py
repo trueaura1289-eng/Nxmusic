@@ -177,7 +177,7 @@ async def on_stream_end(_: object, update: StreamEnded) -> None:
 
         await bot.send_message(
             chat_id,
-            "<b>❖ 𝑇ℎ𝑒 𝑞𝑢𝑒𝑢𝑒 ℎ𝑎𝑠 𝑒𝑛𝑑𝑒𝑑</b>\n"
-            "<b>❖ 𝐴𝑠𝑠𝑖𝑠𝑡𝑎𝑛𝑡 𝑙𝑒𝑓𝑡 𝑡ℎ𝑒 𝑣𝑜𝑖𝑐𝑒 𝑐ℎ𝑎𝑡.</b>",
+            "<b>❖ Tʜᴇ ǫᴜᴇᴜᴇ ʜᴀs ᴇɴᴅᴇᴅ</b>\n"
+            "<b>❖ Assɪsᴛᴀɴᴛ ʟᴇғᴛ ᴛʜᴇ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ.</b>",
             parse_mode=ParseMode.HTML,
                     )
