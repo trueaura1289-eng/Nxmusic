@@ -75,33 +75,33 @@ def progress_bar(elapsed: float, total: float) -> str:
     umm = math.floor(percentage)
 
     if umm <= 10:
-        bar = "♡—————————"
+        bar = "♪—————————"
 
     elif umm <= 20:
-        bar = "—♡————————"
+        bar = "—♪————————"
 
     elif umm <= 30:
-        bar = "——♡———————"
+        bar = "——♪———————"
 
     elif umm <= 40:
-        bar = "———♡——————"
+        bar = "———♪——————"
 
     elif umm <= 50:
-        bar = "————♡—————"
+        bar = "————♪—————"
 
     elif umm <= 60:
-        bar = "—————♡————"
+        bar = "—————♪————"
 
     elif umm <= 70:
-        bar = "——————♡———"
+        bar = "——————♪———"
 
     elif umm <= 80:
-        bar = "———————♡——"
+        bar = "———————♪——"
 
     elif umm <= 95:
-        bar = "————————♡—"
+        bar = "————————♪—"
 
     else:
-        bar = "—————————♡"
+        bar = "—————————♪"
 
     return f"{played} {bar} {dur}"
