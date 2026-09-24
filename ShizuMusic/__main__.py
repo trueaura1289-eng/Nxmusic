@@ -2,6 +2,7 @@ import asyncio
 import importlib
 import os
 import re
+import shutil
 import sys
 import threading
 import time
@@ -69,6 +70,16 @@ async def _notify_owner(me, assistant_username: str) -> None:
 
 if __name__ == "__main__":
 
+    # 0. Startup Downloads Folder Cleanup (Clears cache/storage on every restart)
+    try:
+        download_dir = "downloads"
+        if os.path.exists(download_dir):
+            shutil.rmtree(download_dir)
+            LOGGER.info("Cleared old downloaded files from previous session.")
+        os.makedirs(download_dir, exist_ok=True)
+    except Exception as e:
+        LOGGER.warning(f"Failed to clear downloads directory: {e}")
+
     # 1. MongoDB
     try:
         from ShizuMusic.utils.db import start_mongo
@@ -114,7 +125,7 @@ if __name__ == "__main__":
     me = bot.get_me()
     LOGGER.info(f"Bot: @{me.username}")
 
-  # 6. Set bot commands
+    # 6. Set bot commands
     try:
         bot.set_bot_commands([
             BotCommand("start", "sᴛᴀʀᴛ ᴛʜᴇ ᴍᴜsɪᴄ ʙᴏᴛ"),
@@ -188,4 +199,3 @@ if __name__ == "__main__":
         pass
 
     LOGGER.info("ᴇʟʏx ᴍᴜsɪᴄ sᴛᴏᴘ")
-            
