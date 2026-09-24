@@ -160,11 +160,11 @@ async def download_video(link: str) -> str:
 
 
 # ═════════════════════════════════════════════════════════════════════════════
-# PUBLIC — STREAM RESOLVER (backward-compatible)
+# PUBLIC — STREAM RESOLVER (backward-compatible with video support)
 # ═════════════════════════════════════════════════════════════════════════════
 
-async def resolve_stream(url: str) -> str:
-    """Resolve a YouTube URL or video ID to a local audio file path."""
+async def resolve_stream(url: str, video: bool = False) -> str:
+    """Resolve a YouTube URL or video ID to a local audio/video file path."""
     if os.path.exists(url) and os.path.isfile(url):
         return url
 
@@ -173,20 +173,22 @@ async def resolve_stream(url: str) -> str:
         return _file_cache[url]
 
     video_id  = _extract_video_id(url)
-    file_path = os.path.join(DOWNLOAD_DIR, f"{video_id}.mp3")
+    ext = "mp4" if video else "mp3"
+    file_path = os.path.join(DOWNLOAD_DIR, f"{video_id}.{ext}")
 
     if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
         _file_cache[url] = file_path
         return file_path
 
-    logger.info(f"[shruti] Downloading: {video_id}")
-    downloaded = await download_song(url)
+    logger.info(f"[shruti] Downloading ({'video' if video else 'audio'}): {video_id}")
+    downloaded = await download_video(url) if video else await download_song(url)
+    
     if downloaded:
         _file_cache[url] = downloaded
         logger.info(f"[shruti] Done — {os.path.getsize(downloaded) // 1024} KB")
         return downloaded
 
-    raise Exception("Song API download failed. Please try again.")
+    raise Exception("Stream API download failed. Please try again.")
 
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -254,11 +256,11 @@ async def search_yt(query: str):
 
 class YouTubeAPI:
     def __init__(self):
-        self.base      = "https://www.youtube.com/watch?v="
-        self.regex     = r"(?:youtube\.com|youtu\.be)"
-        self.status    = "https://www.youtube.com/oembed?url="
-        self.listbase  = "https://youtube.com/playlist?list="
-        self.reg       = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
+        self.base     = "https://www.youtube.com/watch?v="
+        self.regex    = r"(?:youtube\.com|youtu\.be)"
+        self.status   = "https://www.youtube.com/oembed?url="
+        self.listbase = "https://youtube.com/playlist?list="
+        self.reg      = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
 
     # ── Helpers ───────────────────────────────────────────────────────────────
 
