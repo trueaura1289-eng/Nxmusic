@@ -185,11 +185,13 @@ async def play_song(
         )
 
     # ─────────────────────────────────────────
-    # RESOLVE STREAM
+    # RESOLVE STREAM (FIXED WITH is_video)
     # ─────────────────────────────────────────
 
+    is_video = song.get("video", False)
+
     try:
-        media_path = await resolve_stream(url)
+        media_path = await resolve_stream(url, video=is_video)
     except Exception as e:
         try:
             remove_from_queue(chat_id, 0)
@@ -204,8 +206,6 @@ async def play_song(
         )
         return
 
-    is_video = song.get("video", False)
-
     # ─────────────────────────────────────────
     # AUTO EFFECTS
     # ─────────────────────────────────────────
@@ -218,7 +218,7 @@ async def play_song(
             LOGGER.warning(f"[Effects] Skipped: {fx_err}")
 
     # ─────────────────────────────────────────
-    # PLAY STREAM
+    # PLAY STREAM (480p for Optimized Storage/RAM)
     # ─────────────────────────────────────────
 
     played = False
@@ -231,7 +231,7 @@ async def play_song(
                     MediaStream(
                         media_path,
                         audio_parameters=AudioQuality.HIGH,
-                        video_parameters=VideoQuality.HD_720p,
+                        video_parameters=VideoQuality.SD_480p,
                     ),
                 )
             else:
