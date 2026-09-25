@@ -170,6 +170,25 @@ async def play_song(
     if not url:
         return
 
+    # Check if request came from video playback (/vplay)
+    if song.get("video", False):
+        try:
+            await message.edit("Tʜᴇ Mᴘ4 Fᴇᴀᴛᴜʀᴇ ɪꜱ Nᴏᴛ Aᴠᴀɪʟᴀʙʟᴇ.", parse_mode=ParseMode.HTML)
+        except Exception:
+            try:
+                await bot.send_message(
+                    chat_id,
+                    "Tʜᴇ Mᴘ4 Fᴇᴀᴛᴜʀᴇ ɪꜱ Nᴏᴛ Aᴠᴀɪʟᴀʙʟᴇ.",
+                    parse_mode=ParseMode.HTML,
+                )
+            except Exception:
+                pass
+        try:
+            remove_from_queue(chat_id, 0)
+        except Exception:
+            pass
+        return
+
     loading_text = (
         f"<b>❏ Pʀᴏᴄᴇssɪɴɢ ʀᴇǫᴜᴇsᴛ :</b> "
         f"{short(song['title'])}"
@@ -185,13 +204,13 @@ async def play_song(
         )
 
     # ─────────────────────────────────────────
-    # RESOLVE STREAM (FIXED WITH is_video)
+    # RESOLVE STREAM (FORCED TO AUDIO ONLY)
     # ─────────────────────────────────────────
 
-    is_video = song.get("video", False)
+    is_video = False
 
     try:
-        media_path = await resolve_stream(url, video=is_video)
+        media_path = await resolve_stream(url, video=False)
     except Exception as e:
         try:
             remove_from_queue(chat_id, 0)
@@ -218,31 +237,21 @@ async def play_song(
             LOGGER.warning(f"[Effects] Skipped: {fx_err}")
 
     # ─────────────────────────────────────────
-    # PLAY STREAM (480p for Optimized Storage/RAM)
+    # PLAY STREAM (AUDIO ONLY)
     # ─────────────────────────────────────────
 
     played = False
 
     for attempt in range(2):
         try:
-            if is_video:
-                await call_py.play(
-                    chat_id,
-                    MediaStream(
-                        media_path,
-                        audio_parameters=AudioQuality.HIGH,
-                        video_parameters=VideoQuality.SD_480p,
-                    ),
-                )
-            else:
-                await call_py.play(
-                    chat_id,
-                    MediaStream(
-                        media_path,
-                        audio_parameters=AudioQuality.HIGH,
-                        video_flags=MediaStream.Flags.IGNORE,
-                    ),
-                )
+            await call_py.play(
+                chat_id,
+                MediaStream(
+                    media_path,
+                    audio_parameters=AudioQuality.HIGH,
+                    video_flags=MediaStream.Flags.IGNORE,
+                ),
+            )
 
             played = True
             break
