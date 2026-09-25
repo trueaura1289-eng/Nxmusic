@@ -55,7 +55,7 @@ def time_to_seconds(time) -> int:
 
 
 # ═════════════════════════════════════════════════════════════════════════════
-# DOWNLOAD HELPERS (API with yt-dlp fallback)
+# DOWNLOAD HELPERS (API with yt-dlp fallback - Audio Only)
 # ═════════════════════════════════════════════════════════════════════════════
 
 async def download_song(link: str) -> str:
@@ -71,7 +71,7 @@ async def download_song(link: str) -> str:
     if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
         return file_path
 
-    # Step 1: Try Shruti API
+    # Step 1: Try Shruti API (Audio Only)
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(
@@ -112,7 +112,7 @@ async def download_song(link: str) -> str:
         await loop.run_in_executor(None, _ytdl_download)
 
         if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
-            logger.info(f"[yt-dlp fallback] Successfully downloaded: {video_id}")
+            logger.info(f"[yt-dlp fallback] Successfully downloaded audio: {video_id}")
             return file_path
             
     except Exception as ex:
@@ -123,48 +123,17 @@ async def download_song(link: str) -> str:
 
 
 async def download_video(link: str) -> str:
-    """Download video via Shruti API. Returns local file path or None on failure."""
-    video_id = _extract_video_id(link)
-    if not video_id or len(video_id) < 3:
-        return None
-
-    os.makedirs(DOWNLOAD_DIR, exist_ok=True)
-    file_path = os.path.join(DOWNLOAD_DIR, f"{video_id}.mp4")
-
-    # Disk cache
-    if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
-        return file_path
-
-    try:
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
-                f"{SHRUTI_API_URL}/download",
-                params={"url": video_id, "type": "video", "api_key": SHRUTI_API_KEY},
-                timeout=aiohttp.ClientTimeout(total=SHRUTI_STREAM_TIMEOUT),
-            ) as resp:
-                if resp.status != 200:
-                    logger.warning(f"[shruti] Video download failed: HTTP {resp.status}")
-                    return None
-                async with aiofiles.open(file_path, "wb") as f:
-                    async for chunk in resp.content.iter_chunked(131072):
-                        await f.write(chunk)
-
-        if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
-            return file_path
-        return None
-
-    except Exception as e:
-        logger.error(f"[shruti] download_video error: {e}")
-        _cleanup(file_path)
-        return None
+    """Disabled video download method. Strictly supports audio only."""
+    logger.warning("[shruti] Video downloads are disabled. Only audio streaming/downloading is supported.")
+    return None
 
 
 # ═════════════════════════════════════════════════════════════════════════════
-# PUBLIC — STREAM RESOLVER (backward-compatible with video support)
+# PUBLIC — STREAM RESOLVER (Audio-only strict mode)
 # ═════════════════════════════════════════════════════════════════════════════
 
 async def resolve_stream(url: str, video: bool = False) -> str:
-    """Resolve a YouTube URL or video ID to a local audio/video file path."""
+    """Resolve a YouTube URL or video ID to a local audio file path (video parameter is overridden/disabled)."""
     if os.path.exists(url) and os.path.isfile(url):
         return url
 
@@ -173,15 +142,15 @@ async def resolve_stream(url: str, video: bool = False) -> str:
         return _file_cache[url]
 
     video_id  = _extract_video_id(url)
-    ext = "mp4" if video else "mp3"
+    ext = "mp3"
     file_path = os.path.join(DOWNLOAD_DIR, f"{video_id}.{ext}")
 
     if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
         _file_cache[url] = file_path
         return file_path
 
-    logger.info(f"[shruti] Downloading ({'video' if video else 'audio'}): {video_id}")
-    downloaded = await download_video(url) if video else await download_song(url)
+    logger.info(f"[shruti] Downloading audio for: {video_id}")
+    downloaded = await download_song(url)
     
     if downloaded:
         _file_cache[url] = downloaded
@@ -251,13 +220,13 @@ async def search_yt(query: str):
 
 
 # ═════════════════════════════════════════════════════════════════════════════
-# PUBLIC — YouTubeAPI CLASS (Full featured with original methods preserved)
+# PUBLIC — YouTubeAPI CLASS (Audio-only restricted implementation)
 # ═════════════════════════════════════════════════════════════════════════════
 
 class YouTubeAPI:
     def __init__(self):
-        self.base     = "https://www.youtube.com/watch?v="
-        self.regex    = r"(?:youtube\.com|youtu\.be)"
+        self.base   = "https://www.youtube.com/watch?v="
+        self.regex  = r"(?:youtube\.com|youtu\.be)"
         self.status   = "https://www.youtube.com/oembed?url="
         self.listbase = "https://youtube.com/playlist?list="
         self.reg      = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
@@ -316,14 +285,8 @@ class YouTubeAPI:
         return res[3]
 
     async def video(self, link: str, videoid: Union[bool, str] = None):
-        link = self._strip_extra(self._build_link(link, videoid))
-        try:
-            downloaded_file = await download_video(link)
-            if downloaded_file:
-                return 1, downloaded_file
-            return 0, "Video download failed"
-        except Exception as e:
-            return 0, f"Video download error: {e}"
+        """Video functionality is permanently disabled; returns failure response."""
+        return 0, "Video features are not available. Only audio (MP3) is supported."
 
     async def playlist(
         self, link: str, limit: int, user_id, videoid: Union[bool, str] = None
@@ -428,10 +391,8 @@ class YouTubeAPI:
         if videoid:
             link = self.base + link
         try:
-            if video:
-                downloaded_file = await download_video(link)
-            else:
-                downloaded_file = await download_song(link)
+            # Force audio downloading exclusively, blocking video download requests
+            downloaded_file = await download_song(link)
             if downloaded_file:
                 return downloaded_file, True
             return None, False
