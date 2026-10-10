@@ -18,7 +18,13 @@ def pop_current(chat_id: int) -> dict | None:
     if not queue:
         return None
 
-    return queue.pop(0)
+    song = queue.pop(0)
+    
+    # Agar queue khali ho gayi, toh RAM bachane ke liye chat_id ko dict se uda do
+    if not queue:
+        chat_queues.pop(chat_id, None)
+
+    return song
 
 
 def remove_from_queue(chat_id: int, index: int) -> dict | None:
@@ -30,7 +36,13 @@ def remove_from_queue(chat_id: int, index: int) -> dict | None:
     if index < 0 or index >= len(queue):
         return None
 
-    return queue.pop(index)
+    song = queue.pop(index)
+    
+    # Agar queue khali ho gayi, toh RAM bachane ke liye chat_id ko dict se uda do
+    if not queue:
+        chat_queues.pop(chat_id, None)
+
+    return song
 
 
 def peek_current(chat_id: int) -> dict | None:
