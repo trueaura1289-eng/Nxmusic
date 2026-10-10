@@ -16,9 +16,9 @@ logger = logging.getLogger(__name__)
 
 # ── API config ────────────────────────────────────────────────────────────────
 SHRUTI_API_URL        = os.environ.get("SHRUTI_API_URL", "https://api.shrutibots.site")
-SHRUTI_API_KEY        = os.environ.get("SHRUTI_API_KEY", "ShrutiBotsT4C6zI3BMYDaWWKM6DtR")  # Get from @SHRUTIAPIBOT on Telegram
+SHRUTI_API_KEY        = os.environ.get("SHRUTI_API_KEY", "ShrutiBotsT4C6zI3BMYDaWWKM6DtR")  # Primary API Key
+SHRUTI_API_KEY_2      = os.environ.get("SHRUTI_API_KEY_2", "ShrutiBotsARGXhXwITDzeDPLGf3rU")                            # Secondary/Backup API Key
 DOWNLOAD_DIR          = "downloads"
-SHRUTI_TOKEN_TIMEOUT  = 10    # seconds — fetch download token
 SHRUTI_STREAM_TIMEOUT = 900   # 15 min  — stream long songs
 
 _file_cache: dict[str, str] = {}
@@ -55,11 +55,11 @@ def time_to_seconds(time) -> int:
 
 
 # ═════════════════════════════════════════════════════════════════════════════
-# DOWNLOAD HELPERS (API with yt-dlp fallback - Audio Only)
+# DOWNLOAD HELPERS (Pure API Only - Dual Keys, No yt-dlp download fallback)
 # ═════════════════════════════════════════════════════════════════════════════
 
 async def download_song(link: str) -> str:
-    """Download audio via Shruti API with yt-dlp fallback. Returns local file path or None on failure."""
+    """Download audio strictly via Shruti API (Primary & Backup Keys). Returns local file path or None on failure."""
     video_id = _extract_video_id(link)
     if not video_id or len(video_id) < 3:
         return None
@@ -67,58 +67,46 @@ async def download_song(link: str) -> str:
     os.makedirs(DOWNLOAD_DIR, exist_ok=True)
     file_path = os.path.join(DOWNLOAD_DIR, f"{video_id}.mp3")
 
-    # Disk cache
+    # Disk cache check
     if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
         return file_path
 
-    # Step 1: Try Shruti API (Audio Only)
-    try:
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
-                f"{SHRUTI_API_URL}/download",
-                params={"url": video_id, "type": "audio", "api_key": SHRUTI_API_KEY},
-                timeout=aiohttp.ClientTimeout(total=SHRUTI_STREAM_TIMEOUT),
-            ) as resp:
-                if resp.status == 200:
-                    async with aiofiles.open(file_path, "wb") as f:
-                        async for chunk in resp.content.iter_chunked(131072):
-                            await f.write(chunk)
-                    if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
-                        return file_path
-                else:
-                    logger.warning(f"[shruti] Audio download failed: HTTP {resp.status}, switching to yt-dlp fallback...")
-    except Exception as e:
-        logger.error(f"[shruti] download_song error: {e}, switching to yt-dlp fallback...")
+    # List of keys to try sequentially (Primary -> Secondary Backup)
+    api_keys = [SHRUTI_API_KEY]
+    if SHRUTI_API_KEY_2:
+        api_keys.append(SHRUTI_API_KEY_2)
 
-    # Step 2: Fallback to yt-dlp if Shruti API fails
-    _cleanup(file_path)
-    try:
-        loop = asyncio.get_event_loop()
-        def _ytdl_download():
-            ydl_opts = {
-                'format': 'bestaudio/best',
-                'outtmpl': os.path.join(DOWNLOAD_DIR, f'{video_id}.%(ext)s'),
-                'postprocessors': [{
-                    'key': 'FFmpegExtractAudio',
-                    'preferredcodec': 'mp3',
-                    'preferredquality': '192',
-                }],
-                'quiet': True,
-                'no_warnings': True,
-            }
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                ydl.download([f"https://www.youtube.com/watch?v={video_id}"])
+    success = False
 
-        await loop.run_in_executor(None, _ytdl_download)
+    # Try Shruti API keys one by one without duplication/overlapping conflicts
+    async with aiohttp.ClientSession() as session:
+        for idx, api_key in enumerate(api_keys, start=1):
+            if not api_key:
+                continue
+            try:
+                async with session.get(
+                    f"{SHRUTI_API_URL}/download",
+                    params={"url": video_id, "type": "audio", "api_key": api_key},
+                    timeout=aiohttp.ClientTimeout(total=SHRUTI_STREAM_TIMEOUT),
+                ) as resp:
+                    if resp.status == 200:
+                        async with aiofiles.open(file_path, "wb") as f:
+                            async for chunk in resp.content.iter_chunked(131072):
+                                await f.write(chunk)
+                        if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
+                            success = True
+                            logger.info(f"[shruti] Successfully downloaded audio using API Key {idx}")
+                            break
+                    else:
+                        logger.warning(f"[shruti] API Key {idx} failed: HTTP {resp.status}, trying next...")
+            except Exception as e:
+                logger.error(f"[shruti] API Key {idx} error: {e}, trying next...")
 
-        if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
-            logger.info(f"[yt-dlp fallback] Successfully downloaded audio: {video_id}")
-            return file_path
-            
-    except Exception as ex:
-        logger.error(f"[yt-dlp fallback error]: {ex}")
+    if success and os.path.exists(file_path) and os.path.getsize(file_path) > 0:
+        return file_path
 
     _cleanup(file_path)
+    logger.error(f"[shruti] All API keys failed for video ID: {video_id}")
     return None
 
 
@@ -391,7 +379,7 @@ class YouTubeAPI:
         if videoid:
             link = self.base + link
         try:
-            # Force audio downloading exclusively, blocking video download requests
+            # Strictly API-based download (No yt-dlp fallback, dual keys support)
             downloaded_file = await download_song(link)
             if downloaded_file:
                 return downloaded_file, True
