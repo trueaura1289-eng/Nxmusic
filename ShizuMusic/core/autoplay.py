@@ -9,7 +9,7 @@ from ShizuMusic.utils.formatters import iso_to_human, iso_to_sec
 logger = logging.getLogger(__name__)
 
 # ── Per-chat state ────────────────────────────────────────────────────────────
-_autoplay_active:   dict[int, bool] = {}
+_autoplay_active:    dict[int, bool] = {}
 _autoplay_query:    dict[int, str]  = {}
 _autoplay_fetched:  dict[int, set]  = {}
 _autoplay_fetching: dict[int, bool] = {}
@@ -66,9 +66,14 @@ async def _fetch_more(chat_id: int, requester: str, requester_id: int) -> int:
                             break
                         vid_url = item.get("link", "")
                         vid_id  = vid_url.split("v=")[-1].split("&")[0] if "v=" in vid_url else vid_url
-                        if vid_id in fetched:
+                        if not vid_id or vid_id in fetched:
                             continue
                         fetched.add(vid_id)
+                        
+                        # Memory safety check: Agar fetched set bohot bada ho jaye toh thoda trim kar lo
+                        if len(fetched) > 500:
+                            fetched.clear()
+
                         add_to_queue(chat_id, {
                             "url":              vid_url,
                             "title":            item.get("title", "Unknown"),
@@ -82,11 +87,11 @@ async def _fetch_more(chat_id: int, requester: str, requester_id: int) -> int:
                         if added >= BATCH_SIZE:
                             break
 
-                else:
-                    # Single track
-                    url, title, dur_iso, thumb = result
+                elif isinstance(result, (list, tuple)) and len(result) >= 4:
+                    # Single track safe unpacking
+                    url, title, dur_iso, thumb = result[:4]
                     vid_id = url.split("v=")[-1].split("&")[0] if "v=" in url else url
-                    if vid_id not in fetched:
+                    if vid_id and vid_id not in fetched:
                         fetched.add(vid_id)
                         add_to_queue(chat_id, {
                             "url":              url,
@@ -111,9 +116,9 @@ async def _fetch_more(chat_id: int, requester: str, requester_id: int) -> int:
 
 
 async def start_autoplay(
-    chat_id:      int,
-    query:        str,
-    requester:    str,
+    chat_id:     int,
+    query:       str,
+    requester:   str,
     requester_id: int,
 ) -> int:
     stop_autoplay(chat_id)
@@ -127,8 +132,8 @@ async def start_autoplay(
 
 
 async def maybe_refetch(
-    chat_id:      int,
-    requester:    str,
+    chat_id:     int,
+    requester:   str,
     requester_id: int,
 ) -> None:
     if not is_autoplay(chat_id):
