@@ -55,7 +55,7 @@ async def on_stream_end(_: object, update: StreamEnded) -> None:
 
     chat_id = update.chat_id
 
-    # Remove finished song
+    # Remove finished song safely
     done = pop_current(chat_id)
 
     if done:
@@ -72,11 +72,11 @@ async def on_stream_end(_: object, update: StreamEnded) -> None:
         from ShizuMusic.core.autoplay import is_autoplay, maybe_refetch
 
         if is_autoplay(chat_id):
-
-            # Fetch more songs in background if queue is getting low
-            asyncio.create_task(
-                maybe_refetch(chat_id, "Aᴜᴛᴏᴘʟᴀʏ 🔁", 0)
-            )
+            # Sirf tabhi fetch karein jab queue mein actually gaane bache hon ya threshold cross ho
+            if queue_size(chat_id) <= 2:
+                asyncio.create_task(
+                    maybe_refetch(chat_id, "Aᴜᴛᴏᴘʟᴀʏ 🔁", 0)
+                )
 
     except Exception as ap_err:
         LOGGER.warning(f"[AutoPlay] Refetch Check Error: {ap_err}")
@@ -108,11 +108,14 @@ async def on_stream_end(_: object, update: StreamEnded) -> None:
         except Exception as e:
             LOGGER.error(f"Next Song Error: {e}")
 
-            await bot.send_message(
-                chat_id,
-                f"<b>❖Eʀʀᴏʀ :</b> <code>{e}</code>",
-                parse_mode=ParseMode.HTML,
-            )
+            try:
+                await bot.send_message(
+                    chat_id,
+                    f"<b>❖ Eʀʀᴏʀ :</b> <code>{e}</code>",
+                    parse_mode=ParseMode.HTML,
+                )
+            except Exception:
+                pass
 
     else:
 
@@ -125,8 +128,8 @@ async def on_stream_end(_: object, update: StreamEnded) -> None:
 
             if is_autoplay(chat_id):
 
-                # Wait if background fetching is running (up to 20 seconds)
-                for _ in range(20):
+                # Wait if background fetching is running (up to 10 seconds max to avoid infinite locks)
+                for _ in range(10):
                     if _autoplay_fetching.get(chat_id):
                         await asyncio.sleep(1)
                     else:
@@ -152,32 +155,20 @@ async def on_stream_end(_: object, update: StreamEnded) -> None:
                     await play_song(chat_id, msg2, nxt2)
                     return
 
-                # If still nothing after waiting, try one more fetch
-                from ShizuMusic.core.autoplay import maybe_refetch
-                await maybe_refetch(chat_id, "ᴀᴜᴛᴏ ᴘʟᴀʏ 🔁", 0)
-                await asyncio.sleep(5)
-
-                nxt3 = peek_current(chat_id)
-                if nxt3:
-                    from ShizuMusic.core.player import play_song
-                    msg3 = await bot.send_message(
-                        chat_id,
-                        f"<b>❖ Nᴇxᴛ ᴛʀᴀᴄᴋ :</b> "
-                        f"<code>{nxt3['title']}</code>",
-                        parse_mode=ParseMode.HTML,
-                    )
-                    await play_song(chat_id, msg3, nxt3)
-                    return
-
         except Exception:
             pass
 
-        # Queue completely finished
-        await leave_vc(chat_id)
+        # Check if queue is really empty before leaving VC
+        if queue_size(chat_id) == 0:
+            # Queue completely finished
+            await leave_vc(chat_id)
 
-        await bot.send_message(
-            chat_id,
-            "<b>❖ Tʜᴇ ǫᴜᴇᴜᴇ ʜᴀs ᴇɴᴅᴇᴅ</b>\n"
-            "<b>❖ Assɪsᴛᴀɴᴛ ʟᴇғᴛ ᴛʜᴇ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ.</b>",
-            parse_mode=ParseMode.HTML,
-                    )
+            try:
+                await bot.send_message(
+                    chat_id,
+                    "<b>❖ Tʜᴇ ǫᴜᴇᴜᴇ ʜᴀs ᴇɴᴅᴇᴅ</b>\n"
+                    "<b>❖ Assɪsᴛᴀɴᴛ ʟᴇғᴛ ᴛʜᴇ ᴠᴏɪᴄᴇ ᴄʜᴀT.</b>",
+                    parse_mode=ParseMode.HTML,
+                )
+            except Exception:
+                pass
