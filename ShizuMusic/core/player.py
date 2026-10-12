@@ -2,9 +2,9 @@ import asyncio
 import random
 import time
 
-from kurigram.enums import ButtonStyle, ParseMode
-from kurigram.raw.functions.phone import CreateGroupCall
-from kurigram.types import (
+from pyrofork.enums import ButtonStyle, ParseMode
+from pyrofork.raw.functions.phone import CreateGroupCall
+from pyrofork.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     Message,
