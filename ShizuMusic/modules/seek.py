@@ -1,8 +1,8 @@
 import time
 
-from kurigram import filters
-from kurigram.enums import ButtonStyle, ParseMode
-from kurigram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
+from pyrofork import filters
+from pyrofork.enums import ButtonStyle, ParseMode
+from pyrofork.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 
 from ShizuMusic import bot, call_py, LOGGER
 from ShizuMusic.core.queue import peek_current
