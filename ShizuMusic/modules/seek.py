@@ -1,8 +1,8 @@
 import time
 
-from pyrogram import filters
-from pyrogram.enums import ParseMode
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
+from kurigram import filters
+from kurigram.enums import ButtonStyle, ParseMode
+from kurigram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 
 from ShizuMusic import bot, call_py, LOGGER
 from ShizuMusic.core.queue import peek_current
@@ -97,10 +97,10 @@ async def _seek_to(chat_id: int, target_sec: int, message: Message) -> None:
     )
 
     btns = [
-        InlineKeyboardButton("▷",  callback_data="resume"),
-        InlineKeyboardButton("Ⅱ", callback_data="pause"),
-        InlineKeyboardButton("»", callback_data="skip"),
-        InlineKeyboardButton("■", callback_data="stop"),
+        InlineKeyboardButton("▷",  callback_data="resume", style=ButtonStyle.SUCCESS),
+        InlineKeyboardButton("Ⅱ", callback_data="pause", style=ButtonStyle.PRIMARY),
+        InlineKeyboardButton("»", callback_data="skip", style=ButtonStyle.PRIMARY),
+        InlineKeyboardButton("■", callback_data="stop", style=ButtonStyle.DANGER),
     ]
     bar = progress_bar(target_sec, total_sec)
     kb  = InlineKeyboardMarkup([
@@ -208,7 +208,7 @@ async def seek_usage(_, message: Message) -> None:
     song    = peek_current(chat_id)
 
     if song:
-        pos        = get_current_position(chat_id)
+        pos       = get_current_position(chat_id)
         total_sec = parse_dur(song.get("duration", "0:00"))
         await message.reply(
             f"<b>❖ ᴄᴜʀʀᴇɴᴛ ᴘᴏsɪᴛɪᴏɴ :</b> <code>{fmt_time(pos)}</code> / <code>{fmt_time(total_sec)}</code>\n\n"
