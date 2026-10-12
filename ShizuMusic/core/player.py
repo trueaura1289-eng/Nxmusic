@@ -2,9 +2,9 @@ import asyncio
 import random
 import time
 
-from pyrogram.enums import ParseMode
-from pyrogram.raw.functions.phone import CreateGroupCall
-from pyrogram.types import (
+from kurigram.enums import ButtonStyle, ParseMode
+from kurigram.raw.functions.phone import CreateGroupCall
+from kurigram.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     Message,
@@ -61,10 +61,10 @@ async def _update_progress(
     caption: str,
 ) -> None:
     btns = [
-        InlineKeyboardButton("▷", callback_data="resume"),
-        InlineKeyboardButton("Ⅱ", callback_data="pause"),
-        InlineKeyboardButton("»", callback_data="skip"),
-        InlineKeyboardButton("■", callback_data="stop"),
+        InlineKeyboardButton("▷", callback_data="resume", style=ButtonStyle.SUCCESS),
+        InlineKeyboardButton("Ⅱ", callback_data="pause", style=ButtonStyle.PRIMARY),
+        InlineKeyboardButton("»", callback_data="skip", style=ButtonStyle.PRIMARY),
+        InlineKeyboardButton("■", callback_data="stop", style=ButtonStyle.DANGER),
     ]
 
     while True:
@@ -322,7 +322,7 @@ async def play_song(
                     remove_from_queue(chat_id, 0)
                 except Exception:
                     pass
-                    
+
                 await bot.send_message(
                     chat_id,
                     "<b>❖ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ ᴘᴇʀᴍɪssɪᴏɴ ʀᴇǫᴜɪʀᴇᴅ</b>\n\n"
@@ -401,10 +401,10 @@ async def play_song(
     )
 
     btns = [
-        InlineKeyboardButton("▷", callback_data="resume"),
-        InlineKeyboardButton("Ⅱ", callback_data="pause"),
-        InlineKeyboardButton("»", callback_data="skip"),
-        InlineKeyboardButton("■", callback_data="stop"),
+        InlineKeyboardButton("▷", callback_data="resume", style=ButtonStyle.SUCCESS),
+        InlineKeyboardButton("Ⅱ", callback_data="pause", style=ButtonStyle.PRIMARY),
+        InlineKeyboardButton("»", callback_data="skip", style=ButtonStyle.PRIMARY),
+        InlineKeyboardButton("■", callback_data="stop", style=ButtonStyle.DANGER),
     ]
 
     bar = progress_bar(0, total)
