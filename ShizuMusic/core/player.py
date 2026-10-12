@@ -2,9 +2,9 @@ import asyncio
 import random
 import time
 
-from pyrofork.enums import ButtonStyle, ParseMode
-from pyrofork.raw.functions.phone import CreateGroupCall
-from pyrofork.types import (
+from pyrogram.enums import ButtonStyle, ParseMode
+from pyrogram.raw.functions.phone import CreateGroupCall
+from pyrogram.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     Message,
