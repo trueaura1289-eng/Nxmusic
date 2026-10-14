@@ -62,9 +62,9 @@ async def _update_progress(
 ) -> None:
     btns = [
         InlineKeyboardButton("▷", callback_data="resume", style=ButtonStyle.SUCCESS),
-        InlineKeyboardButton("Ⅱ", callback_data="pause", style=ButtonStyle.PRIMARY),
-        InlineKeyboardButton("»", callback_data="skip", style=ButtonStyle.PRIMARY),
-        InlineKeyboardButton("■", callback_data="stop", style=ButtonStyle.DANGER),
+        InlineKeyboardButton("ıı", callback_data="pause", style=ButtonStyle.PRIMARY),
+        InlineKeyboardButton("»ı", callback_data="skip", style=ButtonStyle.PRIMARY),
+        InlineKeyboardButton("▢", callback_data="stop", style=ButtonStyle.DANGER),
     ]
 
     while True:
