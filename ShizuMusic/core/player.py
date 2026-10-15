@@ -68,7 +68,7 @@ async def _update_progress(
         InlineKeyboardButton("▢", callback_data="stop", style=ButtonStyle.DANGER),
     ]
 
-    close_btn = [InlineKeyboardButton("ᴄʟᴏsᴇ", callback_data="close", style=ButtonStyle.DANGER)]
+    close_btn = [InlineKeyboardButton("Close", callback_data="close", style=ButtonStyle.DANGER)]
 
     while True:
         elapsed = min(time.time() - start_t, total)
@@ -76,7 +76,7 @@ async def _update_progress(
 
         kb = InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton(bar, callback_data="noop")],
+                [InlineKeyboardButton(bar, callback_data="stop", style=ButtonStyle.DANGER)],
                 btns,
                 close_btn,
             ]
@@ -418,7 +418,7 @@ async def play_song(
 
     kb = InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton(bar, callback_data="noop")],
+            [InlineKeyboardButton(bar, callback_data="stop", style=ButtonStyle.DANGER)],
             btns,
             close_btn,
         ]
