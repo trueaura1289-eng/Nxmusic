@@ -104,7 +104,7 @@ async def _seek_to(chat_id: int, target_sec: int, message: Message) -> None:
         InlineKeyboardButton("▢", callback_data="stop", style=ButtonStyle.DANGER),
     ]
 
-    close_btn = [InlineKeyboardButton("Close", callback_data="close", style=ButtonStyle.DANGER)]
+    close_btn = [InlineKeyboardButton("ᴄʟᴏsᴇ", callback_data="close", style=ButtonStyle.DANGER)]
 
     bar = progress_bar(target_sec, total_sec)
     kb  = InlineKeyboardMarkup([
