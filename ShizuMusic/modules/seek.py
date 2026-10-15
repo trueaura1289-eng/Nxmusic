@@ -99,13 +99,18 @@ async def _seek_to(chat_id: int, target_sec: int, message: Message) -> None:
     btns = [
         InlineKeyboardButton("▷",  callback_data="resume", style=ButtonStyle.SUCCESS),
         InlineKeyboardButton("ıı", callback_data="pause", style=ButtonStyle.PRIMARY),
+        InlineKeyboardButton("↻", callback_data="replay", style=ButtonStyle.PRIMARY),
         InlineKeyboardButton("»ı", callback_data="skip", style=ButtonStyle.PRIMARY),
         InlineKeyboardButton("▢", callback_data="stop", style=ButtonStyle.DANGER),
     ]
+
+    close_btn = [InlineKeyboardButton("Close", callback_data="close", style=ButtonStyle.DANGER)]
+
     bar = progress_bar(target_sec, total_sec)
     kb  = InlineKeyboardMarkup([
         [InlineKeyboardButton(bar, callback_data="noop")],
         btns,
+        close_btn,
     ])
     await pm.edit_text(caption, reply_markup=kb, parse_mode=ParseMode.HTML)
 
@@ -208,7 +213,7 @@ async def seek_usage(_, message: Message) -> None:
     song    = peek_current(chat_id)
 
     if song:
-        pos       = get_current_position(chat_id)
+        pos        = get_current_position(chat_id)
         total_sec = parse_dur(song.get("duration", "0:00"))
         await message.reply(
             f"<b>❖ ᴄᴜʀʀᴇɴᴛ ᴘᴏsɪᴛɪᴏɴ :</b> <code>{fmt_time(pos)}</code> / <code>{fmt_time(total_sec)}</code>\n\n"
