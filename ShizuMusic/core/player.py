@@ -63,9 +63,9 @@ async def _update_progress(
     btns = [
         InlineKeyboardButton("▷", callback_data="resume", style=ButtonStyle.SUCCESS),
         InlineKeyboardButton("ıı", callback_data="pause", style=ButtonStyle.PRIMARY),
-        InlineKeyboardButton("↻", callback_data="replay", style=ButtonStyle.PRIMARY),
+        InlineKeyboardButton("↻", callback_data="replay", style=ButtonStyle.DANGER),
         InlineKeyboardButton("»ı", callback_data="skip", style=ButtonStyle.PRIMARY),
-        InlineKeyboardButton("▢", callback_data="stop", style=ButtonStyle.DANGER),
+        InlineKeyboardButton("▢", callback_data="stop", style=ButtonStyle.SUCCESS),
     ]
 
     close_btn = [InlineKeyboardButton("ᴄʟᴏsᴇ", callback_data="close", style=ButtonStyle.DANGER)]
