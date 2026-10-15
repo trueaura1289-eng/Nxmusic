@@ -108,7 +108,7 @@ async def _seek_to(chat_id: int, target_sec: int, message: Message) -> None:
 
     bar = progress_bar(target_sec, total_sec)
     kb  = InlineKeyboardMarkup([
-        [InlineKeyboardButton(bar, callback_data="noop")],
+        [InlineKeyboardButton(bar, callback_data="stop", style=ButtonStyle.DANGER)],
         btns,
         close_btn,
     ])
