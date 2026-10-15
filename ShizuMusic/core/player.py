@@ -63,9 +63,12 @@ async def _update_progress(
     btns = [
         InlineKeyboardButton("▷", callback_data="resume", style=ButtonStyle.SUCCESS),
         InlineKeyboardButton("ıı", callback_data="pause", style=ButtonStyle.PRIMARY),
+        InlineKeyboardButton("↻", callback_data="replay", style=ButtonStyle.PRIMARY),
         InlineKeyboardButton("»ı", callback_data="skip", style=ButtonStyle.PRIMARY),
         InlineKeyboardButton("▢", callback_data="stop", style=ButtonStyle.DANGER),
     ]
+
+    close_btn = [InlineKeyboardButton("ᴄʟᴏsᴇ", callback_data="close", style=ButtonStyle.DANGER)]
 
     while True:
         elapsed = min(time.time() - start_t, total)
@@ -75,6 +78,7 @@ async def _update_progress(
             [
                 [InlineKeyboardButton(bar, callback_data="noop")],
                 btns,
+                close_btn,
             ]
         )
 
@@ -403,9 +407,12 @@ async def play_song(
     btns = [
         InlineKeyboardButton("▷", callback_data="resume", style=ButtonStyle.SUCCESS),
         InlineKeyboardButton("Ⅱ", callback_data="pause", style=ButtonStyle.PRIMARY),
+        InlineKeyboardButton("↻", callback_data="replay", style=ButtonStyle.PRIMARY),
         InlineKeyboardButton("»", callback_data="skip", style=ButtonStyle.PRIMARY),
         InlineKeyboardButton("■", callback_data="stop", style=ButtonStyle.DANGER),
     ]
+
+    close_btn = [InlineKeyboardButton("Close", callback_data="close", style=ButtonStyle.DANGER)]
 
     bar = progress_bar(0, total)
 
@@ -413,6 +420,7 @@ async def play_song(
         [
             [InlineKeyboardButton(bar, callback_data="noop")],
             btns,
+            close_btn,
         ]
     )
 
