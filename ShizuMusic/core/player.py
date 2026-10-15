@@ -68,7 +68,7 @@ async def _update_progress(
         InlineKeyboardButton("▢", callback_data="stop", style=ButtonStyle.DANGER),
     ]
 
-    close_btn = [InlineKeyboardButton("Close", callback_data="close", style=ButtonStyle.DANGER)]
+    close_btn = [InlineKeyboardButton("ᴄʟᴏsᴇ", callback_data="close", style=ButtonStyle.DANGER)]
 
     while True:
         elapsed = min(time.time() - start_t, total)
