@@ -91,7 +91,7 @@ async def _seek_to(chat_id: int, target_sec: int, message: Message) -> None:
         "<b>➤ ᴇʟʏx ᴍᴜsɪᴄ sᴛʀᴇᴀᴍɪɴɢ 🎧</b>"
         "</blockquote>\n"
         "<blockquote>"
-        f"<b>∎ Tʀᴀᴄᴋ :</b> {short(song['title'])}\n"
+        f"<b>∎ Tʀᴀᴄᴋ :</b> {song['title']}\n"
         f"<b>∎ Lᴇɴɢᴛʜ :</b> {song.get('duration', '?')}\n"
         f"<b>∎ Rᴇǫᴜᴇsᴛᴇᴅ ʙʏ :</b> {song['requester']}\n"
         f"<b>∎ Cᴜʀʀᴇɴᴛ Pᴏɪɴᴛ :</b> <code>{fmt_time(target_sec)}</code>"
@@ -101,7 +101,6 @@ async def _seek_to(chat_id: int, target_sec: int, message: Message) -> None:
     btns = [
         InlineKeyboardButton("▷",  callback_data="resume", style=ButtonStyle.SUCCESS),
         InlineKeyboardButton("ıı", callback_data="pause", style=ButtonStyle.PRIMARY),
-        InlineKeyboardButton("↻", callback_data="replay", style=ButtonStyle.DANGER),
         InlineKeyboardButton("»ı", callback_data="skip", style=ButtonStyle.PRIMARY),
         InlineKeyboardButton("▢", callback_data="stop", style=ButtonStyle.SUCCESS),
     ]
