@@ -397,19 +397,21 @@ async def play_song(
 
     caption = (
         "<blockquote>"
-        "<b>ᴇʟʏx ᴍᴜsɪᴄ sᴛʀᴇᴀᴍɪɴɢ 🎧</b>\n\n"
-        f"<b>❖ Tʀᴀᴄᴋ :</b> {short(song['title'])}\n"
-        f"<b>❖ Lᴇɴɢᴛʜ :</b> {song.get('duration', '?')}\n"
-        f"<b>❖ Rᴇǫᴜᴇsᴛᴇᴅ ʙʏ :</b> {song['requester']}"
+        "<b>➤ ᴇʟʏx ᴍᴜsɪᴄ sᴛʀᴇᴀᴍɪɴɢ 🎧</b>"
+        "</blockquote>\n"
+        "<blockquote>"
+        f"<b>∎ Tʀᴀᴄᴋ :</b> {short(song['title'])}\n"
+        f"<b>∎ Lᴇɴɢᴛʜ :</b> {song.get('duration', '?')}\n"
+        f"<b>∎ Rᴇǫᴜᴇsᴛᴇᴅ ʙʏ :</b> {song['requester']}"
         "</blockquote>"
     )
 
     btns = [
         InlineKeyboardButton("▷", callback_data="resume", style=ButtonStyle.SUCCESS),
-        InlineKeyboardButton("Ⅱ", callback_data="pause", style=ButtonStyle.PRIMARY),
+        InlineKeyboardButton("ıı", callback_data="pause", style=ButtonStyle.PRIMARY),
         InlineKeyboardButton("↻", callback_data="replay", style=ButtonStyle.PRIMARY),
-        InlineKeyboardButton("»", callback_data="skip", style=ButtonStyle.PRIMARY),
-        InlineKeyboardButton("■", callback_data="stop", style=ButtonStyle.DANGER),
+        InlineKeyboardButton("»ı", callback_data="skip", style=ButtonStyle.PRIMARY),
+        InlineKeyboardButton("▢", callback_data="stop", style=ButtonStyle.DANGER),
     ]
 
     close_btn = [InlineKeyboardButton("Close", callback_data="close", style=ButtonStyle.DANGER)]
@@ -465,7 +467,7 @@ async def play_song(
         asyncio.create_task(
             bot.send_message(
                 config.LOGGER_ID,
-                "<b>❖ #ɴᴏᴡᴘʟᴀʏɪɴɢ</b>\n\n"
+                "<b>✦ #ɴᴏᴡᴘʟᴀʏɪɴɢ</b>\n\n"
                 f"<b>❖ Tʀᴀᴄᴋ :</b> {song.get('title')}\n"
                 f"<b>❖ Lᴇɴɢᴛʜ :</b> {song.get('duration')}\n"
                 f"<b>❖ Rᴇǫᴜᴇsᴛᴇᴅ ʙʏ :</b> {song.get('requester')}",
