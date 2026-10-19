@@ -1,474 +1,312 @@
 import asyncio
-import random
+import re
 import time
 
-from pyrogram.enums import ButtonStyle, ParseMode
-from pyrogram.raw.functions.phone import CreateGroupCall
+from pyrogram import filters
+from pyrogram.enums import ParseMode
 from pyrogram.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     Message,
 )
 
-from pytgcalls import PyTgCalls
-from pytgcalls import filters as fl
-from ntgcalls import TelegramServerError
-from pytgcalls.exceptions import NoActiveGroupCall
-from pytgcalls.types import (
-    AudioQuality,
-    MediaStream,
-    VideoQuality,
-    ChatUpdate,
-    StreamEnded,
-    GroupCallConfig,
-    GroupCallParticipant,
-    UpdatedGroupCallParticipant,
-)
-
 import config
+from ShizuMusic import bot
+from ShizuMusic.core.player import play_song
+from ShizuMusic.core.queue import add_to_queue, peek_current, queue_size
+from ShizuMusic.modules.block import group_allowed, user_allowed
+from ShizuMusic.utils.assistant import is_assistant_in, try_join_assistant
+from ShizuMusic.utils.db import add_served_chat, add_served_user
+from ShizuMusic.utils.formatters import fmt_time, iso_to_human, iso_to_sec, short
+from ShizuMusic.utils.youtube import search_yt
 
-from ShizuMusic import (
-    LOGGER,
-    assistant,
-    bot,
-    call_py,
-)
+# ── Blocked words ──────────────────────────────────────────────────────────────
+BLOCKED_WORDS = [
+    "porn", "xxx", "xnxx", "xvideos",
+    "sex", "fuck", "lund",
+    "drug", "cocaine", "weed", "charas",
+]
 
-from ShizuMusic.core.queue import (
-    remove_from_queue,
-)
-
-from ShizuMusic.utils.formatters import (
-    parse_dur,
-    progress_bar,
-    short,
-)
-
-from ShizuMusic.utils.youtube import (
-    resolve_stream,
-)
+# ── Per-chat state ─────────────────────────────────────────────────────────────
+_last_cmd: dict[int, float] = {}
+_pending:  dict[int, tuple] = {}
 
 
-# ─────────────────────────────────────────────
-# PROGRESS UPDATER
-# ─────────────────────────────────────────────
+# ── DB helper ──────────────────────────────────────────────────────────────────
 
-async def _update_progress(
-    chat_id: int,
-    msg: Message,
-    start_t: float,
-    total: float,
-    caption: str,
-) -> None:
-    btns = [
-        InlineKeyboardButton("▷", callback_data="resume", style=ButtonStyle.SUCCESS),
-        InlineKeyboardButton("ıı", callback_data="pause", style=ButtonStyle.PRIMARY),
-        InlineKeyboardButton("↻", callback_data="replay", style=ButtonStyle.DANGER),
-        InlineKeyboardButton("»ı", callback_data="skip", style=ButtonStyle.PRIMARY),
-        InlineKeyboardButton("▢", callback_data="stop", style=ButtonStyle.SUCCESS),
-    ]
-
-    close_btn = [InlineKeyboardButton("ᴄʟᴏsᴇ", callback_data="close", style=ButtonStyle.DANGER)]
-
-    while True:
-        elapsed = min(time.time() - start_t, total)
-        bar = progress_bar(elapsed, total)
-
-        kb = InlineKeyboardMarkup(
-            [
-                [InlineKeyboardButton(bar, callback_data="stop", style=ButtonStyle.DANGER)],
-                btns,
-                close_btn,
-            ]
-        )
-
-        try:
-            await bot.edit_message_caption(
-                chat_id,
-                msg.id,
-                caption=caption,
-                reply_markup=kb,
-            )
-
-        except Exception as e:
-            if "MESSAGE_NOT_MODIFIED" not in str(e):
-                break
-
-        if elapsed >= total:
-            break
-
-        await asyncio.sleep(18)
-
-
-# ─────────────────────────────────────────────
-# AUTO START VC
-# ─────────────────────────────────────────────
-
-async def _ensure_vc(chat_id: int) -> bool:
+def _db_track(chat_id: int, user_id: int) -> None:
     try:
-        chat_id = int(chat_id)
-        chat = await assistant.get_chat(chat_id)
-
-        await assistant.invoke(
-            CreateGroupCall(
-                peer=await assistant.resolve_peer(chat.id),
-                random_id=random.randint(10000, 99999),
-            )
-        )
-
-        LOGGER.info(f"[VC] Created in {chat_id}")
-        await asyncio.sleep(2)
-        return True
-
-    except TelegramServerError as e:
-        LOGGER.error(f"[VC] TelegramServerError: {e}")
-        await bot.send_message(
-            chat_id,
-            "<b>❱ ᴠᴄ ꜱᴛᴀʀᴛ ғᴀɪʟᴇᴅ (Telegram Server)</b>\n"
-            f"<code>{e}</code>",
-            parse_mode=ParseMode.HTML,
-        )
-        return False
-
-    except Exception as e:
-        err = str(e).lower()
-
-        # already active
-        if "already" in err or "groupcall_already_started" in err:
-            return True
-
-        # admin rights missing
-        if "chat_admin_required" in err or "admin" in err:
-            await bot.send_message(
-                chat_id,
-                "<b>❖ Vᴏɪᴄᴇ ᴄʜᴀᴛ ᴀᴄᴄᴇss Rᴇǫᴜɪʀᴇᴅ</b>\n\n"
-                "<b>❖ Uᴘᴅᴀᴛᴇ ᴀssɪsᴛᴀɴᴛ Pᴇʀᴍɪssɪᴏɴs :</b>\n"
-                "• <code>Manage Video Chats</code>\n"
-                "• <code>Administrator Privileges</code>",
-                parse_mode=ParseMode.HTML,
-            )
-            return False
-
-        LOGGER.error(f"[VC ERROR] {e}")
-        await bot.send_message(
-            chat_id,
-            "<b>❖ Vᴏɪᴄᴇ ᴄʜᴀᴛ sᴛᴀʀᴛ Fᴀɪʟᴇᴅ</b>\n"
-            f"<code>{e}</code>",
-            parse_mode=ParseMode.HTML,
-        )
-        return False
-
-
-# ─────────────────────────────────────────────
-# MAIN PLAY FUNCTION
-# ─────────────────────────────────────────────
-
-async def play_song(
-    chat_id: int,
-    message: Message,
-    song: dict,
-) -> None:
-    chat_id = int(chat_id)
-    url = song.get("url")
-
-    if not url:
-        return
-
-    # Check if request came from video playback (/vplay)
-    if song.get("video", False):
-        try:
-            await message.edit("Tʜᴇ Mᴘ4 Fᴇᴀᴛᴜʀᴇ ɪꜱ Nᴏᴛ Aᴠᴀɪʟᴀʙʟᴇ.", parse_mode=ParseMode.HTML)
-        except Exception:
-            try:
-                await bot.send_message(
-                    chat_id,
-                    "Tʜᴇ Mᴘ4 Fᴇᴀᴛᴜʀᴇ ɪꜱ Nᴏᴛ Aᴠᴀɪʟᴀʙʟᴇ.",
-                    parse_mode=ParseMode.HTML,
-                )
-            except Exception:
-                pass
-        try:
-            remove_from_queue(chat_id, 0)
-        except Exception:
-            pass
-        return
-
-    loading_text = (
-        f"<b>❏ Pʀᴏᴄᴇssɪɴɢ ʀᴇǫᴜᴇsᴛ :</b> "
-        f"{short(song['title'])}"
-    )
-
-    try:
-        await message.edit(loading_text, parse_mode=ParseMode.HTML)
-    except Exception:
-        message = await bot.send_message(
-            chat_id,
-            loading_text,
-            parse_mode=ParseMode.HTML,
-        )
-
-    # ─────────────────────────────────────────
-    # RESOLVE STREAM (FORCED TO AUDIO ONLY)
-    # ─────────────────────────────────────────
-
-    is_video = False
-
-    try:
-        media_path = await resolve_stream(url, video=False)
-    except Exception as e:
-        try:
-            remove_from_queue(chat_id, 0)
-        except Exception:
-            pass
-
-        await bot.send_message(
-            chat_id,
-            f"<b>❖ ᴜɴᴀʙʟᴇ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ</b>\n\n"
-            f"<code>{e}</code>",
-            parse_mode=ParseMode.HTML,
-        )
-        return
-
-    # ─────────────────────────────────────────
-    # AUTO EFFECTS
-    # ─────────────────────────────────────────
-
-    if not is_video:
-        try:
-            from ShizuMusic.modules.effects import maybe_apply_effects
-            media_path = await maybe_apply_effects(chat_id, media_path)
-        except Exception as fx_err:
-            LOGGER.warning(f"[Effects] Skipped: {fx_err}")
-
-    # ─────────────────────────────────────────
-    # PLAY STREAM (AUDIO ONLY)
-    # ─────────────────────────────────────────
-
-    played = False
-
-    for attempt in range(2):
-        try:
-            await call_py.play(
-                chat_id,
-                MediaStream(
-                    media_path,
-                    audio_parameters=AudioQuality.HIGH,
-                    video_flags=MediaStream.Flags.IGNORE,
-                ),
-            )
-
-            played = True
-            break
-
-        except NoActiveGroupCall:
-            if attempt == 0:
-                LOGGER.info(f"[VC] NoActiveGroupCall — Creating VC in {chat_id}")
-                ok = await _ensure_vc(chat_id)
-
-                if ok:
-                    continue
-
-                try:
-                    remove_from_queue(chat_id, 0)
-                except Exception:
-                    pass
-
-                return
-
-        except TelegramServerError as e:
-            LOGGER.error(f"[PLAY] TelegramServerError: {e}")
-
-            try:
-                remove_from_queue(chat_id, 0)
-            except Exception:
-                pass
-
-            await bot.send_message(
-                chat_id,
-                "<b>❖ ᴘʟᴀʏʙᴀᴄᴋ ᴇʀʀᴏʀ (Telegram Server)</b>\n"
-                f"<code>{e}</code>",
-                parse_mode=ParseMode.HTML,
-            )
-            return
-
-        except Exception as e:
-            err = str(e).lower()
-
-            vc_missing = any(
-                x in err
-                for x in (
-                    "groupcallnotfound",
-                    "not_in_group_call",
-                    "groupcall_forbidden",
-                    "not in group call",
-                    "no active group call",
-                )
-            )
-
-            # auto create vc (string-based fallback)
-            if vc_missing and attempt == 0:
-                LOGGER.info(f"[VC] Creating VC in {chat_id}")
-                ok = await _ensure_vc(chat_id)
-
-                if ok:
-                    continue
-
-                try:
-                    remove_from_queue(chat_id, 0)
-                except Exception:
-                    pass
-
-                return
-
-            # admin permission error
-            if "chat_admin_required" in err or "admin" in err:
-                try:
-                    remove_from_queue(chat_id, 0)
-                except Exception:
-                    pass
-
-                await bot.send_message(
-                    chat_id,
-                    "<b>❖ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ ᴘᴇʀᴍɪssɪᴏɴ ʀᴇǫᴜɪʀᴇᴅ</b>\n\n"
-                    "<b>❖ ɢʀᴀɴᴛ ᴛʜᴇ ᴀssɪsᴛᴀɴᴛ :</b>\n"
-                    "• <code>Manage Video Chats</code>\n"
-                    "• <code>Administrator Privileges</code>\n\n"
-                    "<b>❖ ᴀssɪsᴛᴀɴᴛ ɴᴇᴇᴅs ᴀᴅᴍɪɴ ᴀᴄᴄᴇss</b>",
-                    parse_mode=ParseMode.HTML,
-                )
-                LOGGER.error(f"[ADMIN ERROR] {e}")
-                return
-
-            # generic error
-            try:
-                remove_from_queue(chat_id, 0)
-            except Exception:
-                pass
-
-            await bot.send_message(
-                chat_id,
-                "<b>❖ ᴘʟᴀʏʙᴀᴄᴋ ᴇʀʀᴏʀ</b>\n\n"
-                f"<code>{e}</code>",
-                parse_mode=ParseMode.HTML,
-            )
-            LOGGER.error(f"[PLAY ERROR] {e}")
-            return
-
-    if not played:
-        return
-
-    # ─────────────────────────────────────────
-    # RESET SEEK
-    # ─────────────────────────────────────────
-
-    try:
-        from ShizuMusic.modules.seek import set_seek_state
-        set_seek_state(chat_id, 0)
+        add_served_chat(chat_id)
+        if user_id:
+            add_served_user(user_id)
     except Exception:
         pass
 
-    # ─────────────────────────────────────────
-    # DATABASE TRACKING
-    # ─────────────────────────────────────────
 
-    try:
-        from ShizuMusic.database import (
-            add_served_chat,
-            add_served_user,
-            increment_play_count,
-        )
+# ── Cooldown handler ───────────────────────────────────────────────────────────
 
-        add_served_chat(chat_id)
-        requester_id = song.get("requester_id")
+async def _run_pending(chat_id: int, delay: int) -> None:
+    await asyncio.sleep(delay)
+    if chat_id in _pending:
+        msg, reply = _pending.pop(chat_id)
+        try:
+            await reply.delete()
+        except Exception:
+            pass
+        await play_handler(bot, msg)
 
-        if requester_id:
-            add_served_user(requester_id)
 
-        increment_play_count(chat_id)
+# ── /play & /vplay command ─────────────────────────────────────────────────────
 
-    except Exception as db_err:
-        LOGGER.warning(f"[DB ERROR] {db_err}")
+@bot.on_message(
+    filters.group
+    & filters.regex(r"^/(?P<cmd>v?play)(?:@\w+)?(?:\s+(?P<q>.+))?$")
+    & group_allowed
+    & user_allowed
+)
+async def play_handler(_, message: Message) -> None:
 
-    # ─────────────────────────────────────────
-    # NOW PLAYING UI
-    # ─────────────────────────────────────────
+    chat_id = message.chat.id
+    user_id = message.from_user.id if message.from_user else 0
 
-    total = parse_dur(song.get("duration", "0:00"))
+    _db_track(chat_id, user_id)
 
-    caption = (
-        "<blockquote>"
-        "<b>ᴇʟʏx ᴍᴜsɪᴄ sᴛʀᴇᴀᴍɪɴɢ 🎧</b>\n\n"
-        f"<b>❖ Tʀᴀᴄᴋ :</b> {short(song['title'])}\n"
-        f"<b>❖ Lᴇɴɢᴛʜ :</b> {song.get('duration', '?')}\n"
-        f"<b>❖ Rᴇǫᴜᴇsᴛᴇᴅ ʙʏ :</b> {song['requester']}"
-        "</blockquote>"
-    )
-
-    btns = [
-        InlineKeyboardButton("▷", callback_data="resume", style=ButtonStyle.SUCCESS),
-        InlineKeyboardButton("Ⅱ", callback_data="pause", style=ButtonStyle.PRIMARY),
-        InlineKeyboardButton("↻", callback_data="replay", style=ButtonStyle.PRIMARY),
-        InlineKeyboardButton("»", callback_data="skip", style=ButtonStyle.PRIMARY),
-        InlineKeyboardButton("■", callback_data="stop", style=ButtonStyle.DANGER),
-    ]
-
-    close_btn = [InlineKeyboardButton("Close", callback_data="close", style=ButtonStyle.DANGER)]
-
-    bar = progress_bar(0, total)
-
-    kb = InlineKeyboardMarkup(
-        [
-            [InlineKeyboardButton(bar, callback_data="stop", style=ButtonStyle.DANGER)],
-            btns,
-            close_btn,
-        ]
-    )
-
-    thumb = song.get("thumbnail")
-
-    try:
-        pmsg = await message.reply_photo(
-            photo=thumb,
-            caption=caption,
-            reply_markup=kb,
+    # ── Replied audio / video ──────────────────────────────────────────────────
+    if message.reply_to_message and (
+        message.reply_to_message.audio or message.reply_to_message.video
+    ):
+        pm = await message.reply(
+            "<b>ɢᴇᴛᴛɪɴɢ ᴍᴇᴅɪᴀ...</b>",
             parse_mode=ParseMode.HTML,
         )
 
-    except Exception:
-        pmsg = await bot.send_message(
-            chat_id,
-            caption,
-            reply_markup=kb,
+        orig  = message.reply_to_message
+        fresh = await bot.get_messages(orig.chat.id, orig.id)
+        media = fresh.video or fresh.audio
+
+        if fresh.audio and getattr(fresh.audio, "file_size", 0) > 100 * 1024 * 1024:
+            await pm.edit_text(
+                "<b>❖ ғɪʟᴇ sɪᴢᴇ ᴇxᴄᴇᴇᴅs ᴛʜᴇ ʟɪᴍɪᴛ</b>\n"
+                "<b>❖ ᴍᴀxɪᴍᴜᴍ :</b> <code>100 MB</code>",
+                parse_mode=ParseMode.HTML,
+            )
+            return
+
+        await pm.edit_text(
+            "<b>❖ ʀᴇᴛʀɪᴇᴠɪɴɢ ᴍᴇᴅɪᴀ..</b>",
             parse_mode=ParseMode.HTML,
         )
+
+        try:
+            fp = await bot.download_media(media)
+        except Exception as e:
+            await pm.edit_text(
+                f"<b❖ ᴅᴏᴡɴʟᴏᴀᴅ ᴄᴏᴜʟᴅɴ'ᴛ ʙᴇ ᴄᴏᴍᴘʟᴇᴛᴇᴅ</b>\n<code>{e}</code>",
+                parse_mode=ParseMode.HTML,
+            )
+            return
+
+        song = {
+            "url":             fp,
+            "title":           getattr(media, "file_name", "Audio"),
+            "duration":         fmt_time(media.duration or 0),
+            "duration_seconds": media.duration or 0,
+            "requester":       message.from_user.first_name if message.from_user else "Unknown",
+            "requester_id":     user_id,
+            "thumbnail":       None,
+        }
+
+        add_to_queue(chat_id, song)
+        await play_song(chat_id, pm, song)
+        return
+
+    # ── Text query ─────────────────────────────────────────────────────────────
+    match = message.matches[0]
+    query = (match.group("q") or "").strip()
+    cmd   = (match.group("cmd") or "play").strip()
 
     try:
         await message.delete()
     except Exception:
         pass
 
-    asyncio.create_task(
-        _update_progress(
+    # Blocked words check
+    if any(x in query.lower() for x in BLOCKED_WORDS):
+        await bot.send_message(
             chat_id,
-            pmsg,
-            time.time(),
-            total,
-            caption,
+            "<b>❖ ᴘʟᴀʏʙᴀᴄᴋ ᴏғ ᴛʜɪs sᴏɴɢ ɪs ʙʟᴏᴄᴋᴇᴅ</b>",
+            parse_mode=ParseMode.HTML,
         )
-    )
+        return
 
-    # ─────────────────────────────────────────
-    # LOGGER
-    # ─────────────────────────────────────────
-
-    if config.LOGGER_ID:
-        asyncio.create_task(
-            bot.send_message(
-                config.LOGGER_ID,
-                "<b>❖ #ɴᴏᴡᴘʟᴀʏɪɴɢ</b>\n\n"
-                f"<b>❖ Tʀᴀᴄᴋ :</b> {song.get('title')}\n"
-                f"<b>❖ Lᴇɴɢᴛʜ :</b> {song.get('duration')}\n"
-                f"<b>❖ Rᴇǫᴜᴇsᴛᴇᴅ ʙʏ :</b> {song.get('requester')}",
+    # Cooldown check
+    now = time.time()
+    if chat_id in _last_cmd and (now - _last_cmd[chat_id]) < config.COOLDOWN:
+        rem = int(config.COOLDOWN - (now - _last_cmd[chat_id]))
+        if chat_id not in _pending:
+            rep = await bot.send_message(
+                chat_id,
+                f"<b>❏ ᴘʀᴏᴄᴇssɪɴɢ ʏᴏᴜʀ ʀᴇǫᴜᴇsᴛ :</b> <code>{rem}s</code>",
                 parse_mode=ParseMode.HTML,
             )
+            _pending[chat_id] = (message, rep)
+            asyncio.create_task(_run_pending(chat_id, rem))
+        return
+
+    _last_cmd[chat_id] = now
+
+    if not query:
+        await bot.send_message(
+            chat_id,
+            "<b>❖ ʜᴏᴡ ᴛᴏ ᴜsᴇ :</b> <code>/play song name</code>\n"
+            "<b>❖ ʜᴏᴡ ᴛᴏ ᴜsᴇ :</b> <code>/play youtube url</code>\n"
+            "<b>❖ ʜᴏᴡ ᴛᴏ ᴜsᴇ ᴠɪᴅᴇᴏ :</b> <code>/vplay song name</code>",
+            parse_mode=ParseMode.HTML,
         )
+        return
+
+    await _process_play(message, query, video=(cmd == "vplay"))
+
+
+# ── Process play ───────────────────────────────────────────────────────────────
+
+async def _process_play(message: Message, query: str, video: bool = False) -> None:
+    chat_id = message.chat.id
+
+    pm = await message.reply(
+        "<b>➥ ᴘʀᴏᴄᴇssɪɴɢ...</b>",
+        parse_mode=ParseMode.HTML,
+    )
+
+    # Assistant check — uses utils/assistant.py
+    status = await is_assistant_in(chat_id)
+
+    if status == "banned":
+        await pm.edit_text(
+            "<b>❖ ᴀssɪsᴛᴀɴᴛ ɪs ʙᴀɴɴᴇᴅ ғʀᴏᴍ ᴛʜɪs ᴄʜᴀᴛ, ᴜɴʙᴀɴ ɪᴛ ᴛᴏ ᴄᴏɴᴛɪɴᴜᴇ</b>",
+            parse_mode=ParseMode.HTML,
+        )
+        return
+
+    if not status:
+        await pm.edit_text(
+            "<b>❖ ᴊᴏɪɴɪɴɢ ᴛʜᴇ ɢʀᴏᴜᴘ ᴡɪᴛʜ ᴛʜᴇ ᴀssɪsᴛᴀɴᴛ--</b>",
+            parse_mode=ParseMode.HTML,
+        )
+        ok = await try_join_assistant(chat_id, pm)
+        if not ok:
+            return
+        await pm.edit_text(
+            "<b>➤ Assɪsᴛᴀɴᴛ ʜᴀs ᴊᴏɪɴᴇᴅ ✓</b>\n"
+            "<b>➤ ᴘʀᴏᴄᴇssɪɴɢ...</b>",
+            parse_mode=ParseMode.HTML,
+        )
+
+    # Normalise short YouTube URL
+    if "youtu.be" in query:
+        m = re.search(r"youtu\.be/([^?&]+)", query)
+        if m:
+            query = f"https://www.youtube.com/watch?v={m.group(1)}"
+
+    # Search YouTube
+    try:
+        result = await search_yt(query)
+    except Exception as e:
+        await pm.edit_text(
+            f"<b>❖ ɴᴏ ʀᴇsᴜʟᴛs ғᴏᴜɴᴅ</b>\n<code>{e}</code>",
+            parse_mode=ParseMode.HTML,
+        )
+        return
+
+    # Playlist
+    if isinstance(result, dict) and "playlist" in result:
+        items = result["playlist"]
+        if not items:
+            await pm.edit_text("<b>❖ ɴᴏ sᴏɴɢs ᴀʀᴇ ǫᴜᴇᴜᴇᴅ</b>", parse_mode=ParseMode.HTML)
+            return
+
+        req    = message.from_user.first_name if message.from_user else "Unknown"
+        req_id = message.from_user.id         if message.from_user else 0
+
+        first_was_empty = queue_size(chat_id) == 0
+
+        for item in items:
+            add_to_queue(chat_id, {
+                "url":              item["link"],
+                "title":            item["title"],
+                "duration":         iso_to_human(item["duration"]),
+                "duration_seconds": iso_to_sec(item["duration"]),
+                "requester":        req,
+                "requester_id":     req_id,
+                "thumbnail":        None,
+            })
+
+        text = (
+            f"<b>● Qᴜᴇᴜᴇ ᴀᴅᴅᴇᴅ</b>\n"
+            f"<b>● Sᴏɴɢs :</b> <code>{len(items)}</code>\n"
+            f"<b>● Fɪʀsᴛ :</b> <code>{short(items[0]['title'])}</code>"
+        )
+        if len(items) > 1:
+            text += f"\n<b>❖ ᴜᴘᴄᴏᴍɪɴɢ ᴛʀᴀᴄᴋ :</b> <code>{short(items[1]['title'])}</code>"
+
+        await message.reply(text, parse_mode=ParseMode.HTML)
+
+        if first_was_empty:
+            first_song = peek_current(chat_id)
+            if first_song:
+                await play_song(chat_id, pm, first_song)
+        else:
+            await pm.delete()
+        return
+
+    # Single track
+    url, title, dur_iso, _ = result
+
+    if not url:
+        await pm.edit_text("<b>❍ sᴏɴɢ ɴᴏᴛ ғᴏᴜɴᴅ</b>", parse_mode=ParseMode.HTML)
+        return
+
+    secs = iso_to_sec(dur_iso)
+
+    if secs > config.MAX_DURATION_SECONDS:
+        await pm.edit_text(
+            f"<b>❏ ᴛʀᴀᴄᴋ sᴏɴɢ ᴇxᴄᴇᴇᴅs ᴛʜᴇ ʟɪᴍɪᴛ</b>\n"
+            f"<b>❖ ᴛʀᴀᴄᴋ ʟᴇɴɢᴛʜ :</b> <code>{iso_to_human(dur_iso)}</code>\n"
+            f"<b>❖ ᴍᴀxɪᴍᴜᴍ ʟɪᴍɪᴛ :</b> <code>{config.MAX_DURATION_SECONDS // 60} min</code>",
+            parse_mode=ParseMode.HTML,
+        )
+        return
+
+    req    = message.from_user.first_name if message.from_user else "Unknown"
+    req_id = message.from_user.id         if message.from_user else 0
+
+    song = {
+        "url":              url,
+        "title":            title,
+        "duration":         iso_to_human(dur_iso),
+        "duration_seconds": secs,
+        "requester":        req,
+        "requester_id":     req_id,
+        "thumbnail":        None,
+        "video":            video,
+    }
+
+    pos = add_to_queue(chat_id, song)
+
+    if pos == 1:
+        await play_song(chat_id, pm, song)
+    else:
+        kb = InlineKeyboardMarkup([[
+            InlineKeyboardButton("Sᴋɪᴩ",  callback_data="skip"),
+            InlineKeyboardButton("Cʟᴇᴀʀ", callback_data="clear"),
+        ]])
+        await message.reply(
+            f"<b>❏ ᴛʀᴀᴄᴋ ᴀᴅᴅᴇᴅ sᴜᴄᴄᴇssғᴜʟʟʏ</b>\n"
+            f"<b>❖ sᴏɴɢ :</b> <code>{short(title)}</code>\n"
+            f"<b>❖ ʟᴇɴɢᴛʜ :</b> <code>{iso_to_human(dur_iso)}</code>\n"
+            f"<b>❖ ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ:</b> <code>{req}</code>\n"
+            f"<b>❖ ǫᴜᴇᴜᴇ ᴘᴏsɪᴛɪᴏɴ :</b> <code>#{pos - 1}</code>",
+            parse_mode=ParseMode.HTML,
+            reply_markup=kb,
+        )
+        await pm.delete()
