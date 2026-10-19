@@ -106,22 +106,14 @@ async def play_handler(_, message: Message) -> None:
             )
             return
 
-        thumb = None
-        try:
-            thumbs = (fresh.video or fresh.audio).thumbs
-            if thumbs:
-                thumb = await bot.download_media(thumbs[0])
-        except Exception:
-            pass
-
         song = {
-            "url":              fp,
-            "title":            getattr(media, "file_name", "Audio"),
+            "url":             fp,
+            "title":           getattr(media, "file_name", "Audio"),
             "duration":         fmt_time(media.duration or 0),
             "duration_seconds": media.duration or 0,
-            "requester":        message.from_user.first_name if message.from_user else "Unknown",
+            "requester":       message.from_user.first_name if message.from_user else "Unknown",
             "requester_id":     user_id,
-            "thumbnail":        thumb,
+            "thumbnail":       None,
         }
 
         add_to_queue(chat_id, song)
@@ -246,7 +238,7 @@ async def _process_play(message: Message, query: str, video: bool = False) -> No
                 "duration_seconds": iso_to_sec(item["duration"]),
                 "requester":        req,
                 "requester_id":     req_id,
-                "thumbnail":        item["thumbnail"],
+                "thumbnail":        None,
             })
 
         text = (
@@ -268,7 +260,7 @@ async def _process_play(message: Message, query: str, video: bool = False) -> No
         return
 
     # Single track
-    url, title, dur_iso, thumb = result
+    url, title, dur_iso, _ = result
 
     if not url:
         await pm.edit_text("<b>❍ sᴏɴɢ ɴᴏᴛ ғᴏᴜɴᴅ</b>", parse_mode=ParseMode.HTML)
@@ -278,7 +270,7 @@ async def _process_play(message: Message, query: str, video: bool = False) -> No
 
     if secs > config.MAX_DURATION_SECONDS:
         await pm.edit_text(
-            f"<b>❏ ᴛʀᴀᴄᴋ sᴏɴɢ ᴇxᴄᴇᴇᴅs ᴛʜᴇ ʟɪᴍɪᴛb>\n"
+            f"<b>❏ ᴛʀᴀᴄᴋ sᴏɴɢ ᴇxᴄᴇᴇᴅs ᴛʜᴇ ʟɪᴍɪᴛ</b>\n"
             f"<b>❖ ᴛʀᴀᴄᴋ ʟᴇɴɢᴛʜ :</b> <code>{iso_to_human(dur_iso)}</code>\n"
             f"<b>❖ ᴍᴀxɪᴍᴜᴍ ʟɪᴍɪᴛ :</b> <code>{config.MAX_DURATION_SECONDS // 60} min</code>",
             parse_mode=ParseMode.HTML,
@@ -295,7 +287,7 @@ async def _process_play(message: Message, query: str, video: bool = False) -> No
         "duration_seconds": secs,
         "requester":        req,
         "requester_id":     req_id,
-        "thumbnail":        thumb,
+        "thumbnail":        None,
         "video":            video,
     }
 
