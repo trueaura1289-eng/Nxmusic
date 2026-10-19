@@ -63,7 +63,6 @@ async def _update_progress(
     btns = [
         InlineKeyboardButton("▷", callback_data="resume", style=ButtonStyle.SUCCESS),
         InlineKeyboardButton("ıı", callback_data="pause", style=ButtonStyle.PRIMARY),
-        InlineKeyboardButton("↻", callback_data="replay", style=ButtonStyle.DANGER),
         InlineKeyboardButton("»ı", callback_data="skip", style=ButtonStyle.PRIMARY),
         InlineKeyboardButton("▢", callback_data="stop", style=ButtonStyle.SUCCESS),
     ]
@@ -195,7 +194,7 @@ async def play_song(
 
     loading_text = (
         f"<b>❏ Pʀᴏᴄᴇssɪɴɢ ʀᴇǫᴜᴇsᴛ :</b> "
-        f"{short(song['title'])}"
+        f"{song['title']}"
     )
 
     try:
@@ -400,7 +399,7 @@ async def play_song(
         "<b>➤ ᴇʟʏx ᴍᴜsɪᴄ sᴛʀᴇᴀᴍɪɴɢ 🎧</b>"
         "</blockquote>\n"
         "<blockquote>"
-        f"<b>∎ Tʀᴀᴄᴋ :</b> {short(song['title'])}\n"
+        f"<b>∎ Tʀᴀᴄᴋ :</b> {song['title']}\n"
         f"<b>∎ Lᴇɴɢᴛʜ :</b> {song.get('duration', '?')}\n"
         f"<b>∎ Rᴇǫᴜᴇsᴛᴇᴅ ʙʏ :</b> {song['requester']}"
         "</blockquote>"
@@ -409,12 +408,11 @@ async def play_song(
     btns = [
         InlineKeyboardButton("▷", callback_data="resume", style=ButtonStyle.SUCCESS),
         InlineKeyboardButton("ıı", callback_data="pause", style=ButtonStyle.PRIMARY),
-        InlineKeyboardButton("↻", callback_data="replay", style=ButtonStyle.PRIMARY),
         InlineKeyboardButton("»ı", callback_data="skip", style=ButtonStyle.PRIMARY),
         InlineKeyboardButton("▢", callback_data="stop", style=ButtonStyle.DANGER),
     ]
 
-    close_btn = [InlineKeyboardButton("Close", callback_data="close", style=ButtonStyle.DANGER)]
+    close_btn = [InlineKeyboardButton("ᴄʟᴏsᴇ", callback_data="close", style=ButtonStyle.DANGER)]
 
     bar = progress_bar(0, total)
 
