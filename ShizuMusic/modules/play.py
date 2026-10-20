@@ -263,7 +263,7 @@ async def _process_play(message: Message, query: str, video: bool = False) -> No
     url, title, dur_iso, _ = result
 
     if not url:
-        await pm.edit_text("<b>❍ sᴏɴɢ ɴᴏᴛ ғᴏᴜɴᴅ</b>", parse_mode=ParseMode.HTML)
+        await pm.edit_text("<b>sᴏɴɢ ɴᴏᴛ ғᴏᴜɴᴅ</b>", parse_mode=ParseMode.HTML)
         return
 
     secs = iso_to_sec(dur_iso)
