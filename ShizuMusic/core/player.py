@@ -396,12 +396,12 @@ async def play_song(
 
     caption = (
         "<blockquote>"
-        "<b>➤ ᴇʟʏx ᴍᴜsɪᴄ sᴛʀᴇᴀᴍɪɴɢ 🎧</b>"
+        "<b>♪ ᴇʟʏx ᴍᴜsɪᴄ sᴛʀᴇᴀᴍɪɴɢ 🎧</b>"
         "</blockquote>\n"
         "<blockquote>"
-        f"<b>∎ Tʀᴀᴄᴋ :</b> {song['title']}\n"
-        f"<b>∎ Lᴇɴɢᴛʜ :</b> {song.get('duration', '?')}\n"
-        f"<b>∎ Rᴇǫᴜᴇsᴛᴇᴅ ʙʏ :</b> {song['requester']}"
+        f"<b>✦ Tʀᴀᴄᴋ :</b> {song['title']}\n"
+        f"<b>✦ Lᴇɴɢᴛʜ :</b> {song.get('duration', '?')}\n"
+        f"<b>✦ Rᴇǫᴜᴇsᴛᴇᴅ ʙʏ :</b> {song['requester']}"
         "</blockquote>"
     )
 
