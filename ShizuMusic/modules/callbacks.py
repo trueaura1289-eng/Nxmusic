@@ -164,7 +164,7 @@ async def on_callback(client, cbq: CallbackQuery) -> None:
         return
 
     # ── player authorization check ────────────────────────────────────────────
-    if data in ("pause", "resume", "skip", "stop", "clear"):
+    if data in ("pause", "resume", "skip", "stop", "clear", "close"):
         if not await is_user_authorized(cbq):
             await cbq.answer("❖ ᴍᴀɴᴀɢᴇʀs ᴏɴʟʏ", show_alert=True)
             return
@@ -254,6 +254,14 @@ async def on_callback(client, cbq: CallbackQuery) -> None:
             parse_mode=ParseMode.HTML,
         )
 
+    # ── CLOSE PLAYER UI ───────────────────────────────────────────────────────
+    elif data == "close":
+        await cbq.answer("Closed")
+        try:
+            await cbq.message.delete()
+        except Exception:
+            pass
+
     # ── NOOP ──────────────────────────────────────────────────────────────────
     elif data == "noop":
         await cbq.answer()
@@ -309,11 +317,11 @@ async def _go_back(cbq: CallbackQuery) -> None:
     caption = (
         f"<b>✦ ʜᴇʟʟᴏ</b> <a href='tg://user?id={uid}'>{name}</a> 👋\n\n"
         f"<b>╰┈➤ ɪ'ᴍ {config.BOT_NAME}</b> — ʏᴏᴜʀ ᴍᴜsɪᴄ ʙᴏᴛ ғᴏʀ ᴄʜᴀᴛs.\n\n"
-        "<b>❖ ᴡʜᴀᴛ ɪ ᴄᴀɴ ᴅᴏ</b>\n\n"
-        "<b>› ᴘʟᴀʏ ʏᴏᴜʀ ғᴀᴠᴏᴜʀɪᴛᴇ sᴏɴɢs ɪɴ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ.</b>\n\n"
-        "<b>› ᴇɴᴊᴏʏ ғᴀsᴛ & sᴍᴏᴏᴛʜ ʜᴅ ᴘʟᴀʏʙᴀᴄᴋ.</b>\n\n"
-        "<b>› ᴍᴜᴄʜ ᴍᴏʀᴇ ᴛᴏ ᴇxᴘʟᴏʀᴇ.</b>\n\n"
-        "<b>╰─➤ ᴛᴀᴘ ʜᴇʟᴘ ғᴏʀ ᴄᴏᴍᴍᴀɴᴅs & ᴍᴏʀᴇ ɪɴғᴏ.</b>"
+        f"<b>❖ ᴡʜᴀᴛ ɪ ᴄᴀɴ ᴅᴏ</b>\n\n"
+        f"<b>› ᴘʟᴀʏ ʏᴏᴜʀ ғᴀᴠᴏᴜʀɪᴛᴇ sᴏɴɢs ɪɴ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ.</b>\n\n"
+        f"<b>› ᴇɴᴊᴏʏ ғᴀsᴛ & sᴍᴏᴏᴛʜ ʜᴅ ᴘʟᴀʏʙᴀᴄᴋ.</b>\n\n"
+        f"<b>› ᴍᴜᴄʜ ᴍᴏʀᴇ ᴛᴏ ᴇxᴘʟᴏʀᴇ.</b>\n\n"
+        f"<b>╰─➤ ᴛᴀᴘ ʜᴇʟᴘ ғᴏʀ ᴄᴏᴍᴍᴀɴᴅs & ᴍᴏʀᴇ ɪɴғᴏ.</b>"
     )
 
     kb = InlineKeyboardMarkup([
