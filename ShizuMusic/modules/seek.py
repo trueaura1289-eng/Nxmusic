@@ -88,13 +88,13 @@ async def _seek_to(chat_id: int, target_sec: int, message: Message) -> None:
 
     caption = (
         "<blockquote>"
-        "<b>➤ ᴇʟʏx ᴍᴜsɪᴄ sᴛʀᴇᴀᴍɪɴɢ 🎧</b>"
+        "<b>♪ ᴇʟʏx ᴍᴜsɪᴄ sᴛʀᴇᴀᴍɪɴɢ 🎧</b>"
         "</blockquote>\n"
         "<blockquote>"
-        f"<b>∎ Tʀᴀᴄᴋ :</b> {song['title']}\n"
-        f"<b>∎ Lᴇɴɢᴛʜ :</b> {song.get('duration', '?')}\n"
-        f"<b>∎ Rᴇǫᴜᴇsᴛᴇᴅ ʙʏ :</b> {song['requester']}\n"
-        f"<b>∎ Cᴜʀʀᴇɴᴛ Pᴏɪɴᴛ :</b> <code>{fmt_time(target_sec)}</code>"
+        f"<b>✦ Tʀᴀᴄᴋ :</b> {song['title']}\n"
+        f"<b>✦ Lᴇɴɢᴛʜ :</b> {song.get('duration', '?')}\n"
+        f"<b>✦ Rᴇǫᴜᴇsᴛᴇᴅ ʙʏ :</b> {song['requester']}\n"
+        f"<b>✦ Cᴜʀʀᴇɴᴛ Pᴏɪɴᴛ :</b> <code>{fmt_time(target_sec)}</code>"
         "</blockquote>"
     )
 
