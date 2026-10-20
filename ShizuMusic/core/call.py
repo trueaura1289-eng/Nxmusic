@@ -167,7 +167,7 @@ async def on_stream_end(_: object, update: StreamEnded) -> None:
                 await bot.send_message(
                     chat_id,
                     "❖ ᴛʜᴇ ǫᴜᴇᴜᴇ ʜᴀs ᴇɴᴅᴇᴅ\n"
-                    "🌸 ᴘʟᴀʏ sᴏɴɢs ᴡɪᴛʜ /play.",
+                    "🌸 ᴘʟᴀʏ ᴏᴛʜᴇʀ sᴏɴɢs ᴡɪᴛʜ /play.",
                     parse_mode=ParseMode.HTML,
                 )
             except Exception:
