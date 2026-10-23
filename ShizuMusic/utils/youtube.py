@@ -15,7 +15,7 @@ from ShizuMusic.utils.formatters import sec_to_iso
 logger = logging.getLogger(__name__)
 
 # ── API config ────────────────────────────────────────────────────────────────
-SHRUTI_API_URL        = os.environ.get("SHRUTI_API_URL", "https://api.shrutibots.site")
+SHRUTI_API_URL        = os.environ.get("SHRUTI_API_URL", "https://api.shrutibots.in")
 SHRUTI_API_KEY        = os.environ.get("SHRUTI_API_KEY", "ShrutiBotsT4C6zI3BMYDaWWKM6DtR")  # Primary API Key
 SHRUTI_API_KEY_2      = os.environ.get("SHRUTI_API_KEY_2", "ShrutiBotsARGXhXwITDzeDPLGf3rU")                            # Secondary/Backup API Key
 DOWNLOAD_DIR          = "downloads"
